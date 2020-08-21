@@ -24,6 +24,16 @@
       "plugin:import/warnings"
     ]
   },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },  
   "browserslist": {
     "production": [
       ">0.2%",
@@ -37,6 +47,9 @@
     ]
   },
   "devDependencies": {
-    "eslint-plugin-import": "^2.22.0"
+    "eslint-plugin-import": "^2.22.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.0.5"
   }
 }

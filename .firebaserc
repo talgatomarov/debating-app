@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "debating-app"
+  },
+  "targets": {
+    "debating-app": {
+      "hosting": {
+        "prod": [
+          "debating-app"
+        ],
+        "dev": [
+          "debating-app-dev"
+        ]
+      }
+    }
+  }
+}

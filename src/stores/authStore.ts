@@ -24,7 +24,7 @@ export class AuthStore {
   ): void {
     firebase
       .auth()
-      .signInWithEmailAndPassword(email, password)
+      .createUserWithEmailAndPassword(email, password)
       .then((userCredential) => {
         this.user = userCredential.user;
         this.authError = null;

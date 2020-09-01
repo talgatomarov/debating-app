@@ -1,10 +1,15 @@
 import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Home, Register } from "../../routes";
 
 const App: React.FC = () => {
   return (
-    <div>
-      <h1>Debating App</h1>
-    </div>
+    <Router>
+      <Switch>
+        <Route path="/register" component={Register} />
+        <Route path="/" component={Home} />
+      </Switch>
+    </Router>
   );
 };
 

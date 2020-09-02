@@ -18,19 +18,26 @@ export class AuthStore {
   @observable user: User | null = null;
   @observable authError: AuthError | null = null;
 
-  @action createUserWithEmailAndPassword(
+  @action async createUserWithEmailAndPassword(
     email: string,
     password: string
-  ): void {
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        this.user = userCredential.user;
-        this.authError = null;
-      })
-      .catch((error) => {
-        this.authError = error;
-      });
+  ): Promise<void> {
+    try {
+      const userCredential = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password);
+
+      this.user = {
+        uid: userCredential.user?.uid,
+        email: userCredential.user?.email,
+        emailVerified: userCredential.user?.emailVerified,
+        displayName: userCredential.user?.displayName,
+        photoURL: userCredential.user?.photoURL,
+      };
+
+      this.authError = null;
+    } catch (error) {
+      this.authError = error;
+    }
   }
 }

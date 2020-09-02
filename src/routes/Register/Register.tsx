@@ -8,13 +8,16 @@ const Register: React.FC = observer(() => {
   return (
     <div>
       <form
-        onSubmit={(e: React.FormEvent) => {
+        onSubmit={async (e: React.FormEvent) => {
           e.preventDefault();
           const elements = (e.target as HTMLFormElement).elements;
           const email = elements.namedItem("email") as HTMLInputElement;
           const password = elements.namedItem("password") as HTMLInputElement;
 
-          authStore.createUserWithEmailAndPassword(email.value, password.value);
+          await authStore.createUserWithEmailAndPassword(
+            email.value,
+            password.value
+          );
         }}
       >
         <label htmlFor="email">Email</label>

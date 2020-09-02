@@ -58,4 +58,14 @@ export class AuthStore {
       this.authError = error;
     }
   }
+
+  @action async signOut(): Promise<void> {
+    try {
+      await firebase.auth().signOut();
+      this.user = null;
+      this.authError = null;
+    } catch (error) {
+      this.authError = error;
+    }
+  }
 }

@@ -43,29 +43,4 @@ export class AuthStore {
       this.authError = error;
     }
   }
-
-  @action async signInWithEmailAndPassword(
-    email: string,
-    password: string
-  ): Promise<void> {
-    try {
-      const userCredential = await firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password);
-      this.setUser(userCredential);
-      this.authError = null;
-    } catch (error) {
-      this.authError = error;
-    }
-  }
-
-  @action async signOut(): Promise<void> {
-    try {
-      await firebase.auth().signOut();
-      this.user = null;
-      this.authError = null;
-    } catch (error) {
-      this.authError = error;
-    }
-  }
 }

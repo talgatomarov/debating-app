@@ -26,6 +26,9 @@ const Register: React.FC = observer(() => {
         <input id="password" type="password" />
         <button type="submit">Register</button>
       </form>
+      {authStore.authError !== null ? (
+        <p>{authStore.authError.message}</p>
+      ) : null}
       {authStore.user !== null ? <p>{authStore.user.uid}</p> : null}
     </div>
   );

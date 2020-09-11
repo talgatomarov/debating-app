@@ -1,6 +1,6 @@
 import { observable, action } from "mobx";
-import firebase from "../firebase";
-import { User, AuthError } from "../interfaces";
+import firebase from "firebaseConfig";
+import { User, AuthError } from "interfaces";
 
 export class AuthStore {
   @observable user: User | null = null;

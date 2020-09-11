@@ -6,7 +6,7 @@ import {
   waitForElement,
 } from "@testing-library/react";
 import Register from "./Register";
-import firebase from "../../firebase";
+import firebase from "firebaseConfig";
 
 afterEach(() => {
   cleanup();

@@ -1,5 +1,5 @@
 import React from "react";
-import { useStores } from "../../hooks";
+import { useStores } from "hooks";
 import { observer } from "mobx-react";
 
 const Register: React.FC = observer(() => {

@@ -1,10 +1,9 @@
 import { observable, action } from "mobx";
 import firebase from "firebaseConfig";
-import { User, AuthError } from "interfaces";
+import { User } from "interfaces";
 
 export class AuthStore {
   @observable user: User | null = null;
-  @observable authError: AuthError | null = null;
 
   setUser(userCredential: firebase.auth.UserCredential): void {
     this.user = {
@@ -20,15 +19,10 @@ export class AuthStore {
     email: string,
     password: string
   ): Promise<void> {
-    try {
-      const userCredential = await firebase
-        .auth()
-        .createUserWithEmailAndPassword(email, password);
+    const userCredential = await firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password);
 
-      this.setUser(userCredential);
-      this.authError = null;
-    } catch (error) {
-      this.authError = error;
-    }
+    this.setUser(userCredential);
   }
 }

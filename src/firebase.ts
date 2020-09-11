@@ -1,4 +1,5 @@
 import firebase from "firebase/app";
+import "firebase/auth";
 
 // It is not a security issue to expose this config
 const firebaseConfig = {

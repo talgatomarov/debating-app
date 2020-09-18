@@ -35,7 +35,16 @@
       "plugin:import/warnings",
       "plugin:import/typescript",
       "plugin:@typescript-eslint/recommended"
-    ]
+    ],
+    "settings": {
+      "import/resolver": {
+        "node": {
+          "paths": [
+            "src"
+          ]
+        }
+      }
+    }
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [

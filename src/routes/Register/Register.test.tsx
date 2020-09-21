@@ -37,11 +37,7 @@ describe("Register", () => {
       },
     } as firebase.auth.UserCredential;
 
-    mockCreateUserMethod.mockImplementationOnce(
-      async (email, password): Promise<firebase.auth.UserCredential> => {
-        return mockUserCrendetial;
-      }
-    );
+    mockCreateUserMethod.mockResolvedValueOnce(mockUserCrendetial);
 
     render(<Register />);
 
@@ -61,11 +57,7 @@ describe("Register", () => {
       message: "Something went wrong",
     };
 
-    mockCreateUserMethod.mockImplementationOnce(
-      async (email, password): Promise<firebase.auth.UserCredential> => {
-        return Promise.reject(authError);
-      }
-    );
+    mockCreateUserMethod.mockRejectedValueOnce(authError);
 
     render(<Register />);
 

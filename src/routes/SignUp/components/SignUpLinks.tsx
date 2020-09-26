@@ -1,6 +1,5 @@
 import * as React from "react";
-import Grid from "@material-ui/core/Grid";
-import Link from "@material-ui/core/Link";
+import { Grid, Link } from "@material-ui/core";
 
 const SignUpLinks: React.FC = () => {
   return (

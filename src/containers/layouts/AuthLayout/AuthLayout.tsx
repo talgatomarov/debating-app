@@ -1,10 +1,22 @@
 import * as React from "react";
-import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
-import Avatar from "@material-ui/core/Avatar";
+import {
+  makeStyles,
+  Box,
+  Container,
+  Typography,
+  Avatar,
+} from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 
-import { makeStyles } from "@material-ui/core/styles";
+const Footer = () => {
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      {"Nazarbayev University Senior Project "}
+      {new Date().getFullYear()}
+      {"."}
+    </Typography>
+  );
+};
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -37,6 +49,9 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ title, children }) => {
         </Typography>
         {children}
       </div>
+      <Box mt={8}>
+        <Footer />
+      </Box>
     </Container>
   );
 };

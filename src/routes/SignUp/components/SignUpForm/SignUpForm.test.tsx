@@ -5,7 +5,7 @@ import {
   fireEvent,
   waitForElement,
 } from "@testing-library/react";
-import SignUp from "./SignUpForm";
+import SignUpForm from "./SignUpForm";
 import firebase from "firebase";
 import { MemoryRouter } from "react-router-dom";
 
@@ -20,7 +20,7 @@ const mockCreateUserMethod = jest.spyOn(
 
 describe("Sign Up", () => {
   test("Test render", () => {
-    render(<SignUp />, { wrapper: MemoryRouter });
+    render(<SignUpForm />, { wrapper: MemoryRouter });
   });
 
   test("Valid sign up", async () => {
@@ -39,7 +39,7 @@ describe("Sign Up", () => {
 
     mockCreateUserMethod.mockResolvedValueOnce(mockUserCrendetial);
 
-    render(<SignUp />, { wrapper: MemoryRouter });
+    render(<SignUpForm />, { wrapper: MemoryRouter });
 
     (screen.getByLabelText(/email/i) as HTMLInputElement).value = email;
     (screen.getByLabelText(/password/i) as HTMLInputElement).value = password;
@@ -59,7 +59,7 @@ describe("Sign Up", () => {
 
     mockCreateUserMethod.mockRejectedValueOnce(authError);
 
-    render(<SignUp />, { wrapper: MemoryRouter });
+    render(<SignUpForm />, { wrapper: MemoryRouter });
 
     expect(screen.queryByText(authError.message)).not.toBeInTheDocument();
 

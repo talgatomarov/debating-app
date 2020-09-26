@@ -1,5 +1,5 @@
 import { observable, action } from "mobx";
-import firebase from "firebaseConfig";
+import firebase, { auth } from "app";
 import { User } from "interfaces";
 
 export class AuthStore {
@@ -19,9 +19,10 @@ export class AuthStore {
     email: string,
     password: string
   ): Promise<void> {
-    const userCredential = await firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password);
+    const userCredential = await auth.createUserWithEmailAndPassword(
+      email,
+      password
+    );
 
     this.setUser(userCredential);
   }

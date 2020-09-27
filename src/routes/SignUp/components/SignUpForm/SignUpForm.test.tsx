@@ -2,14 +2,14 @@ import * as React from "react";
 import {
   render,
   screen,
-  cleanup,
+  fireEvent,
   waitForElement,
 } from "@testing-library/react";
-import Register from "./Register";
-import firebase from "firebaseConfig";
+import SignUpForm from "./SignUpForm";
+import firebase from "firebase";
+import { MemoryRouter } from "react-router-dom";
 
 afterEach(() => {
-  cleanup();
   jest.clearAllMocks();
 });
 
@@ -18,12 +18,12 @@ const mockCreateUserMethod = jest.spyOn(
   "createUserWithEmailAndPassword"
 );
 
-describe("Register", () => {
+describe("Sign Up", () => {
   test("Test render", () => {
-    render(<Register />);
+    render(<SignUpForm />, { wrapper: MemoryRouter });
   });
 
-  test("Valid Registartion", async () => {
+  test("Valid sign up", async () => {
     const email = "test@test.test";
     const password = "123456!";
 
@@ -37,23 +37,19 @@ describe("Register", () => {
       },
     } as firebase.auth.UserCredential;
 
-    mockCreateUserMethod.mockImplementationOnce(
-      async (email, password): Promise<firebase.auth.UserCredential> => {
-        return mockUserCrendetial;
-      }
-    );
+    mockCreateUserMethod.mockResolvedValueOnce(mockUserCrendetial);
 
-    render(<Register />);
+    render(<SignUpForm />, { wrapper: MemoryRouter });
 
     (screen.getByLabelText(/email/i) as HTMLInputElement).value = email;
     (screen.getByLabelText(/password/i) as HTMLInputElement).value = password;
-    (screen.getByText(/register/i) as HTMLButtonElement).click();
+    fireEvent.click(screen.getByRole("button"));
 
     expect(mockCreateUserMethod).toHaveBeenCalledTimes(1);
     expect(mockCreateUserMethod).toHaveBeenCalledWith(email, password);
   });
 
-  test("Invalid Registration", async () => {
+  test("Invalid Sign Up", async () => {
     const email = "test@test.test";
     const password = "123456!";
     const authError = {
@@ -61,19 +57,15 @@ describe("Register", () => {
       message: "Something went wrong",
     };
 
-    mockCreateUserMethod.mockImplementationOnce(
-      async (email, password): Promise<firebase.auth.UserCredential> => {
-        return Promise.reject(authError);
-      }
-    );
+    mockCreateUserMethod.mockRejectedValueOnce(authError);
 
-    render(<Register />);
+    render(<SignUpForm />, { wrapper: MemoryRouter });
 
     expect(screen.queryByText(authError.message)).not.toBeInTheDocument();
 
     (screen.getByLabelText(/email/i) as HTMLInputElement).value = email;
     (screen.getByLabelText(/password/i) as HTMLInputElement).value = password;
-    (screen.getByText(/register/i) as HTMLButtonElement).click();
+    fireEvent.click(screen.getByRole("button"));
 
     expect(mockCreateUserMethod).toHaveBeenCalledTimes(1);
     expect(mockCreateUserMethod).toHaveBeenCalledWith(email, password);

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Grid, Link } from "@material-ui/core";
+import { Link as RouterLink } from "react-router-dom";
 
 const SignUpLinks: React.FC = () => {
   return (
@@ -8,7 +9,7 @@ const SignUpLinks: React.FC = () => {
         <Link variant="body2">Forgot password?</Link>
       </Grid>
       <Grid item>
-        <Link href="#" variant="body2">
+        <Link component={RouterLink} to="/signup" variant="body2">
           Don't have an account?
         </Link>
       </Grid>

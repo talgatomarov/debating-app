@@ -1,29 +1,15 @@
-import { observable, action } from "mobx";
-import firebase, { auth } from "app";
-import { User } from "interfaces";
+import { observable } from "mobx";
+import { auth } from "app";
 
 export class AuthStore {
-  @observable user: User | null = null;
+  @observable user: firebase.User | null = null;
+  @observable loading = false;
 
-  setUser(userCredential: firebase.auth.UserCredential): void {
-    this.user = {
-      uid: userCredential.user?.uid,
-      email: userCredential.user?.email,
-      emailVerified: userCredential.user?.emailVerified,
-      displayName: userCredential.user?.displayName,
-      photoURL: userCredential.user?.photoURL,
-    };
-  }
-
-  @action async createUserWithEmailAndPassword(
-    email: string,
-    password: string
-  ): Promise<void> {
-    const userCredential = await auth.createUserWithEmailAndPassword(
-      email,
-      password
-    );
-
-    this.setUser(userCredential);
+  constructor() {
+    this.loading = true;
+    auth.onAuthStateChanged((user) => {
+      this.user = user;
+      this.loading = false;
+    });
   }
 }

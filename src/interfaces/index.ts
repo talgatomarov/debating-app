@@ -1,4 +1,4 @@
-import User from "./User";
 import AuthError from "./AuthError";
+import LocationState from "./LocationState";
 
-export type { User, AuthError };
+export type { AuthError, LocationState };

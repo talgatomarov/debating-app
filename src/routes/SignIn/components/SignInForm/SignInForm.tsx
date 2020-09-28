@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { auth } from "app";
-import { AuthError } from "interfaces";
+import { AuthError, LocationState } from "interfaces";
 import {
   makeStyles,
   Button,
@@ -9,7 +9,7 @@ import {
   Checkbox,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -22,9 +22,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SignInForm: React.FC = () => {
+  const [error, setError] = useState<AuthError | null>(null);
   const classes = useStyles();
   const history = useHistory();
-  const [error, setError] = useState<AuthError | null>(null);
+  const location = useLocation<LocationState>();
+  const { from } = location.state || { from: { pathname: "/" } };
 
   async function handleSubmit(e: React.FormEvent): Promise<void> {
     e.preventDefault();
@@ -34,7 +36,7 @@ const SignInForm: React.FC = () => {
 
     try {
       await auth.signInWithEmailAndPassword(email.value, password.value);
-      history.push("/");
+      history.replace(from);
     } catch (err) {
       setError(err);
     }

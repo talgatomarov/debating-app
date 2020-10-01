@@ -3,6 +3,6 @@ import { render } from "@testing-library/react";
 import ResetPassword from "./ResetPassword";
 import { MemoryRouter } from "react-router-dom";
 
-test("Render SignUp", () => {
+test("Render ResetPassword", () => {
   render(<ResetPassword />, { wrapper: MemoryRouter });
 });

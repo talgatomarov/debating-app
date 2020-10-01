@@ -11,8 +11,8 @@ afterAll(() => {
   jest.clearAllMocks();
 });
 
-describe("AuthButton", () => {
-  test("Valid sign in with OAuthButton", () => {
+describe("OAuthButton", () => {
+  test("Valid signin with OAuthButton", () => {
     const mockUserCrendetial = {
       user: {
         uid: "testuid",
@@ -42,7 +42,7 @@ describe("AuthButton", () => {
     expect(screen.getByText("Sign in with Test")).toBeInTheDocument();
   });
 
-  test("Invalid sign in with OAuthButton", () => {
+  test("Invalid signin with OAuthButton", () => {
     const authError = {
       code: "auth/error",
       message: "Something went wrong",

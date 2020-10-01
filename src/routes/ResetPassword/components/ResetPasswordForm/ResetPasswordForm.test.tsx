@@ -15,8 +15,8 @@ afterEach(() => {
 
 const mockResetMethod = jest.spyOn(firebase.auth(), "sendPasswordResetEmail");
 
-describe("Reset Password", () => {
-  test("Test render", () => {
+describe("ResetPassword", () => {
+  test("Render ResetPassword", () => {
     render(<ResetPasswordForm />, { wrapper: MemoryRouter });
   });
 

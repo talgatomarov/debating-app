@@ -3,6 +3,6 @@ import { render } from "@testing-library/react";
 import SignIn from "./SignIn";
 import { MemoryRouter } from "react-router-dom";
 
-test("Render SignUp", () => {
+test("Render SignIn", () => {
   render(<SignIn />, { wrapper: MemoryRouter });
 });

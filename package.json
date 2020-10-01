@@ -19,7 +19,6 @@
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.5",
     "firebase": "^7.19.0",
-    "firebaseui": "^4.6.1",
     "fontsource-roboto": "^3.0.3",
     "mobx": "^5.15.6",
     "mobx-react": "^6.3.0",

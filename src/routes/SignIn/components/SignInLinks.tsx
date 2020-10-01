@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Grid, Link } from "@material-ui/core";
 import { Link as RouterLink } from "react-router-dom";
 

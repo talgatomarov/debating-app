@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { AuthLayout } from "containers/layouts";
 import ResetPasswordForm from "./components/ResetPasswordForm";
 import ResetPasswordLinks from "./components/ResetPasswordLinks";

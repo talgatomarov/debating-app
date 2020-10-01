@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { faFacebook } from "@fortawesome/free-brands-svg-icons";
 import firebase from "firebase";
 import OAuthButton from "./OAuthButton";

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Route, Redirect, useLocation, RouteProps } from "react-router-dom";
 import { observer } from "mobx-react";
 import { useStores } from "hooks";

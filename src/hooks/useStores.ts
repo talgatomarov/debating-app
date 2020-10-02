@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { storesContext } from "contexts";
 import { AuthStore } from "stores";
 

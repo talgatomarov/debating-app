@@ -1,5 +1,5 @@
 import React from "react";
-import { AuthLayout } from "containers/layouts";
+import { AuthLayout } from "containers/layout";
 import SignUpForm from "./components/SignUpForm";
 import SignUpLinks from "./components/SignUpLinks";
 import { Divider, Typography, makeStyles } from "@material-ui/core";

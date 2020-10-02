@@ -45,7 +45,7 @@ const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
   })
 );
 
-const LobbyLayout = (props: any) => {
+const LobbyLayout: React.FC = (props) => {
   const { children } = props;
   const classes = useStyles();
 

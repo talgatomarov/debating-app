@@ -1,6 +1,6 @@
 import React from "react";
 
-const LobbyRootPage = () => {
+const LobbyRootPage: React.FC = () => {
   return <div>Lobby Root Page</div>;
 };
 

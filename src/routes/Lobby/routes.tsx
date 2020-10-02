@@ -1,10 +1,8 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { Route, RouteComponentProps } from "react-router-dom";
 import LobbyRootPage from "routes/Lobby/RootPage";
 
-const LobbyRoutes = (props: any) => {
-  const { match } = props;
-
+const LobbyRoutes: React.FC<RouteComponentProps> = ({ match }) => {
   return (
     <>
       <Route exact path={`${match.url}`} component={LobbyRootPage} />

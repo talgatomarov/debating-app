@@ -11,7 +11,7 @@ const Footer = () => {
   );
 };
 
-const AuthLayout = (props: any) => {
+const AuthLayout: React.FC = (props) => {
   const { children } = props;
 
   return (

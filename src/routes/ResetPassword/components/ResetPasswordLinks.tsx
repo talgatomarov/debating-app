@@ -2,12 +2,12 @@ import React from "react";
 import { Grid, Link } from "@material-ui/core";
 import { Link as RouterLink } from "react-router-dom";
 
-const SignUpLinks: React.FC = () => {
+const ResetPasswordLinks: React.FC = () => {
   return (
     <Grid container>
       <Grid item xs>
-        <Link component={RouterLink} to="/reset-password" variant="body2">
-          Forgot password?
+        <Link component={RouterLink} to="/signin" variant="body2">
+          Sign in
         </Link>
       </Grid>
       <Grid item>
@@ -19,4 +19,4 @@ const SignUpLinks: React.FC = () => {
   );
 };
 
-export default SignUpLinks;
+export default ResetPasswordLinks;

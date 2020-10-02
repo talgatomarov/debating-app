@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Home, SignUp, SignIn, LobbyPage } from "routes";
-import CssBaseline from "@material-ui/core/CssBaseline";
+import { Home, SignUp, SignIn, ResetPassword, LobbyPage } from "routes";
+import { CssBaseline } from "@material-ui/core";
 import "fontsource-roboto";
 
 const App: React.FC = () => {
@@ -14,7 +14,8 @@ const App: React.FC = () => {
           <Route path="/signin" component={SignIn} />
           {/* TODO: Change lobby route to private */}
           <Route path="/lobby" component={LobbyPage} />
-          <Route path="/" component={Home} />
+          <Route path="/reset-password" component={ResetPassword} />
+          <Route exact path="/" component={Home} />
         </Switch>
       </Router>
     </>

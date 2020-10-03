@@ -1,5 +1,5 @@
 import React from "react";
-import { AuthLayout } from "containers/layouts";
+import { AuthLayout } from "containers/layout";
 import SignInForm from "./components/SignInForm";
 import SignInLinks from "./components/SignInLinks";
 import OAuth from "components/OAuth/OAuth";

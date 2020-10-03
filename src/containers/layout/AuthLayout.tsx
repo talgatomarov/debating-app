@@ -1,9 +1,10 @@
 import React from "react";
 import {
-  makeStyles,
-  Box,
-  Container,
   Typography,
+  Box,
+  makeStyles,
+  createStyles,
+  Container,
   Avatar,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -18,18 +19,20 @@ const Footer = () => {
   );
 };
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.info.dark,
-  },
-}));
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    paper: {
+      marginTop: theme.spacing(8),
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    },
+    avatar: {
+      margin: theme.spacing(1),
+      backgroundColor: theme.palette.info.dark,
+    },
+  })
+);
 
 interface AuthLayoutProps {
   title: string;

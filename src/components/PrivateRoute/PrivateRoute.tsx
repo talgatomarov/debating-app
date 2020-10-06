@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, Redirect, useLocation, RouteProps } from "react-router-dom";
-import { observer } from "mobx-react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "app";
 import { CircularProgress, Box } from "@material-ui/core";

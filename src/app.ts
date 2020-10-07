@@ -1,5 +1,6 @@
-import firebase from "firebase/app";
+import * as firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/firestore";
 
 // It is not a security issue to expose this config
 const firebaseConfig = {
@@ -16,6 +17,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
+const firestore = firebase.firestore();
 
 export default firebase;
-export { auth };
+export { auth, firestore };

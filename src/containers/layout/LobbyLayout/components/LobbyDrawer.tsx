@@ -19,11 +19,10 @@ import { Link as RouterLink } from "react-router-dom";
 const useStyles = makeStyles(({ mixins, breakpoints }: Theme) =>
   createStyles({
     drawer: {
-      [breakpoints.up("sm")]: {
+      [breakpoints.up("md")]: {
         width: "240px",
         flexShrink: 0,
       },
-      width: "66%",
     },
     drawerPaper: {
       [breakpoints.up("sm")]: {

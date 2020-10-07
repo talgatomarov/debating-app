@@ -1,5 +1,11 @@
 import React from "react";
-import { Toolbar, Theme, createStyles, makeStyles } from "@material-ui/core";
+import {
+  Toolbar,
+  Theme,
+  createStyles,
+  makeStyles,
+  Grid,
+} from "@material-ui/core";
 import { LobbyDrawer, LobbyAppBar } from "./components";
 import Footer from "components/Footer";
 
@@ -28,11 +34,17 @@ const LobbyLayout: React.FC = ({ children }) => {
     <div className={classes.root}>
       <LobbyAppBar onMenuClick={handleDrawerToggle} />
       <LobbyDrawer open={mobileOpen} onClose={handleDrawerToggle} />
-      <main className={classes.content}>
-        <Toolbar />
-        {children}
-      </main>
-      <Footer />
+      <Grid container>
+        <Grid item xs={12}>
+          <main className={classes.content}>
+            <Toolbar />
+            {children}
+          </main>
+        </Grid>
+        <Grid item xs={12}>
+          <Footer />
+        </Grid>
+      </Grid>
     </div>
   );
 };

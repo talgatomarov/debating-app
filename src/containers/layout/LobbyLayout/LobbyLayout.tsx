@@ -13,6 +13,7 @@ const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
   createStyles({
     root: {
       display: "flex",
+      maxWidth: "100vw",
     },
     content: {
       flexGrow: 1,

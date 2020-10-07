@@ -28,7 +28,7 @@ const CreateRoomForm: React.FC = () => {
   const classes = useStyles();
   const [roomName, setRoomName] = useState("");
   const [format, setFormat] = useState("");
-  const [randomMotion, setRandomMotion] = useState(false);
+  const [publicRoom, setPublicRoom] = useState(false);
   const [motion, setMotion] = useState("");
   const [infoslide, setInfoslide] = useState("");
   const [error, setError] = useState<FirebaseError | null>(null);
@@ -37,10 +37,10 @@ const CreateRoomForm: React.FC = () => {
     event.preventDefault();
 
     try {
-      const docRef = await firestore.collection("rooms").add({
+      await firestore.collection("rooms").add({
         roomName: roomName,
         format: format,
-        randomMotion: randomMotion,
+        publicRoom: publicRoom,
         motion: motion,
         infoslide: infoslide,
         owner: auth.currentUser?.uid,
@@ -81,38 +81,33 @@ const CreateRoomForm: React.FC = () => {
           </Select>
         </Grid>
         <Grid item xs={12}>
+          <TextField
+            required
+            onChange={(e) => setMotion(e.target.value)}
+            label="Motion"
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            onChange={(e) => setInfoslide(e.target.value)}
+            label="Infoslide"
+            fullWidth
+            multiline
+          />
+        </Grid>
+        <Grid item xs={12}>
           <FormControlLabel
             control={
               <Switch
-                checked={randomMotion}
-                onChange={(e) => setRandomMotion(e.target.checked)}
+                checked={publicRoom}
+                onChange={(e) => setPublicRoom(e.target.checked)}
               />
             }
-            label="Random Motion"
+            label="Make Public"
             labelPlacement="end"
           />
         </Grid>
-        {!randomMotion && (
-          <>
-            <Grid item xs={12}>
-              <TextField
-                required
-                onChange={(e) => setMotion(e.target.value)}
-                label="Motion"
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                onChange={(e) => setInfoslide(e.target.value)}
-                label="Infoslide"
-                fullWidth
-                multiline
-              />
-            </Grid>
-          </>
-        )}
         <Grid item xs={12}>
           <Button type="submit" variant="contained" color="primary">
             Create

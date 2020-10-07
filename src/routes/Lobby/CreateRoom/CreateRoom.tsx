@@ -20,7 +20,7 @@ const CreateRoom: React.FC = () => {
   return (
     <LobbyLayout>
       <div className={classes.layout}>
-        <Typography variant="h4" className={classes.title}>
+        <Typography variant="h5" className={classes.title}>
           Create Room
         </Typography>
         <CreateRoomForm />

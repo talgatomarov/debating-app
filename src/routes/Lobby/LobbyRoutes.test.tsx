@@ -6,14 +6,12 @@ import { createMemoryHistory } from "history";
 
 describe("LobbyRoutes", () => {
   test("Render /", () => {
-    const history = createMemoryHistory();
-    history.push("/lobby");
     render(
-      <Router history={history}>
+      <MemoryRouter>
         <Switch>
           <LobbyRoutes path="/lobby"> </LobbyRoutes>
         </Switch>
-      </Router>
+      </MemoryRouter>
     );
   });
 });

@@ -10,7 +10,7 @@ interface PrivateRouteProps extends RouteProps {
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({
   children,
-  redirect = "/lobby",
+  redirect = "/signin",
   ...rest
 }) => {
   const [user, loading] = useAuthState(auth);

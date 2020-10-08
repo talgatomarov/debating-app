@@ -8,6 +8,7 @@ import {
   IconButton,
   Tooltip,
   Button,
+  Typography,
 } from "@material-ui/core";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import HelpIcon from "@material-ui/icons/Help";
@@ -24,13 +25,15 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
       <TableHead>
         <TableRow>
           <TableCell>Name</TableCell>
-          <TableCell>
-            Format
-            <Tooltip title="bpf - British Parliamentary Format">
-              <Button>
-                <HelpIcon fontSize="small" />
-              </Button>
-            </Tooltip>
+          <TableCell align="left">
+            <Typography variant="inherit" noWrap>
+              Format
+              <Tooltip title="bpf - British Parliamentary Format">
+                <IconButton size="small">
+                  <HelpIcon style={{ fontSize: "14px" }} />
+                </IconButton>
+              </Tooltip>
+            </Typography>
           </TableCell>
           <TableCell>Players</TableCell>
           <TableCell>Join</TableCell>

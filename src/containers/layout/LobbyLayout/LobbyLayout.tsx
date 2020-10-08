@@ -4,7 +4,7 @@ import {
   Theme,
   createStyles,
   makeStyles,
-  Grid,
+  Box,
 } from "@material-ui/core";
 import { LobbyDrawer, LobbyAppBar } from "./components";
 import Footer from "components/Footer";
@@ -35,17 +35,19 @@ const LobbyLayout: React.FC = ({ children }) => {
     <div className={classes.root}>
       <LobbyAppBar onMenuClick={handleDrawerToggle} />
       <LobbyDrawer open={mobileOpen} onClose={handleDrawerToggle} />
-      <Grid container>
-        <Grid item xs={12}>
-          <main className={classes.content}>
-            <Toolbar />
-            {children}
-          </main>
-        </Grid>
-        <Grid item xs={12}>
-          <Footer />
-        </Grid>
-      </Grid>
+      <Box
+        display="flex"
+        flexDirection="column"
+        flex="auto"
+        minHeight="100vh"
+        justifyContent="space-between"
+      >
+        <main className={classes.content}>
+          <Toolbar />
+          {children}
+        </main>
+        <Footer />
+      </Box>
     </div>
   );
 };

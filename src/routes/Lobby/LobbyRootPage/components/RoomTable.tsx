@@ -1,22 +1,20 @@
-import React from "react";
 import {
-  Table,
-  TableCell,
-  TableRow,
-  TableHead,
-  TableBody,
   IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   Tooltip,
-  Button,
   Typography,
 } from "@material-ui/core";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import HelpIcon from "@material-ui/icons/Help";
+import { Room } from "interfaces/Room";
+import React from "react";
 
 export interface RoomListProps {
-  rooms:
-    | firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>
-    | undefined;
+  rooms: Room[] | undefined;
 }
 
 const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
@@ -40,18 +38,19 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {rooms?.docs.map((doc) => (
-          <TableRow key={doc.id}>
-            <TableCell>{doc.data().roomName}</TableCell>
-            <TableCell>{doc.data().format}</TableCell>
-            <TableCell>{doc.data().players.length}</TableCell>
-            <TableCell>
-              <IconButton>
-                <ArrowForwardIcon />
-              </IconButton>
-            </TableCell>
-          </TableRow>
-        ))}
+        {rooms &&
+          rooms.map((room) => (
+            <TableRow key={room.id}>
+              <TableCell>{room.roomName}</TableCell>
+              <TableCell>{room.format}</TableCell>
+              <TableCell>{room.players.length}</TableCell>
+              <TableCell>
+                <IconButton>
+                  <ArrowForwardIcon />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          ))}
       </TableBody>
     </Table>
   );

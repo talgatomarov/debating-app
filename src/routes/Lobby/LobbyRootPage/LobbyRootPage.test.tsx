@@ -1,7 +1,10 @@
-import React from "react";
 import { render } from "@testing-library/react";
-import LobbyRootPage from "./LobbyRootPage";
+import React from "react";
+import * as firestoreHook from "react-firebase-hooks/firestore";
 import { MemoryRouter } from "react-router-dom";
+import LobbyRootPage from "./LobbyRootPage";
+
+const mockUseCollection = jest.spyOn(firestoreHook, "useCollection");
 
 describe("LobbyRootPage", () => {
   test("Render LobbyRootPage", () => {

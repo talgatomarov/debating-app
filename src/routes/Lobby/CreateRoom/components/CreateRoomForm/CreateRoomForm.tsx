@@ -1,20 +1,21 @@
-import React, { useState } from "react";
-import { firestore, auth } from "app";
 import {
-  TextField,
   Button,
-  Select,
-  MenuItem,
-  Switch,
+  createStyles,
+  FormControlLabel,
   Grid,
   InputLabel,
-  FormControlLabel,
   makeStyles,
-  createStyles,
+  MenuItem,
+  Select,
+  Switch,
+  TextField,
   Theme,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
+import { auth, firestore } from "app";
 import { FirebaseError } from "firebase";
+import { Format, Room } from "interfaces/Room";
+import React, { useState } from "react";
 
 const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
   createStyles({
@@ -27,7 +28,7 @@ const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
 const CreateRoomForm: React.FC = () => {
   const classes = useStyles();
   const [roomName, setRoomName] = useState("");
-  const [format, setFormat] = useState("");
+  const [format, setFormat] = useState<Format>(Format.UNKNOWN);
   const [publicRoom, setPublicRoom] = useState(false);
   const [motion, setMotion] = useState("");
   const [infoslide, setInfoslide] = useState("");
@@ -36,20 +37,27 @@ const CreateRoomForm: React.FC = () => {
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    try {
-      await firestore.collection("rooms").add({
+    let data: Room;
+
+    if (auth.currentUser) {
+      data = {
         roomName: roomName,
         format: format,
         publicRoom: publicRoom,
         motion: motion,
         infoslide: infoslide,
-        owner: auth.currentUser?.uid,
-        players: [auth.currentUser?.uid],
-      });
-      setError(null);
-    } catch (error) {
-      setError(error);
+        owner: auth.currentUser.uid,
+        players: [auth.currentUser.uid],
+      };
+
+      try {
+        await firestore.collection("rooms").add(data);
+        setError(null);
+      } catch (error) {
+        setError(error);
+      }
     }
+    // TODO: else throw/set error? But what kind
   };
 
   return (
@@ -72,12 +80,12 @@ const CreateRoomForm: React.FC = () => {
           <Select
             name="format"
             value={format}
-            onChange={(e) => setFormat(e.target.value as string)}
+            onChange={(e) => setFormat(parseInt(e.target.value as string))}
             labelId="format-label"
             fullWidth
             required
           >
-            <MenuItem value="bpf">British Parliamentary</MenuItem>
+            <MenuItem value={Format.BPF}>British Parliamentary</MenuItem>
           </Select>
         </Grid>
         <Grid item xs={12}>

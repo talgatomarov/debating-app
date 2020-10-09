@@ -1,14 +1,16 @@
-import React from "react";
-import { useCollection } from "react-firebase-hooks/firestore";
+import { Box, CircularProgress, Typography } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 import { firestore } from "app";
 import { LobbyLayout } from "containers/layout";
+import { Room } from "interfaces/Room";
+import React from "react";
+import { useCollectionData } from "react-firebase-hooks/firestore";
 import RoomTable from "./components/RoomTable";
-import { Typography, Box, CircularProgress } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
 
 const LobbyRootPage: React.FC = () => {
-  const [rooms, loading, error] = useCollection(
-    firestore.collection("rooms").where("publicRoom", "==", true)
+  const [rooms, loading, error] = useCollectionData<Room>(
+    firestore.collection("rooms").where("publicRoom", "==", true),
+    { idField: "id" }
   );
   return (
     <LobbyLayout>

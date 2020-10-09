@@ -16,11 +16,15 @@ const LobbyRootPage: React.FC = () => {
     <LobbyLayout>
       <Typography variant="h5">Public Rooms</Typography>
       {loading && (
-        <Box display="flex" justifyContent="center">
+        <Box display="flex" justifyContent="center" data-testid="loading">
           <CircularProgress />
         </Box>
       )}
-      {error && <Alert severity="error">{error.message}</Alert>}
+      {error && (
+        <Alert severity="error" data-testid="error">
+          {error.message}
+        </Alert>
+      )}
       {!error && !loading && <RoomTable rooms={rooms} />}
     </LobbyLayout>
   );

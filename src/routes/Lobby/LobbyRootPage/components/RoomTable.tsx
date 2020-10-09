@@ -19,7 +19,7 @@ export interface RoomListProps {
 
 const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
   return (
-    <Table>
+    <Table data-testid="room-table">
       <TableHead>
         <TableRow>
           <TableCell>Name</TableCell>

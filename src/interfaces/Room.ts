@@ -10,7 +10,7 @@ export interface Room {
   format: Format;
   publicRoom: boolean;
   motion: string;
-  infoslide: string;
+  infoslide?: string;
   owner: string;
   players: string[];
 }

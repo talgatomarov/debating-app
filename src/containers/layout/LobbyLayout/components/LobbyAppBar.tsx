@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import PersonIcon from "@material-ui/icons/Person";
-import { auth } from "app";
+import app from "app";
 
 const useStyles = makeStyles(
   ({ spacing, zIndex, mixins, breakpoints }: Theme) =>
@@ -39,7 +39,7 @@ const LobbyAppBar: React.FC<LobbyAppBarProps> = ({ onMenuClick }) => {
   const classes = useStyles();
 
   async function handleSignOut() {
-    await auth.signOut();
+    await app.auth().signOut();
   }
 
   return (

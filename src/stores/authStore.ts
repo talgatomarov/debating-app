@@ -1,5 +1,5 @@
 import { observable } from "mobx";
-import { auth } from "app";
+import app from "app";
 
 export class AuthStore {
   @observable user: firebase.User | null = null;
@@ -7,7 +7,7 @@ export class AuthStore {
 
   constructor() {
     this.loading = true;
-    auth.onAuthStateChanged((user) => {
+    app.auth().onAuthStateChanged((user) => {
       this.user = user;
       this.loading = false;
     });

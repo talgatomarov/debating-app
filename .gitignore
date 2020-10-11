@@ -26,3 +26,4 @@ src/react-app-env.d.ts
 
 .firebase/
 .vscode/
+firebase-debug.log

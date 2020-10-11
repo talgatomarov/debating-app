@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { auth } from "app";
+import app from "app";
 import { makeStyles, Button, TextField } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { AuthError } from "interfaces";
@@ -26,7 +26,7 @@ const ResetPasswordForm: React.FC = () => {
     const email = elements.namedItem("email") as HTMLInputElement;
 
     try {
-      await auth.sendPasswordResetEmail(email.value);
+      await app.auth().sendPasswordResetEmail(email.value);
       setError(null);
       setSuccess(true);
     } catch (error) {

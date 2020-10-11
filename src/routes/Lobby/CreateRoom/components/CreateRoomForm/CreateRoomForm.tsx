@@ -1,3 +1,7 @@
+import React, { useState } from "react";
+import app from "app";
+import { FirebaseError } from "firebase";
+import { Format, Room } from "interfaces/Room";
 import {
   Button,
   createStyles,
@@ -12,10 +16,6 @@ import {
   Theme,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import { auth, firestore } from "app";
-import { FirebaseError } from "firebase";
-import { Format, Room } from "interfaces/Room";
-import React, { useState } from "react";
 
 const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
   createStyles({
@@ -36,22 +36,23 @@ const CreateRoomForm: React.FC = () => {
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const currentUser = app.auth().currentUser;
 
     let data: Room;
 
-    if (auth.currentUser) {
+    if (currentUser) {
       data = {
         roomName: roomName,
         format: format,
         publicRoom: publicRoom,
         motion: motion,
         infoslide: infoslide,
-        owner: auth.currentUser.uid,
-        players: [auth.currentUser.uid],
+        owner: currentUser.uid,
+        players: [currentUser.uid],
       };
 
       try {
-        await firestore.collection("rooms").add(data);
+        await app.firestore().collection("rooms").add(data);
         setError(null);
       } catch (error) {
         setError(error);
@@ -66,6 +67,7 @@ const CreateRoomForm: React.FC = () => {
       <Grid container spacing={4} alignItems="stretch">
         <Grid item xs={12}>
           <TextField
+            id="roomName"
             name="roomName"
             required
             onChange={(e) => setRoomName(e.target.value)}
@@ -90,6 +92,7 @@ const CreateRoomForm: React.FC = () => {
         </Grid>
         <Grid item xs={12}>
           <TextField
+            id="motion"
             required
             onChange={(e) => setMotion(e.target.value)}
             label="Motion"
@@ -98,6 +101,7 @@ const CreateRoomForm: React.FC = () => {
         </Grid>
         <Grid item xs={12}>
           <TextField
+            id="infoslide"
             onChange={(e) => setInfoslide(e.target.value)}
             label="Infoslide"
             fullWidth

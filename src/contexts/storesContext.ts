@@ -1,6 +1,7 @@
 import React from "react";
-import { AuthStore } from "stores";
+import { AuthStore, RoomStore } from "stores";
 
 export const storesContext = React.createContext({
   authStore: new AuthStore(),
+  roomStore: new RoomStore(),
 });

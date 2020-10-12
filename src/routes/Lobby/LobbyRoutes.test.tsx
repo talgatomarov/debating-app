@@ -1,8 +1,7 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import LobbyRoutes from "./LobbyRoutes";
-import { MemoryRouter, Switch, Router } from "react-router-dom";
-import { createMemoryHistory } from "history";
+import { MemoryRouter, Switch } from "react-router-dom";
 
 describe("LobbyRoutes", () => {
   test("Render /", () => {

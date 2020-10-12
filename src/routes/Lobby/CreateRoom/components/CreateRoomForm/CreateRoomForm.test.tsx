@@ -41,7 +41,6 @@ describe("CreateRoomForm", () => {
       } as firebase.auth.Auth;
     });
 
-    // mockAddRoom.mockResolvedValueOnce(ref);
     when(mockCollection)
       .calledWith("rooms")
       .mockImplementationOnce((collectionPath) => {

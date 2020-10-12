@@ -7,6 +7,7 @@ import {
   addCandidate,
   initiateLocalStream,
   listenToConnectionEvents,
+  receiveAnswer,
 } from "modules/RTCModule";
 import {
   doOffer,
@@ -20,7 +21,9 @@ import PlayerModel from "stores/RoomStore/PlayerModel";
 import { IPlayerModel } from "stores/RoomStore/interfaces";
 import { makeStyles, createStyles } from "@material-ui/styles";
 import { Theme, Container } from "@material-ui/core";
-import { cloneNode } from "@babel/types";
+import { auth } from "app";
+import "firebase/firestore";
+import { toJS } from "mobx";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,6 +55,7 @@ const Video = (props: any) => {
 const RoomPage: React.FC<RouteComponentProps> = (props) => {
   const { roomStore } = useStores();
   const classes = useStyles();
+  const [players, setPlayers] = useState<IPlayerModel[]>([]);
   const [peers, setPeers] = useState<IPlayerModel[]>([]);
   const [database, setDatabase] = useState<any>();
   const [localStream, setLocalStream] = useState<MediaStream>();
@@ -61,8 +65,11 @@ const RoomPage: React.FC<RouteComponentProps> = (props) => {
   // const roomID = props.match.params.roomID;
 
   useEffect(() => {
-    roomStore.getPlayersbyRoomId();
-  }, [roomStore.players]);
+    roomStore.getPlayersbyRoomId().then(() => {
+      setPlayers(toJS(roomStore.players));
+      console.log("updated players");
+    });
+  }, []);
 
   useEffect(() => {
     const db = firebase.firestore();
@@ -84,10 +91,22 @@ const RoomPage: React.FC<RouteComponentProps> = (props) => {
       });
 
       const player = new PlayerModel();
-      player.username = "Aiya"; //TODO: get username from localStorage(?)
-      roomStore.players.push(player);
-      roomStore.players.forEach((p: IPlayerModel) => {
+      console.log(auth.currentUser);
+      if (auth.currentUser) {
+        player.username = auth.currentUser.uid;
+      }
+
+      db.collection("notifs").doc(player.username).set({ type: "", from: "" });
+      db.collection("rooms")
+        .doc("D3MThEXAUCXYdHV9teOd")
+        .update({
+          players: firebase.firestore.FieldValue.arrayUnion(player.username),
+        });
+      roomStore.getPlayersbyRoomId();
+      console.log(players);
+      players.forEach((p: IPlayerModel) => {
         if (p.username !== player.username) {
+          console.log("peer to add: " + p.username);
           addPeer(p.username);
           startCall(player.username, p.username);
         }
@@ -154,7 +173,7 @@ const RoomPage: React.FC<RouteComponentProps> = (props) => {
           );
           break;
         case "video-answer":
-          startCall(localConn, notif);
+          receiveAnswer(localConn, notif);
           break;
         case "new-ice-candidate":
           addCandidate(localConn, notif);
@@ -164,10 +183,6 @@ const RoomPage: React.FC<RouteComponentProps> = (props) => {
       }
     }
   };
-  async function create(name: any) {
-    // const id = uuid();
-    props.history.push(`${props.match.url}/room`);
-  }
 
   return (
     <Container>
@@ -182,7 +197,6 @@ const RoomPage: React.FC<RouteComponentProps> = (props) => {
         return <Video key={index} peer={peer} />;
       })}
     </Container>
-    // <button onClick={create}>Create room</button>
   );
 };
 

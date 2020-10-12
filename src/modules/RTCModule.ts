@@ -91,8 +91,9 @@ export const sendAnswer = async (
   }
 };
 
-export const startCall = (yourConn: any, notif: any) => {
+export const receiveAnswer = (yourConn: any, notif: any) => {
   const answer = JSON.parse(notif.answer);
+  console.log("in startCall, answer: " + answer);
   yourConn.setRemoteDescription(answer);
 };
 

@@ -1,3 +1,5 @@
+import { User } from "firebase";
+
 export interface IRoomStore {
   roomId: string;
   players: IPlayerModel[];

@@ -48,11 +48,19 @@ export const doCandidate = async (
 
 export const doUpdate = async (name: any, database: any, handleUpdate: any) => {
   // await database.collection("notifs").doc(name).delete();
-  const dbdata = database
-    .collection("notifs")
-    .doc(name)
-    .get()
-    .then((data: any) => console.log(data));
+  const dbdata = database.collection("notifs").doc(name);
+
+  const data = await dbdata.get();
+  if (!data.exists) {
+    console.log("no data");
+  } else {
+    console.log(data.data());
+  }
+  // dbdata.onSnapshot((docSnapshot: any) => {
+  //   console.log(docSnapshot.ref);
+  // }, (err: any) => {
+  //   console.log("error: " + err);
+  // });
 
   // data.forEach((snapshot: any) => {
   //   handleUpdate(snapshot.val(), name);

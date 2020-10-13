@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Redirect, useLocation, RouteProps } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "app";
+import app from "app";
 import { CircularProgress, Box } from "@material-ui/core";
 
 interface PrivateRouteProps extends RouteProps {
@@ -13,7 +13,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
   redirect = "/signin",
   ...rest
 }) => {
-  const [user, loading] = useAuthState(auth);
+  const [user, loading] = useAuthState(app.auth());
   const location = useLocation();
 
   if (loading) {

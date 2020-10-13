@@ -1,5 +1,5 @@
 import React from "react";
-import { auth } from "app";
+import app from "app";
 import { useHistory, useLocation } from "react-router-dom";
 import { LocationState } from "interfaces";
 import {
@@ -59,7 +59,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({
 
   async function handleClick() {
     try {
-      await auth.signInWithPopup(provider);
+      await app.auth().signInWithPopup(provider);
       history.replace(from);
     } catch (error) {
       // Do nothing

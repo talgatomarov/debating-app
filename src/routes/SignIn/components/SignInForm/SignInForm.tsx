@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { auth } from "app";
+import app from "app";
 import { AuthError, LocationState } from "interfaces";
 import {
   makeStyles,
@@ -35,7 +35,7 @@ const SignInForm: React.FC = () => {
     const password = elements.namedItem("password") as HTMLInputElement;
 
     try {
-      await auth.signInWithEmailAndPassword(email.value, password.value);
+      await app.auth().signInWithEmailAndPassword(email.value, password.value);
       history.replace(from);
     } catch (err) {
       setError(err);

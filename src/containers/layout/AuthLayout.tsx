@@ -8,16 +8,7 @@ import {
   Avatar,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-
-const Footer = () => {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Nazarbayev University Senior Project "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-};
+import Footer from "components/Footer";
 
 const useStyles = makeStyles((theme) =>
   createStyles({

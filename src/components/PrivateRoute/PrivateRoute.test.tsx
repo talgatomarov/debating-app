@@ -1,9 +1,9 @@
-import React from "react";
-import { Switch, Route, Router } from "react-router-dom";
 import { render, screen, waitForElement } from "@testing-library/react";
 import { createMemoryHistory, MemoryHistory } from "history";
-import PrivateRoute from "./PrivateRoute";
+import React from "react";
 import * as authHook from "react-firebase-hooks/auth";
+import { Route, Router, Switch } from "react-router-dom";
+import PrivateRoute from "./PrivateRoute";
 
 const Home: React.FC = () => <h1>Home</h1>;
 const PrivateComponent: React.FC = () => <h1>Private</h1>;

@@ -1,5 +1,6 @@
-import firebase from "firebase/app";
+import * as firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/firestore";
 
 // It is not a security issue to expose this config
 const firebaseConfig = {
@@ -13,9 +14,6 @@ const firebaseConfig = {
   measurementId: "G-8P064MFYN5",
 };
 
-firebase.initializeApp(firebaseConfig);
+const app = firebase.initializeApp(firebaseConfig);
 
-const auth = firebase.auth();
-
-export default firebase;
-export { auth };
+export default app;

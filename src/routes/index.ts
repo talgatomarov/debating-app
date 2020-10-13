@@ -2,6 +2,6 @@ import Home from "./Home";
 import SignUp from "./SignUp";
 import SignIn from "./SignIn";
 import ResetPassword from "./ResetPassword";
-import LobbyPage from "./Lobby";
+import LobbyRoutes from "./Lobby/LobbyRoutes";
 
-export { Home, SignUp, SignIn, ResetPassword, LobbyPage };
+export { Home, SignUp, SignIn, ResetPassword, LobbyRoutes };

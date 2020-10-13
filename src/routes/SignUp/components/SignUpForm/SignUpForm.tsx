@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { auth } from "app";
+import app from "app";
 import { AuthError } from "interfaces";
 import {
   Button,
@@ -33,7 +33,9 @@ const SignUpForm: React.FC = () => {
     const password = elements.namedItem("password") as HTMLInputElement;
 
     try {
-      await auth.createUserWithEmailAndPassword(email.value, password.value);
+      await app
+        .auth()
+        .createUserWithEmailAndPassword(email.value, password.value);
       history.push("/");
     } catch (err) {
       setError(err);

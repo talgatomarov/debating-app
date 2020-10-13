@@ -1,14 +1,22 @@
 import React from "react";
 import { Route, Redirect, useLocation, RouteProps } from "react-router-dom";
-import { observer } from "mobx-react";
-import { useStores } from "hooks";
+import { useAuthState } from "react-firebase-hooks/auth";
+import app from "app";
 import { CircularProgress, Box } from "@material-ui/core";
 
-const PrivateRoute: React.FC<RouteProps> = observer(({ children, ...rest }) => {
-  const { authStore } = useStores();
+interface PrivateRouteProps extends RouteProps {
+  redirect?: string;
+}
+
+const PrivateRoute: React.FC<PrivateRouteProps> = ({
+  children,
+  redirect = "/signin",
+  ...rest
+}) => {
+  const [user, loading] = useAuthState(app.auth());
   const location = useLocation();
 
-  if (authStore.loading) {
+  if (loading) {
     return (
       <Box
         display="flex"
@@ -21,11 +29,11 @@ const PrivateRoute: React.FC<RouteProps> = observer(({ children, ...rest }) => {
     );
   }
 
-  if (authStore.user) {
+  if (user) {
     return <Route {...rest}>{children}</Route>;
   }
 
-  return <Redirect to={{ pathname: "/signin", state: { from: location } }} />;
-});
+  return <Redirect to={{ pathname: redirect, state: { from: location } }} />;
+};
 
 export default PrivateRoute;

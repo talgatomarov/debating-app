@@ -21,7 +21,7 @@ import PlayerModel from "stores/RoomStore/PlayerModel";
 import { IPlayerModel } from "stores/RoomStore/interfaces";
 import { makeStyles, createStyles } from "@material-ui/styles";
 import { Theme, Container } from "@material-ui/core";
-import { auth } from "app";
+import app from "app";
 import "firebase/firestore";
 import { toJS } from "mobx";
 
@@ -91,9 +91,9 @@ const RoomPage: React.FC<RouteComponentProps> = (props) => {
       });
 
       const player = new PlayerModel();
-      console.log(auth.currentUser);
-      if (auth.currentUser) {
-        player.username = auth.currentUser.uid;
+      console.log(app.auth().currentUser);
+      if (app.auth().currentUser !== null) {
+        // player.username = app.auth().currentUser.uid;
       }
 
       db.collection("notifs").doc(player.username).set({ type: "", from: "" });

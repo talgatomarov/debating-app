@@ -12,12 +12,18 @@ import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import HelpIcon from "@material-ui/icons/Help";
 import { Room } from "interfaces/Room";
 import React from "react";
+import { RouteComponentProps } from "react-router-dom";
 
 export interface RoomListProps {
   rooms: Room[] | undefined;
+  props: RouteComponentProps;
 }
 
-const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
+const RoomList: React.FC<RoomListProps> = ({ rooms, props }) => {
+  const joinRoom = (id: any) => {
+    props.history.push(`${props.match.url}/room/${id}`);
+  };
+
   return (
     <Table data-testid="room-table">
       <TableHead>
@@ -44,7 +50,7 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
               <TableCell>{room.roomName}</TableCell>
               <TableCell>{room.format}</TableCell>
               <TableCell>{room.players.length}</TableCell>
-              <TableCell>
+              <TableCell onClick={() => joinRoom(room.id)}>
                 <IconButton>
                   <ArrowForwardIcon />
                 </IconButton>

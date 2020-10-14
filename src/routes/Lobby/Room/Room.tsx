@@ -1,203 +1,121 @@
-import React, { useState, useRef, useEffect } from "react";
-import { RouteComponentProps } from "react-router-dom";
-import {
-  createOffer,
-  initiateConnection,
-  sendAnswer,
-  addCandidate,
-  initiateLocalStream,
-  listenToConnectionEvents,
-  receiveAnswer,
-} from "modules/RTCModule";
-import {
-  doOffer,
-  doCandidate,
-  doAnswer,
-  doUpdate,
-} from "modules/FirebaseModule";
-import firebase from "firebase/app";
-import { useStores } from "hooks";
-import PlayerModel from "stores/RoomStore/PlayerModel";
-import { IPlayerModel } from "stores/RoomStore/interfaces";
-import { makeStyles, createStyles } from "@material-ui/styles";
-import { Theme, Container } from "@material-ui/core";
-import app from "app";
-import "firebase/firestore";
-import { toJS } from "mobx";
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    video: {
-      height: "40%",
-      width: "50%",
-    },
-  })
-);
+import React, { useEffect, useRef, useState } from "react";
+import io from "socket.io-client";
+import Peer from "simple-peer";
+import { RouteComponentProps } from "react-router";
+import { Container } from "@material-ui/core";
+import LobbyLayout from "containers/layout/LobbyLayout/index";
 
 const Video = (props: any) => {
   const ref = useRef<any>();
+
   useEffect(() => {
     props.peer.on("stream", (stream: any) => {
       ref.current.srcObject = stream;
     });
   }, [props.peer]);
 
-  return (
-    <video
-      style={{ height: "40%", width: "50%" }}
-      playsInline
-      autoPlay
-      ref={ref}
-    />
-  );
+  return <video playsInline autoPlay ref={ref} />;
 };
 
-const RoomPage: React.FC<RouteComponentProps> = (props) => {
-  const { roomStore } = useStores();
-  const classes = useStyles();
-  const [players, setPlayers] = useState<IPlayerModel[]>([]);
-  const [peers, setPeers] = useState<IPlayerModel[]>([]);
-  const [database, setDatabase] = useState<any>();
-  const [localStream, setLocalStream] = useState<MediaStream>();
-  const [localConn, setLocalConn] = useState<any>();
-  const localVideoRef = useRef<any>();
-  const remoteVideoRef = useRef<any>();
-  // const roomID = props.match.params.roomID;
+const videoConstraints = {
+  height: window.innerHeight / 4,
+  width: window.innerWidth / 4,
+};
+
+interface RouteParams {
+  roomID: string;
+}
+
+const Room: React.FC<RouteComponentProps<RouteParams>> = (props) => {
+  const [peers, setPeers] = useState<any[]>([]);
+  const socketRef = useRef<any>();
+  const userVideo = useRef<any>();
+  const peersRef = useRef<any[]>([]);
+  const roomID = props.match.params.roomID;
 
   useEffect(() => {
-    roomStore.getPlayersbyRoomId().then(() => {
-      setPlayers(toJS(roomStore.players));
-      console.log("updated players");
-    });
-  }, []);
-
-  useEffect(() => {
-    const db = firebase.firestore();
-    setDatabase(db);
-
-    async function initializeSettings() {
-      await initiateLocalStream().then((stream) => {
-        setLocalStream(stream);
-        localVideoRef.current.srcObject = stream;
-      });
-
-      await initiateConnection().then((conn) => {
-        setLocalConn(conn);
-        if (localStream) {
-          localStream
-            .getTracks()
-            .forEach((track) => localConn.addTrack(track, localStream));
-        }
-      });
-
-      const player = new PlayerModel();
-      console.log(app.auth().currentUser);
-      if (app.auth().currentUser !== null) {
-        // player.username = app.auth().currentUser.uid;
-      }
-
-      db.collection("notifs").doc(player.username).set({ type: "", from: "" });
-      db.collection("rooms")
-        .doc("D3MThEXAUCXYdHV9teOd")
-        .update({
-          players: firebase.firestore.FieldValue.arrayUnion(player.username),
+    socketRef.current = io.connect("http://localhost:8000");
+    navigator.mediaDevices
+      .getUserMedia({ video: videoConstraints, audio: true })
+      .then((stream) => {
+        userVideo.current.srcObject = stream;
+        socketRef.current.emit("join room", roomID);
+        socketRef.current.on("all users", (users: any) => {
+          const peers: any[] = [];
+          users.forEach((userID: any) => {
+            const peer = createPeer(userID, socketRef.current.id, stream);
+            peersRef.current.push({
+              peerID: userID,
+              peer,
+            });
+            peers.push(peer);
+          });
+          setPeers(peers);
         });
-      roomStore.getPlayersbyRoomId();
-      console.log(players);
-      players.forEach((p: IPlayerModel) => {
-        if (p.username !== player.username) {
-          console.log("peer to add: " + p.username);
-          addPeer(p.username);
-          startCall(player.username, p.username);
-        }
+
+        socketRef.current.on("user joined", (payload: any) => {
+          const peer = addPeer(payload.signal, payload.callerID, stream);
+          peersRef.current.push({
+            peerID: payload.callerID,
+            peer,
+          });
+
+          setPeers((users) => [...users, peer]);
+        });
+
+        socketRef.current.on("receiving returned signal", (payload: any) => {
+          const item = peersRef.current.find((p) => p.peerID === payload.id);
+          item.peer.signal(payload.signal);
+        });
       });
+  }, [roomID]);
 
-      await doUpdate(player.username, db, handleUpdate);
-    }
+  function createPeer(userToSignal: any, callerID: any, stream: any) {
+    const peer = new Peer({
+      initiator: true,
+      trickle: false,
+      stream,
+    });
 
-    initializeSettings();
-  }, []);
+    peer.on("signal", (signal) => {
+      socketRef.current.emit("sending signal", {
+        userToSignal,
+        callerID,
+        signal,
+      });
+    });
 
-  const addPeer = (name: any) => {
-    const peer = new PlayerModel();
-    peer.username = name;
-    setPeers([...peers, peer]);
-  };
+    return peer;
+  }
 
-  const startCall = async (username: any, userToCall: any) => {
-    listenToConnectionEvents(
-      localConn,
-      username,
-      userToCall,
-      database,
-      remoteVideoRef,
-      doCandidate
-    );
-    createOffer(
-      localConn,
-      localStream,
-      userToCall,
-      doOffer,
-      database,
-      username
-    );
-    const peer = peers.find((p: IPlayerModel) => p.username === userToCall);
-    if (peer) {
-      peer.ref = remoteVideoRef;
-    }
-  };
+  function addPeer(incomingSignal: any, callerID: any, stream: any) {
+    const peer = new Peer({
+      initiator: false,
+      trickle: false,
+      stream,
+    });
 
-  const handleUpdate = (notif: any, username: any) => {
-    if (notif) {
-      switch (notif.type) {
-        case "video-offer":
-          const newPeer = new PlayerModel();
-          newPeer.username = notif.from;
-          newPeer.ref = JSON.parse(notif.offer); //TODO: understand how to set ref and where to get it from
-          setPeers([...peers, newPeer]);
-          listenToConnectionEvents(
-            localConn,
-            username,
-            newPeer.username,
-            database,
-            newPeer.ref,
-            doCandidate
-          );
-          sendAnswer(
-            localConn,
-            localStream,
-            notif,
-            doAnswer,
-            database,
-            username
-          );
-          break;
-        case "video-answer":
-          receiveAnswer(localConn, notif);
-          break;
-        case "new-ice-candidate":
-          addCandidate(localConn, notif);
-          break;
-        default:
-          break;
-      }
-    }
-  };
+    peer.on("signal", (signal) => {
+      socketRef.current.emit("returning signal", { signal, callerID });
+    });
+
+    peer.signal(incomingSignal);
+
+    return peer;
+  }
 
   return (
-    <Container>
-      <video
-        className={classes.video}
-        muted
-        ref={localVideoRef}
-        autoPlay
-        playsInline
-      ></video>
-      {peers.map((peer: any, index: number) => {
-        return <Video key={index} peer={peer} />;
-      })}
-    </Container>
+    <LobbyLayout>
+      <Container>
+        <div>
+          <video muted ref={userVideo} autoPlay playsInline />
+        </div>
+        {peers.map((peer, index) => {
+          return <Video key={index} peer={peer} />;
+        })}
+      </Container>
+    </LobbyLayout>
   );
 };
 
-export default RoomPage;
+export default Room;

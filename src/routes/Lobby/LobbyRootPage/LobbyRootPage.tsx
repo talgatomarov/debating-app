@@ -6,8 +6,9 @@ import { Room } from "interfaces/Room";
 import React from "react";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import RoomTable from "./components/RoomTable";
+import { RouteComponentProps } from "react-router-dom";
 
-const LobbyRootPage: React.FC = () => {
+const LobbyRootPage: React.FC<RouteComponentProps> = (props) => {
   const [rooms, loading, error] = useCollectionData<Room>(
     app.firestore().collection("rooms").where("publicRoom", "==", true),
     { idField: "id" }
@@ -25,7 +26,7 @@ const LobbyRootPage: React.FC = () => {
           {error.message}
         </Alert>
       )}
-      {!error && !loading && <RoomTable rooms={rooms} />}
+      {!error && !loading && <RoomTable rooms={rooms} props={props} />}
     </LobbyLayout>
   );
 };

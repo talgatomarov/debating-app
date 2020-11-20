@@ -16,6 +16,7 @@ import {
   Theme,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
   createStyles({
@@ -27,6 +28,8 @@ const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
 
 const CreateRoomForm: React.FC = () => {
   const classes = useStyles();
+  const history = useHistory();
+
   const [roomName, setRoomName] = useState("");
   const [format, setFormat] = useState<Format>(Format.UNKNOWN);
   const [publicRoom, setPublicRoom] = useState(false);
@@ -38,27 +41,23 @@ const CreateRoomForm: React.FC = () => {
     event.preventDefault();
     const currentUser = app.auth().currentUser;
 
-    let data: Room;
+    const data: Room = {
+      roomName: roomName,
+      format: format,
+      publicRoom: publicRoom,
+      motion: motion,
+      infoslide: infoslide,
+      owner: currentUser!.uid,
+      players: [currentUser!.uid],
+    };
 
-    if (currentUser) {
-      data = {
-        roomName: roomName,
-        format: format,
-        publicRoom: publicRoom,
-        motion: motion,
-        infoslide: infoslide,
-        owner: currentUser.uid,
-        players: [currentUser.uid],
-      };
-
-      try {
-        await app.firestore().collection("rooms").add(data);
-        setError(null);
-      } catch (error) {
-        setError(error);
-      }
+    try {
+      const ref = await app.firestore().collection("rooms").add(data);
+      history.push(`/lobby/room/${ref.id}`);
+      setError(null);
+    } catch (error) {
+      setError(error);
     }
-    // TODO: else throw/set error? But what kind
   };
 
   return (

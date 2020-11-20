@@ -20,8 +20,8 @@ export interface RoomListProps {
 }
 
 const RoomList: React.FC<RoomListProps> = ({ rooms, props }) => {
-  const joinRoom = (id: any) => {
-    props.history.push(`${props.match.url}/room/${id}`);
+  const joinRoom = (id: string | undefined, roomName: string) => {
+    props.history.push(`${props.match.url}/${roomName}/${id}`);
   };
 
   return (
@@ -50,7 +50,7 @@ const RoomList: React.FC<RoomListProps> = ({ rooms, props }) => {
               <TableCell>{room.roomName}</TableCell>
               <TableCell>{room.format}</TableCell>
               <TableCell>{room.players.length}</TableCell>
-              <TableCell onClick={() => joinRoom(room.id)}>
+              <TableCell onClick={() => joinRoom(room.id, room.roomName)}>
                 <IconButton>
                   <ArrowForwardIcon />
                 </IconButton>

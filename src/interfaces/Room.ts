@@ -6,13 +6,13 @@ export enum Format {
 
 export interface Room {
   id?: string;
-  roomName: string;
+  roomName?: string;
   format: Format;
   publicRoom: boolean;
-  motion: string;
+  motion?: string;
   infoslide?: string;
   owner: string;
-  players: { id: string; name: string }[];
+  players: { id: string | null; name: string | null }[];
   participantsCount: number;
-  judge: { id: string; name: string };
+  judge: { id: string | null; name: string | null };
 }

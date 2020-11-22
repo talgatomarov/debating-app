@@ -12,5 +12,7 @@ export interface Room {
   motion: string;
   infoslide?: string;
   owner: string;
-  players: string[];
+  players: { id: string; name: string }[];
+  participantsCount: number;
+  judge: { id: string; name: string };
 }

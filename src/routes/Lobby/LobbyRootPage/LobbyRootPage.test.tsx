@@ -24,6 +24,7 @@ describe("LobbyRootPage", () => {
   test("Successful fetch", () => {
     const mockData: Room[] = [
       {
+        id: "test",
         roomName: "testroomname",
         format: Format.BPF,
         publicRoom: true,

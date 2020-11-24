@@ -27,11 +27,11 @@ const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
 
 const CreateRoomForm: React.FC = () => {
   const classes = useStyles();
-  const [roomName, setRoomName] = useState("");
-  const [format, setFormat] = useState<Format>(Format.UNKNOWN);
+  const [roomName, setRoomName] = useState<string>();
+  const [format, setFormat] = useState<Format>(Format.BPF);
   const [publicRoom, setPublicRoom] = useState(false);
-  const [motion, setMotion] = useState("");
-  const [infoslide, setInfoslide] = useState("");
+  const [motion, setMotion] = useState<string>();
+  const [infoslide, setInfoslide] = useState<string>();
   const [error, setError] = useState<FirebaseError | null>(null);
 
   const onSubmit = async (event: React.FormEvent) => {
@@ -51,41 +51,41 @@ const CreateRoomForm: React.FC = () => {
         participantsCount: 0,
         players: [
           {
-            id: "",
-            name: "",
+            id: null,
+            name: null,
           },
           {
-            id: "",
-            name: "",
+            id: null,
+            name: null,
           },
           {
-            id: "",
-            name: "",
+            id: null,
+            name: null,
           },
           {
-            id: "",
-            name: "",
+            id: null,
+            name: null,
           },
           {
-            id: "",
-            name: "",
+            id: null,
+            name: null,
           },
           {
-            id: "",
-            name: "",
+            id: null,
+            name: null,
           },
           {
-            id: "",
-            name: "",
+            id: null,
+            name: null,
           },
           {
-            id: "",
-            name: "",
+            id: null,
+            name: null,
           },
         ],
         judge: {
-          id: "",
-          name: "",
+          id: null,
+          name: null,
         },
       };
 
@@ -120,8 +120,9 @@ const CreateRoomForm: React.FC = () => {
           <Select
             name="format"
             value={format}
-            onChange={(e) => setFormat(parseInt(e.target.value as string))}
+            onChange={(e) => setFormat(e.target.value as Format)}
             labelId="format-label"
+            data-testid="format-select"
             fullWidth
             required
           >

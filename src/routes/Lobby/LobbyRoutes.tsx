@@ -14,7 +14,7 @@ const LobbyRoutes: React.FC<RouteProps> = ({ path }) => {
       <PrivateRoute exact path={`${path}/room/:roomId`} component={RoomPage} />
       <PrivateRoute
         exact
-        path={`${path}/:roomId/prep/:teamId`}
+        path={`${path}/:roomId/prep/:position`}
         component={PreparationRoomPage}
       />
     </>

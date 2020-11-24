@@ -36,7 +36,7 @@ const PreparationRoom: React.FC<RouteComponentProps<RouteParams>> = (props) => {
     <LobbyLayout>
       <div className={classes.layout}>
         <Typography variant="h5" className={classes.title}>
-          Create Room
+          Preparation Room
         </Typography>
         <JitsiMeet displayName={displayName} roomName={roomName} />
       </div>

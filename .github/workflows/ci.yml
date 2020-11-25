@@ -33,7 +33,7 @@ jobs:
 
       - name: Test
         run: |
-          npm run test -- --coverage --watchAll=false
+          npm run test -- --coverage --watchAll=false --forceExit
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1

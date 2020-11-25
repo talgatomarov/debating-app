@@ -9,7 +9,7 @@ import {
 import { LobbyDrawer, LobbyAppBar } from "./components";
 import Footer from "components/Footer";
 
-const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
+const useStyles = makeStyles(({ spacing }: Theme) =>
   createStyles({
     root: {
       display: "flex",

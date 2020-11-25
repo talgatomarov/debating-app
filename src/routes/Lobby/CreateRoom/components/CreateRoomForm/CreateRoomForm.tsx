@@ -30,8 +30,8 @@ const CreateRoomForm: React.FC = () => {
   const [roomName, setRoomName] = useState<string>("");
   const [format, setFormat] = useState<Format>(Format.BPF);
   const [publicRoom, setPublicRoom] = useState(false);
-  const [motion, setMotion] = useState<string>();
-  const [infoslide, setInfoslide] = useState<string>();
+  const [motion, setMotion] = useState<string>("");
+  const [infoslide, setInfoslide] = useState<string>("");
   const [error, setError] = useState<FirebaseError | null>(null);
 
   const onSubmit = async (event: React.FormEvent) => {

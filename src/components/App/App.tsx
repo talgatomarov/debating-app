@@ -19,7 +19,7 @@ const App: React.FC = () => {
           <Route path="/signin" component={SignIn} />
           <Route path="/reset-password" component={ResetPassword} />
           <LobbyRoutes path="/lobby" />
-          <Redirect exact from="/" to={"/lobby"} />
+          <Route exact path="/" component={Home} />
         </Switch>
       </Router>
     </>

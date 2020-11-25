@@ -3,72 +3,26 @@ import { FirebaseError } from "firebase";
 import { Format, Room } from "interfaces/Room";
 import React from "react";
 import * as firestoreHook from "react-firebase-hooks/firestore";
-import { Route, Router } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import LobbyRootPage from "./LobbyRootPage";
-import { createMemoryHistory } from "history";
 
 const mockUseCollectionData = jest.spyOn(firestoreHook, "useCollectionData");
-const route = "/lobby";
 
 describe("LobbyRootPage", () => {
   test("Render LobbyRootPage", () => {
-    const history = createMemoryHistory({ initialEntries: [route] });
-
-    render(
-      <Router history={history}>
-        <Route exact path={route} component={LobbyRootPage} />
-      </Router>
-    );
+    render(<LobbyRootPage />, { wrapper: MemoryRouter });
   });
 
   test("Successful fetch", () => {
     const mockData: Room[] = [
       {
-        roomName: "testroomname",
         format: Format.BPF,
+        owner: "testuid",
+        players: ["testuid"],
+        id: "roomId",
+        roomName: "testRoom",
+        motion: "testMotion",
         publicRoom: true,
-        motion: "testmotion",
-        infoslide: "testinfoslide",
-        owner: "testuseruid",
-        judge: {
-          id: null,
-          name: null,
-        },
-        participantsCount: 0,
-        players: [
-          {
-            id: null,
-            name: null,
-          },
-          {
-            id: null,
-            name: null,
-          },
-          {
-            id: null,
-            name: null,
-          },
-          {
-            id: null,
-            name: null,
-          },
-          {
-            id: null,
-            name: null,
-          },
-          {
-            id: null,
-            name: null,
-          },
-          {
-            id: null,
-            name: null,
-          },
-          {
-            id: null,
-            name: null,
-          },
-        ],
       },
     ];
 
@@ -76,15 +30,7 @@ describe("LobbyRootPage", () => {
       return [mockData, false, undefined];
     });
 
-    const history = createMemoryHistory({ initialEntries: [route] });
-
-    render(
-      <Router history={history}>
-        <Route exact path={route} component={LobbyRootPage} />
-      </Router>
-    );
-
-    // render(<LobbyRootPage />, { wrapper: MemoryRouter });
+    render(<LobbyRootPage />, { wrapper: MemoryRouter });
 
     expect(screen.queryByTestId("loading")).not.toBeInTheDocument();
     expect(screen.queryByTestId("error")).not.toBeInTheDocument();
@@ -96,13 +42,7 @@ describe("LobbyRootPage", () => {
       return [undefined, true, undefined];
     });
 
-    const history = createMemoryHistory({ initialEntries: [route] });
-
-    render(
-      <Router history={history}>
-        <Route exact path={route} component={LobbyRootPage} />
-      </Router>
-    );
+    render(<LobbyRootPage />, { wrapper: MemoryRouter });
 
     expect(screen.queryByTestId("error")).not.toBeInTheDocument();
     expect(screen.queryByTestId("room-table")).not.toBeInTheDocument();
@@ -119,13 +59,7 @@ describe("LobbyRootPage", () => {
       return [undefined, false, error];
     });
 
-    const history = createMemoryHistory({ initialEntries: [route] });
-
-    render(
-      <Router history={history}>
-        <Route exact path={route} component={LobbyRootPage} />
-      </Router>
-    );
+    render(<LobbyRootPage />, { wrapper: MemoryRouter });
 
     expect(screen.getByTestId("error")).toBeInTheDocument();
     expect(screen.queryByTestId("room-table")).not.toBeInTheDocument();

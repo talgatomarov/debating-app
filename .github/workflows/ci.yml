@@ -2,10 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
-    
+    branches: [master]
+
 env:
   NODE_VERSION: 13.x
 
@@ -13,42 +13,42 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@master
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        
-    - uses: c-hive/gha-npm-cache@v1
-        
-    - name: Install dependencies
-      run: |
-        npm install
+      - uses: actions/checkout@v2
 
-    - name: Linting
-      run: |
-        npm run lint
-        
-    - name: Test
-      run: |
-        npm run test -- --coverage --watchAll=false
+      - name: Setup Node.js
+        uses: actions/setup-node@master
+        with:
+          node-version: ${{ env.NODE_VERSION }}
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage/clover.xml
+      - uses: c-hive/gha-npm-cache@v1
 
-    - name: Build
-      run: |
-        npm run build
-        
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: dev-build
-        path: build
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Linting
+        run: |
+          npm run lint
+
+      - name: Test
+        run: |
+          npm run test -- --coverage --watchAll=false --detectOpenHandles
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage/clover.xml
+
+      - name: Build
+        run: |
+          npm run build
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dev-build
+          path: build
   deploy:
     name: Deploy
     needs: build

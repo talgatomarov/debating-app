@@ -27,8 +27,8 @@ const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
 
 const CreateRoomForm: React.FC = () => {
   const classes = useStyles();
-  const [roomName, setRoomName] = useState<string>("");
-  const [format, setFormat] = useState<Format>(Format.BPF);
+  const [roomName, setRoomName] = useState<string>();
+  const [format, setFormat] = useState<Format>(Format.UNKNOWN);
   const [publicRoom, setPublicRoom] = useState(false);
   const [motion, setMotion] = useState<string>("");
   const [infoslide, setInfoslide] = useState<string>("");
@@ -120,9 +120,8 @@ const CreateRoomForm: React.FC = () => {
           <Select
             name="format"
             value={format}
-            onChange={(e) => setFormat(e.target.value as Format)}
+            onChange={(e) => setFormat(parseInt(e.target.value as string))}
             labelId="format-label"
-            data-testid="format-select"
             fullWidth
             required
           >

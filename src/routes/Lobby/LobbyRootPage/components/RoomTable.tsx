@@ -11,7 +11,7 @@ import {
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import HelpIcon from "@material-ui/icons/Help";
 import { Room } from "interfaces/Room";
-import React from "react";
+import React, { useCallback } from "react";
 import { RouteComponentProps } from "react-router-dom";
 
 export interface RoomListProps {
@@ -20,9 +20,12 @@ export interface RoomListProps {
 }
 
 const RoomList: React.FC<RoomListProps> = ({ rooms, props }) => {
-  const joinRoom = (id: any) => {
-    props.history.push(`${props.match.url}/room/${id}`);
-  };
+  const onJoinRoomClick = useCallback(
+    (room: Room) => () => {
+      props.history.push(`${props.match.url}/${room.id}/waiting-room`);
+    },
+    [props.history, props.match.url]
+  );
 
   return (
     <Table data-testid="room-table">
@@ -40,6 +43,7 @@ const RoomList: React.FC<RoomListProps> = ({ rooms, props }) => {
             </Typography>
           </TableCell>
           <TableCell>Players</TableCell>
+          <TableCell>Judge</TableCell>
           <TableCell>Join</TableCell>
         </TableRow>
       </TableHead>
@@ -49,8 +53,11 @@ const RoomList: React.FC<RoomListProps> = ({ rooms, props }) => {
             <TableRow key={room.id}>
               <TableCell>{room.roomName}</TableCell>
               <TableCell>{room.format}</TableCell>
-              <TableCell>{room.players.length}</TableCell>
-              <TableCell onClick={() => joinRoom(room.id)}>
+              <TableCell>{room.participantsCount}</TableCell>
+              <TableCell>
+                {room.judge.name === "" ? "no judge" : room.judge.name}
+              </TableCell>
+              <TableCell onClick={onJoinRoomClick(room)}>
                 <IconButton>
                   <ArrowForwardIcon />
                 </IconButton>

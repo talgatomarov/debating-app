@@ -3,7 +3,7 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import CreateRoomForm from "./CreateRoomForm";
 import app from "app";
 import firebase from "firebase";
-import { Format } from "interfaces/Room";
+import { Format, Room } from "interfaces/Room";
 import { when } from "jest-when";
 
 const mockCollection = jest.spyOn(app.firestore(), "collection");
@@ -78,14 +78,52 @@ describe("CreateRoomForm", () => {
 
     expect(mockAddRoom).toBeCalledTimes(1);
 
-    const data = {
+    const data: Room = {
       roomName: roomName,
       format: Format.BPF,
       publicRoom: true,
       motion: motion,
       infoslide: infoslide,
       owner: user.uid,
-      players: [user.uid],
+      judge: {
+        id: null,
+        name: null,
+      },
+      participantsCount: 0,
+      players: [
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+      ],
     };
 
     expect(mockAddRoom).toBeCalledWith(data);

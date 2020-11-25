@@ -27,7 +27,7 @@ const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
 
 const CreateRoomForm: React.FC = () => {
   const classes = useStyles();
-  const [roomName, setRoomName] = useState<string>();
+  const [roomName, setRoomName] = useState<string>("");
   const [format, setFormat] = useState<Format>(Format.BPF);
   const [publicRoom, setPublicRoom] = useState(false);
   const [motion, setMotion] = useState<string>();

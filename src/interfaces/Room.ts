@@ -6,7 +6,7 @@ export enum Format {
 
 export interface Room {
   id?: string;
-  roomName?: string;
+  roomName: string;
   format?: Format;
   publicRoom: boolean;
   motion?: string;

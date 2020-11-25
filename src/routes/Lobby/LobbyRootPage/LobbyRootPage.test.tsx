@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { FirebaseError } from "firebase";
 import { Format, Room } from "interfaces/Room";
 import React from "react";
@@ -6,6 +6,10 @@ import * as firestoreHook from "react-firebase-hooks/firestore";
 import { Route, Router } from "react-router-dom";
 import LobbyRootPage from "./LobbyRootPage";
 import { createMemoryHistory } from "history";
+
+afterEach(() => {
+  cleanup();
+});
 
 const mockUseCollectionData = jest.spyOn(firestoreHook, "useCollectionData");
 const route = "/lobby";

@@ -108,8 +108,14 @@ const PreRoomPage: FC<RouteComponentProps<RouteParams>> = (props) => {
   const [playerChoosePosition, setPlayerChoosePosition] = useState<boolean>(
     false
   );
+
+  // TODO: Fix later
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [playersCount, setPlayersCount] = useState<number>(5);
   const steps = getSteps();
+
+  // TODO: Fix later
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const roomId = props.match.params.roomId;
 
   const handleNext = useCallback(() => {

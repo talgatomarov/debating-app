@@ -1,0 +1,63 @@
+import React, { useState } from "react";
+import {
+  IconButton,
+  Box,
+  Container,
+  TextField,
+  Grid,
+  makeStyles,
+} from "@material-ui/core";
+import { Link, FileCopy } from "@material-ui/icons";
+
+const useStyles = makeStyles((theme) => ({
+  margin: {
+    margin: theme.spacing(1),
+  },
+}));
+
+type Props = {
+  linkToCopy: string;
+};
+
+export default function RoomLink(props: Props) {
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  function copyToClipboard() {
+    navigator.clipboard.writeText(props.linkToCopy);
+    setCopySuccess(true);
+  }
+
+  const classes = useStyles();
+
+  return (
+    <Container maxWidth="sm">
+      <div className={classes.margin}>
+        <Grid
+          container
+          spacing={1}
+          alignItems="flex-end"
+          justify="space-between"
+          xs={12}
+        >
+          <Grid item xs={1}>
+            <Link />
+          </Grid>
+          <Grid item xs={10}>
+            <TextField
+              id="input-with-icon-grid"
+              InputLabelProps={{ shrink: false }}
+              defaultValue={props.linkToCopy}
+              fullWidth
+              disabled
+            />
+          </Grid>
+          <Grid xs={1}>
+            <IconButton onClick={copyToClipboard}>
+              <FileCopy />
+            </IconButton>
+          </Grid>
+        </Grid>
+      </div>
+    </Container>
+  );
+}

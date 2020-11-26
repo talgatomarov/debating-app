@@ -16,6 +16,7 @@ import {
   Theme,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
   createStyles({
@@ -27,6 +28,8 @@ const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
 
 const CreateRoomForm: React.FC = () => {
   const classes = useStyles();
+  const history = useHistory();
+
   const [roomName, setRoomName] = useState<string>("");
   const [format, setFormat] = useState<Format>(Format.BPF);
   const [publicRoom, setPublicRoom] = useState(false);
@@ -36,67 +39,63 @@ const CreateRoomForm: React.FC = () => {
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const currentUser = app.auth().currentUser;
+    const currentUser = app.auth().currentUser!;
 
-    let data: Room;
-
-    if (currentUser) {
-      data = {
-        roomName: roomName,
-        format: format,
-        publicRoom: publicRoom,
-        motion: motion,
-        infoslide: infoslide,
-        owner: currentUser.uid,
-        participantsCount: 0,
-        players: [
-          {
-            id: null,
-            name: null,
-          },
-          {
-            id: null,
-            name: null,
-          },
-          {
-            id: null,
-            name: null,
-          },
-          {
-            id: null,
-            name: null,
-          },
-          {
-            id: null,
-            name: null,
-          },
-          {
-            id: null,
-            name: null,
-          },
-          {
-            id: null,
-            name: null,
-          },
-          {
-            id: null,
-            name: null,
-          },
-        ],
-        judge: {
+    const data: Room = {
+      roomName: roomName,
+      format: format,
+      publicRoom: publicRoom,
+      motion: motion,
+      infoslide: infoslide,
+      owner: currentUser.uid,
+      participantsCount: 0,
+      players: [
+        {
           id: null,
           name: null,
         },
-      };
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+      ],
+      judge: {
+        id: null,
+        name: null,
+      },
+    };
 
-      try {
-        await app.firestore().collection("rooms").add(data);
-        setError(null);
-      } catch (error) {
-        setError(error);
-      }
+    try {
+      const ref = await app.firestore().collection("rooms").add(data);
+      setError(null);
+      history.push(`/lobby/${ref.id}/waiting-room`);
+    } catch (error) {
+      setError(error);
     }
-    // TODO: else throw/set error? But what kind
   };
 
   return (

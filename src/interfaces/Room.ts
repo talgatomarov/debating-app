@@ -12,7 +12,12 @@ export interface Room {
   motion?: string;
   infoslide?: string;
   owner: string;
-  players: { id: string | null; name: string | null }[];
+  players: Player[];
   participantsCount: number;
-  judge: { id: string | null; name: string | null };
+  judge: Player; // extend Player interface if needed
+}
+
+export interface Player {
+  id: string | null;
+  name: string | null;
 }

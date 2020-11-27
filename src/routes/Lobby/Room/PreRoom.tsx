@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 import { LobbyLayout } from "containers/layout";
 import { RouteComponentProps } from "react-router";
-
+import { Player } from "interfaces/Room";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -55,8 +55,8 @@ const mockPLayers = [
     name: "Aiya Yegenberdiyeva",
   },
   {
-    id: "",
-    name: "",
+    id: null,
+    name: null,
   },
   {
     id: "2",
@@ -67,26 +67,26 @@ const mockPLayers = [
     name: "Talgat Omarov",
   },
   {
-    id: "",
-    name: "",
+    id: null,
+    name: null,
   },
   {
-    id: "",
-    name: "",
+    id: null,
+    name: null,
   },
   {
     id: "4",
     name: "John Doe",
   },
   {
-    id: "",
-    name: "",
+    id: null,
+    name: null,
   },
 ];
 
-const judge = {
-  id: "",
-  name: "",
+const judge: Player = {
+  id: null,
+  name: null,
 };
 
 const constraints = {
@@ -238,7 +238,7 @@ const PreRoomPage: FC<RouteComponentProps<RouteParams>> = (props) => {
                         {positions[i]}
                       </Typography>
                       <Typography variant="body2" component="p">
-                        {n.name !== "" ? n.name : "No one is here yet."}
+                        {n.name !== null ? n.name : "No one is here yet."}
                       </Typography>
                     </CardContent>
                     <CardActions disableSpacing>
@@ -246,7 +246,7 @@ const PreRoomPage: FC<RouteComponentProps<RouteParams>> = (props) => {
                         variant="contained"
                         color="primary"
                         size="small"
-                        disabled={n.name !== "" || playerChoosePosition}
+                        disabled={n.name !== null || playerChoosePosition}
                         onClick={onChoosePositionClick(i)}
                       >
                         Choose this position
@@ -276,7 +276,7 @@ const PreRoomPage: FC<RouteComponentProps<RouteParams>> = (props) => {
                     Judge
                   </Typography>
                   <Typography variant="body2" component="p">
-                    {judge.name !== "" ? judge.name : "No one is here yet."}
+                    {judge.name !== null ? judge.name : "No one is here yet."}
                   </Typography>
                 </CardContent>
                 <CardActions disableSpacing>
@@ -284,7 +284,7 @@ const PreRoomPage: FC<RouteComponentProps<RouteParams>> = (props) => {
                     variant="contained"
                     color="primary"
                     size="small"
-                    disabled={judge.name !== "" || playerChoosePosition}
+                    disabled={judge.name !== null || playerChoosePosition}
                     onClick={onChooseJudgeClick}
                   >
                     Judge this round

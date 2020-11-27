@@ -1,5 +1,6 @@
 import React from "react";
 import app from "app";
+import firebase from "firebase";
 import { useHistory, useLocation } from "react-router-dom";
 import { LocationState } from "interfaces";
 import {
@@ -62,7 +63,28 @@ const AuthButton: React.FC<AuthButtonProps> = ({
       await app.auth().signInWithPopup(provider);
       history.replace(from);
     } catch (error) {
-      // Do nothing
+      if (
+        error.email &&
+        error.credential &&
+        error.code === "auth/account-exists-with-different-credential"
+      ) {
+        const providers = await app
+          .auth()
+          .fetchSignInMethodsForEmail(error.email);
+
+        if (providers.includes("google.com")) {
+          const googleProvider = new firebase.auth.GoogleAuthProvider();
+          googleProvider.setCustomParameters({ login_hint: error.email });
+          const googleCredentials = await app
+            .auth()
+            .signInWithPopup(googleProvider);
+
+          if (googleCredentials.user) {
+            googleCredentials.user.linkWithCredential(error.credential);
+            history.replace(from);
+          }
+        }
+      }
     }
   }
   return (

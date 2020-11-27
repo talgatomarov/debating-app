@@ -4,6 +4,11 @@ export enum Format {
   BPF,
 }
 
+export interface Player {
+  id: string | null;
+  name: string | null;
+}
+
 export interface Room {
   id?: string;
   roomName: string;
@@ -15,9 +20,4 @@ export interface Room {
   players: Player[];
   participantsCount: number;
   judge: Player; // extend Player interface if needed
-}
-
-export interface Player {
-  id: string | null;
-  name: string | null;
 }

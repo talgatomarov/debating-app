@@ -90,7 +90,7 @@ const ChoosePosition: FC = () => {
                   {positions[i]}
                 </Typography>
                 <Typography variant="body2" component="p">
-                  {n.name !== null ? n.name : "No one is here yet."}
+                  {n.name || "No one is here yet."}
                 </Typography>
               </CardContent>
               <CardActions disableSpacing>

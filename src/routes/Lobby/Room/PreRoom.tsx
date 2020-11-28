@@ -238,7 +238,7 @@ const PreRoomPage: FC<RouteComponentProps<RouteParams>> = (props) => {
                         {positions[i]}
                       </Typography>
                       <Typography variant="body2" component="p">
-                        {n.name !== null ? n.name : "No one is here yet."}
+                        {n.name || "No one is here yet."}
                       </Typography>
                     </CardContent>
                     <CardActions disableSpacing>
@@ -276,7 +276,7 @@ const PreRoomPage: FC<RouteComponentProps<RouteParams>> = (props) => {
                     Judge
                   </Typography>
                   <Typography variant="body2" component="p">
-                    {judge.name !== null ? judge.name : "No one is here yet."}
+                    {judge.name || "No one is here yet."}
                   </Typography>
                 </CardContent>
                 <CardActions disableSpacing>

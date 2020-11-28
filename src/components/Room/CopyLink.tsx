@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   IconButton,
-  Box,
   Container,
   TextField,
   Grid,
@@ -33,6 +32,7 @@ export default function RoomLink(props: Props) {
     <Container maxWidth="sm">
       <div className={classes.margin}>
         <Grid
+          item
           container
           spacing={1}
           alignItems="flex-end"
@@ -51,7 +51,7 @@ export default function RoomLink(props: Props) {
               disabled
             />
           </Grid>
-          <Grid xs={1}>
+          <Grid item xs={1}>
             <IconButton onClick={copyToClipboard}>
               <FileCopy />
             </IconButton>

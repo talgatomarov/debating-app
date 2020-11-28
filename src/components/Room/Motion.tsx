@@ -1,13 +1,5 @@
-import React, { useState } from "react";
-import {
-  IconButton,
-  Box,
-  Container,
-  TextField,
-  Grid,
-  makeStyles,
-} from "@material-ui/core";
-import { Link, FileCopy } from "@material-ui/icons";
+import React from "react";
+import { Box, Container } from "@material-ui/core";
 
 type Props = {
   motionText: string;

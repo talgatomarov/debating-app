@@ -1,7 +1,7 @@
 // TODO: Should we use numeric enum or string enum?
 export enum Format {
-  UNKNOWN,
-  BPF,
+  UNKNOWN = "Unknown",
+  BPF = "British Parliamentary Format",
 }
 
 export interface Room {

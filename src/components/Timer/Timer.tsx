@@ -41,11 +41,12 @@ class Timer extends React.Component<Props, State> {
       .collection("rooms")
       .doc(this.props.roomId)
       .onSnapshot((snapshot) => {
+        const timerInfo = snapshot.get("timerInfo");
         this.setState({
-          timerOn: snapshot.get("timerOn"),
-          speechStart: snapshot.get("speechStart"),
-          timeLeft: snapshot.get("timeLeft"),
-          timeDisplayed: snapshot.get("timeLeft"),
+          timerOn: timerInfo.timerOn,
+          speechStart: timerInfo.speechStart,
+          timeLeft: timerInfo.timeLeft,
+          timeDisplayed: timerInfo.timeLeft,
         });
         if (this.state.timerOn) {
           if (
@@ -71,8 +72,8 @@ class Timer extends React.Component<Props, State> {
       .collection("rooms")
       .doc(this.props.roomId)
       .update({
-        speechStart: Date.now(),
-        timerOn: true,
+        "timerInfo.speechStart": Date.now(),
+        "timerInfo.timerOn": true,
       })
       .then(function () {
         console.log("Timer was started!");
@@ -85,8 +86,9 @@ class Timer extends React.Component<Props, State> {
       .collection("rooms")
       .doc(this.props.roomId)
       .update({
-        timerOn: false,
-        timeLeft: this.state.timeLeft - (Date.now() - this.state.speechStart),
+        "timerInfo.timerOn": false,
+        "timerInfo.timeLeft":
+          this.state.timeLeft - (Date.now() - this.state.speechStart),
       })
       .then(function () {
         console.log("Timer was paused!");
@@ -99,8 +101,8 @@ class Timer extends React.Component<Props, State> {
       .collection("rooms")
       .doc(this.props.roomId)
       .update({
-        timeLeft: this.speechDuration,
-        speechStart: Date.now(),
+        "timerInfo.timeLeft": this.speechDuration,
+        "timerInfo.speechStart": Date.now(),
       })
       .then(function () {
         console.log("Timer was reset!");

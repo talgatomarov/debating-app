@@ -15,4 +15,9 @@ export interface Room {
   players: { id: string | null; name: string | null }[];
   participantsCount: number;
   judge: { id: string | null; name: string | null };
+  timerInfo: {
+    timerOn: boolean;
+    speechStart: number;
+    timeLeft: number;
+  };
 }

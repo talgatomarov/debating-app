@@ -123,6 +123,11 @@ describe("CreateRoomForm", () => {
           name: null,
         },
       ],
+      timerInfo: {
+        timerOn: false,
+        speechStart: 0,
+        timeLeft: 420000,
+      },
     };
 
     expect(mockAddRoom).toBeCalledWith(data);

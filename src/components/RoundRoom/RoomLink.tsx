@@ -18,7 +18,7 @@ type Props = {
   linkToCopy: string;
 };
 
-export default function RoomLink(props: Props) {
+const RoomLink: React.FC<Props> = (props) => {
   const [copySuccess, setCopySuccess] = useState(false);
 
   function copyToClipboard() {
@@ -60,4 +60,6 @@ export default function RoomLink(props: Props) {
       </div>
     </Container>
   );
-}
+};
+
+export default RoomLink;

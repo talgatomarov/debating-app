@@ -16,7 +16,7 @@ type State = {
   timeDisplayed: number;
 };
 
-class Timer extends React.Component<Props, State> {
+export class Timer extends React.Component<Props, State> {
   private timer: any;
   speechDuration = 420000;
 
@@ -206,5 +206,3 @@ class Timer extends React.Component<Props, State> {
     );
   }
 }
-
-export default Timer;

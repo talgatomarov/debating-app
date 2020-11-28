@@ -1,5 +1,5 @@
 import React from "react";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within, act } from "@testing-library/react";
 import CreateRoomForm from "./CreateRoomForm";
 import app from "app";
 import firebase from "firebase";
@@ -19,7 +19,7 @@ describe("CreateRoomForm", () => {
     render(<CreateRoomForm />);
   });
 
-  test("Success", () => {
+  test("Success", async () => {
     const roomName = "testRoom";
     const format = Format.BPF;
     const motion = "THBT";
@@ -52,6 +52,7 @@ describe("CreateRoomForm", () => {
       });
 
     render(<CreateRoomForm />);
+
     fireEvent.change(screen.getByLabelText(/room name/i), {
       target: { value: roomName },
     });
@@ -59,10 +60,6 @@ describe("CreateRoomForm", () => {
     fireEvent.mouseDown(screen.getByLabelText(/format/i));
     const listbox = within(screen.getByRole("listbox"));
     fireEvent.click(listbox.getByText(format));
-
-    fireEvent.change(screen.getByLabelText(/room name/i), {
-      target: { value: roomName },
-    });
 
     fireEvent.change(screen.getByLabelText(/motion/i), {
       target: { value: motion },
@@ -74,7 +71,9 @@ describe("CreateRoomForm", () => {
 
     fireEvent.click(screen.getByLabelText(/make public/i));
 
-    fireEvent.submit(screen.getByText(/create/i));
+    await act(async () => {
+      fireEvent.submit(screen.getByText(/create/i));
+    });
 
     expect(mockAddRoom).toBeCalledTimes(1);
 

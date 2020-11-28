@@ -87,6 +87,11 @@ const CreateRoomForm: React.FC = () => {
         id: null,
         name: null,
       },
+      timerInfo: {
+        timerOn: false,
+        speechStart: 0,
+        timeLeft: 420000,
+      },
     };
 
     try {

@@ -20,4 +20,9 @@ export interface Room {
   players: Player[];
   participantsCount: number;
   judge: Player; // extend Player interface if needed
+  timerInfo: {
+    timerOn: boolean;
+    speechStart: number;
+    timeLeft: number;
+  };
 }

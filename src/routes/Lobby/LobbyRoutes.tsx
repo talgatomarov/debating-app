@@ -3,7 +3,12 @@ import { RouteProps } from "react-router-dom";
 import LobbyRootPage from "./LobbyRootPage";
 import PrivateRoute from "components/PrivateRoute";
 import CreateRoom from "./CreateRoom";
-import { PreRoomPage, RoomPage, PreparationRoomPage } from "./Room";
+import {
+  PreRoomPage,
+  RoomPage,
+  PreparationRoomPage,
+  RoundRoomPage,
+} from "./Room";
 
 const LobbyRoutes: React.FC<RouteProps> = ({ path }) => {
   return (
@@ -21,6 +26,11 @@ const LobbyRoutes: React.FC<RouteProps> = ({ path }) => {
         component={PreRoomPage}
       />
       <PrivateRoute exact path={`${path}/:roomId/room`} component={RoomPage} />
+      <PrivateRoute
+        exact
+        path={`${path}/:roomId/round-room`}
+        component={RoundRoomPage}
+      />
     </>
   );
 };

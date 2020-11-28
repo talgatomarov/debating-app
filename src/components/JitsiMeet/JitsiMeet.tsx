@@ -7,7 +7,7 @@ const JitsiMeet: React.FC<JitsiProps> = (props) => {
   return (
     <Jitsi
       {...props}
-      domain="134.209.127.178"
+      domain="3.138.103.240"
       interfaceConfig={interfaceConfig}
     />
   );

@@ -30,11 +30,11 @@ const CreateRoomForm: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
 
-  const [roomName, setRoomName] = useState<string>("");
-  const [format, setFormat] = useState<Format>(Format.BPF);
-  const [publicRoom, setPublicRoom] = useState(false);
-  const [motion, setMotion] = useState<string>("");
-  const [infoslide, setInfoslide] = useState<string>("");
+  const [roomName, setRoomName] = useState<Room["roomName"]>("");
+  const [format, setFormat] = useState<Room["format"]>(Format.BPF);
+  const [publicRoom, setPublicRoom] = useState<Room["publicRoom"]>(false);
+  const [motion, setMotion] = useState<Room["motion"]>("");
+  const [infoslide, setInfoslide] = useState<Room["infoslide"]>(null);
   const [error, setError] = useState<FirebaseError | null>(null);
 
   const onSubmit = async (event: React.FormEvent) => {
@@ -125,7 +125,7 @@ const CreateRoomForm: React.FC = () => {
             fullWidth
             required
           >
-            <MenuItem value={Format.BPF}>British Parliamentary</MenuItem>
+            <MenuItem value={Format.BPF}>{Format.BPF}</MenuItem>
           </Select>
         </Grid>
         <Grid item xs={12}>

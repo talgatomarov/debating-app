@@ -1,17 +1,16 @@
-import { LobbyLayout } from "containers/layout";
 import React from "react";
-
-import { makeStyles, createStyles, Theme, Typography } from "@material-ui/core";
+import { LobbyLayout } from "containers/layout";
+import { makeStyles, createStyles, Typography } from "@material-ui/core";
 import JitsiMeet from "components/JitsiMeet";
 import app from "app";
-import { RouteComponentProps } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 interface RouteParams {
   roomId: string;
   position: string;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     layout: {
       maxWidth: "600px",
@@ -23,11 +22,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const PreparationRoom: React.FC<RouteComponentProps<RouteParams>> = (props) => {
+const PreparationRoom: React.FC = () => {
   const classes = useStyles();
-  console.log(props);
-  const roomId = props.match.params.roomId;
-  const position = props.match.params.position;
+  const { roomId, position } = useParams<RouteParams>();
 
   const displayName = app.auth().currentUser!.displayName!;
   const roomName = roomId + "-" + position;

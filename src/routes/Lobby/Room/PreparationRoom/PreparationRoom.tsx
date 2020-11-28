@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const PreparationRoom: React.FC<RouteComponentProps<RouteParams>> = (props) => {
   const classes = useStyles();
-  console.log(props);
   const roomId = props.match.params.roomId;
   const position = props.match.params.position;
 

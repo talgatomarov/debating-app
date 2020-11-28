@@ -4,6 +4,11 @@ export enum Format {
   BPF = "British Parliamentary Format",
 }
 
+export interface Player {
+  id: string | null;
+  name: string | null;
+}
+
 export interface Room {
   id?: string;
   roomName: string;
@@ -12,9 +17,9 @@ export interface Room {
   motion: string;
   infoslide: string | null;
   owner: string;
-  players: { id: string | null; name: string | null }[];
+  players: Player[];
   participantsCount: number;
-  judge: { id: string | null; name: string | null };
+  judge: Player; // extend Player interface if needed
   timerInfo: {
     timerOn: boolean;
     speechStart: number;

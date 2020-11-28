@@ -1,6 +1,8 @@
 # debating-app
 [![codecov](https://codecov.io/gh/talgatomarov/debating-app/branch/master/graph/badge.svg?token=C8JWBF4MTV)](https://codecov.io/gh/talgatomarov/debating-app)
 
+This platform is designed for online competitive debating. 
+
 Dev setup
 ------------
 Install dependencies
@@ -9,6 +11,9 @@ Install dependencies
 npm install
 ```
 
-Use standard Create React App scripts to start, test, and lint.
+Run application
 
-You do not need to setup firebase as of now.
+```
+npm start
+```
+

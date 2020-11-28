@@ -53,9 +53,7 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
               <TableCell>{room.roomName}</TableCell>
               <TableCell>{room.format}</TableCell>
               <TableCell>{room.participantsCount}</TableCell>
-              <TableCell>
-                {room.judge.name === "" ? "no judge" : room.judge.name}
-              </TableCell>
+              <TableCell>{room.judge.name || "no judge"}</TableCell>
               <TableCell onClick={() => room.id && onJoinRoomClick(room.id)}>
                 <IconButton data-testid={"join-" + room.id}>
                   <ArrowForwardIcon />

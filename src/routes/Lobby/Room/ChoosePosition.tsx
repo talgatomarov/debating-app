@@ -6,6 +6,7 @@ import {
   CardActions,
   Button,
 } from "@material-ui/core";
+import { Player } from "interfaces/Room";
 
 const positions = [
   "Prime Minister",
@@ -18,14 +19,14 @@ const positions = [
   "Opposition Whip",
 ];
 
-const mockPLayers = [
+const mockPLayers: Player[] = [
   {
     id: "1",
     name: "Aiya Yegenberdiyeva",
   },
   {
-    id: "",
-    name: "",
+    id: null,
+    name: null,
   },
   {
     id: "2",
@@ -36,20 +37,20 @@ const mockPLayers = [
     name: "Talgat Omarov",
   },
   {
-    id: "",
-    name: "",
+    id: null,
+    name: null,
   },
   {
-    id: "",
-    name: "",
+    id: null,
+    name: null,
   },
   {
     id: "4",
     name: "John Doe",
   },
   {
-    id: "",
-    name: "",
+    id: null,
+    name: null,
   },
 ];
 
@@ -89,7 +90,7 @@ const ChoosePosition: FC = () => {
                   {positions[i]}
                 </Typography>
                 <Typography variant="body2" component="p">
-                  {n.name !== "" ? n.name : "No one is here yet."}
+                  {n.name || "No one is here yet."}
                 </Typography>
               </CardContent>
               <CardActions disableSpacing>
@@ -97,7 +98,7 @@ const ChoosePosition: FC = () => {
                   variant="contained"
                   color="primary"
                   size="small"
-                  disabled={n.name !== ""}
+                  disabled={n.name !== null}
                   onClick={onChoosePositionClick(i)}
                 >
                   Play in this position

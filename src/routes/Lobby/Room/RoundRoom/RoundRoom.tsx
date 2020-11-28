@@ -6,7 +6,6 @@ import app from "app";
 import { useParams } from "react-router-dom";
 import RoomLink from "components/RoundRoom/RoomLink";
 import Timer from "components/RoundRoom/Timer";
-import { async } from "q";
 
 interface RouteParams {
   roomId: string;

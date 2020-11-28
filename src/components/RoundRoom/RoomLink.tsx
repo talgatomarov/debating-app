@@ -19,11 +19,8 @@ type Props = {
 };
 
 const RoomLink: React.FC<Props> = (props) => {
-  const [copySuccess, setCopySuccess] = useState(false);
-
   function copyToClipboard() {
     navigator.clipboard.writeText(props.linkToCopy);
-    setCopySuccess(true);
   }
 
   const classes = useStyles();

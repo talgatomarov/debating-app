@@ -125,7 +125,7 @@ const CreateRoomForm: React.FC = () => {
             fullWidth
             required
           >
-            <MenuItem value={Format.BPF}>British Parliamentary</MenuItem>
+            <MenuItem value={Format.BPF}>{Format.BPF}</MenuItem>
           </Select>
         </Grid>
         <Grid item xs={12}>

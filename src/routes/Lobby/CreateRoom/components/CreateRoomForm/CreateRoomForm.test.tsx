@@ -21,7 +21,7 @@ describe("CreateRoomForm", () => {
 
   test("Success", () => {
     const roomName = "testRoom";
-    const format = "British Parliamentary";
+    const format = Format.BPF;
     const motion = "THBT";
     const infoslide = "INFO";
 

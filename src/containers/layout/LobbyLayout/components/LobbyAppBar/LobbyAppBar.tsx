@@ -13,22 +13,21 @@ import MenuIcon from "@material-ui/icons/Menu";
 import PersonIcon from "@material-ui/icons/Person";
 import app from "app";
 
-const useStyles = makeStyles(
-  ({ spacing, zIndex, mixins, breakpoints }: Theme) =>
-    createStyles({
-      appBar: {
-        zIndex: zIndex.drawer + 1,
+const useStyles = makeStyles(({ spacing, zIndex, breakpoints }: Theme) =>
+  createStyles({
+    appBar: {
+      zIndex: zIndex.drawer + 1,
+    },
+    title: {
+      flexGrow: 1,
+    },
+    menuButton: {
+      marginRight: spacing(2),
+      [breakpoints.up("sm")]: {
+        display: "none",
       },
-      title: {
-        flexGrow: 1,
-      },
-      menuButton: {
-        marginRight: spacing(2),
-        [breakpoints.up("sm")]: {
-          display: "none",
-        },
-      },
-    })
+    },
+  })
 );
 
 export interface LobbyAppBarProps {

@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Box, Container } from "@material-ui/core";
 import { compose, spacing, palette } from "@material-ui/system";
 import { styled } from "@material-ui/core/styles";
-import firebase from "firebase/app";
+import app from "app";
 
 type Props = {
   roomId: string;
@@ -36,7 +36,7 @@ export class Timer extends React.Component<Props, State> {
   }
 
   componentDidMount(): void {
-    firebase
+    app
       .firestore()
       .collection("rooms")
       .doc(this.props.roomId)
@@ -67,7 +67,7 @@ export class Timer extends React.Component<Props, State> {
   }
 
   startTimer = () => {
-    firebase
+    app
       .firestore()
       .collection("rooms")
       .doc(this.props.roomId)
@@ -81,7 +81,7 @@ export class Timer extends React.Component<Props, State> {
   };
 
   pauseTimer = () => {
-    firebase
+    app
       .firestore()
       .collection("rooms")
       .doc(this.props.roomId)
@@ -96,7 +96,7 @@ export class Timer extends React.Component<Props, State> {
   };
 
   resetTimer = () => {
-    firebase
+    app
       .firestore()
       .collection("rooms")
       .doc(this.props.roomId)

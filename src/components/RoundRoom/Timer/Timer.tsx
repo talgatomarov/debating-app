@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { Button, Box, Container } from "@material-ui/core";
 import app from "app";
 
@@ -9,38 +9,16 @@ type Props = {
 
 const Timer: React.FC<Props> = (props) => {
   const speechDuration = 420000;
-
   const roomId = props.roomId;
   const isOwner = props.isOwner;
-
   const roomRef = app.firestore().collection("rooms").doc(roomId);
 
   const [timerOn, setTimerOn] = useState<boolean>(false);
   const [speechStart, setSpeechStart] = useState<number>(Date.now());
   const [timeLeft, setTimeLeft] = useState<number>(speechDuration);
   const [timeDisplayed, setTimeDisplayed] = useState<number>(speechDuration);
-  let timer;
 
-  useEffect(() => {
-    roomRef.onSnapshot((snapshot) => {
-      const timerInfo = snapshot.get("timerInfo");
-      setTimerOn(timerInfo.timerOn);
-      setSpeechStart(timerInfo.speechStart);
-      setTimeLeft(timerInfo.timeLeft);
-      setTimeDisplayed(timerInfo.timeLeft);
-      if (timerOn) {
-        if (timeLeft - (Date.now() - speechStart) > -60) {
-          timer = setInterval(() => {
-            setTimeDisplayed(timeLeft - (Date.now() - speechStart));
-          }, 1000);
-        }
-      } else {
-        clearInterval(timer);
-      }
-    });
-  }, []);
-
-  const startTimer = () => {
+  const startTimer = useCallback(() => {
     roomRef
       .update({
         "timerInfo.speechStart": Date.now(),
@@ -49,9 +27,9 @@ const Timer: React.FC<Props> = (props) => {
       .then(function () {
         console.log("Timer was started!");
       });
-  };
+  }, [roomRef]);
 
-  const pauseTimer = () => {
+  const pauseTimer = useCallback(() => {
     roomRef
       .update({
         "timerInfo.timerOn": false,
@@ -60,9 +38,9 @@ const Timer: React.FC<Props> = (props) => {
       .then(function () {
         console.log("Timer was paused!");
       });
-  };
+  }, [roomRef, speechStart, timeLeft]);
 
-  const resetTimer = () => {
+  const resetTimer = useCallback(() => {
     roomRef
       .update({
         "timerInfo.timeLeft": speechDuration,
@@ -71,9 +49,10 @@ const Timer: React.FC<Props> = (props) => {
       .then(function () {
         console.log("Timer was reset!");
       });
-  };
+    setTimeDisplayed(speechDuration);
+  }, [roomRef]);
 
-  const secondsToTime = (secs: number) => {
+  const secondsToTime = useCallback((secs: number) => {
     const hours = Math.floor(secs / (60 * 60));
 
     const divisor_for_minutes = secs % (60 * 60);
@@ -87,7 +66,7 @@ const Timer: React.FC<Props> = (props) => {
       m: minutes,
       s: seconds,
     };
-  };
+  }, []);
 
   const timeInSeconds = useMemo(() => Math.round(timeDisplayed / 1000), [
     timeDisplayed,
@@ -96,8 +75,29 @@ const Timer: React.FC<Props> = (props) => {
   const time = useMemo(
     () =>
       addTime ? secondsToTime(-timeInSeconds) : secondsToTime(timeInSeconds),
-    [addTime, timeInSeconds]
+    [addTime, timeInSeconds, secondsToTime]
   );
+
+  useEffect(() => {
+    roomRef.onSnapshot((snapshot) => {
+      const timerInfo = snapshot.get("timerInfo");
+      setTimerOn(timerInfo.timerOn);
+      setSpeechStart(timerInfo.speechStart);
+      setTimeLeft(timerInfo.timeLeft);
+      setTimeDisplayed(timerInfo.timeLeft);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (timerOn) {
+      setTimeout(() => {
+        if (timeLeft - (Date.now() - speechStart) < -60000) {
+          return;
+        }
+        setTimeDisplayed(timeLeft - (Date.now() - speechStart));
+      }, 1000);
+    }
+  }, [timerOn, timeLeft, speechStart, timeDisplayed]);
 
   return (
     <Container maxWidth="sm">
@@ -133,7 +133,7 @@ const Timer: React.FC<Props> = (props) => {
                 fullWidth
                 onClick={startTimer}
                 variant="contained"
-                disabled={timeInSeconds === 0 || !isOwner}
+                disabled={timeInSeconds === 0}
               >
                 {timeInSeconds === speechDuration / 1000 ? "START" : "RESUME"}
               </Button>
@@ -144,7 +144,6 @@ const Timer: React.FC<Props> = (props) => {
                 fullWidth
                 onClick={pauseTimer}
                 variant="contained"
-                disabled={!isOwner}
               >
                 PAUSE
               </Button>
@@ -155,9 +154,7 @@ const Timer: React.FC<Props> = (props) => {
               variant="contained"
               fullWidth
               onClick={resetTimer}
-              disabled={
-                this.state.timerOn || timeInSeconds === speechDuration / 1000
-              }
+              disabled={timerOn || timeInSeconds === speechDuration / 1000}
             >
               RESET
             </Button>

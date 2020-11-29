@@ -15,4 +15,5 @@ export interface Room {
   players: { id: string; name: string }[];
   participantsCount: number;
   judge: { id: string; name: string };
+  judgeJoinedRoundRoom: boolean;
 }

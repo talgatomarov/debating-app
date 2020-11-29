@@ -5,7 +5,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import { Home, SignUp, SignIn, ResetPassword, LobbyRoutes } from "routes";
+import { SignUp, SignIn, ResetPassword, LobbyRoutes } from "routes";
 import { CssBaseline } from "@material-ui/core";
 import "fontsource-roboto";
 

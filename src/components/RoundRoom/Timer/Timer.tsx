@@ -1,7 +1,5 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button, Box, Container } from "@material-ui/core";
-import { compose, spacing, palette } from "@material-ui/system";
-import { styled } from "@material-ui/core/styles";
 import app from "app";
 
 type Props = {
@@ -9,68 +7,41 @@ type Props = {
   isOwner: boolean;
 };
 
-type State = {
-  timerOn: boolean;
-  speechStart: number;
-  timeLeft: number;
-  timeDisplayed: number;
-};
+const Timer: React.FC<Props> = (props) => {
+  const speechDuration = 420000;
 
-export class Timer extends React.Component<Props, State> {
-  private timer: any;
-  speechDuration = 420000;
+  const roomId = props.roomId;
+  const isOwner = props.isOwner;
 
-  /** initially in db
-     timerOn: false
-     speechStart: 0
-     timeLeft: speechDuration
-     **/
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      timerOn: false,
-      speechStart: 0,
-      timeLeft: this.speechDuration,
-      timeDisplayed: this.speechDuration,
-    };
-  }
+  const roomRef = app.firestore().collection("rooms").doc(roomId);
 
-  componentDidMount(): void {
-    app
-      .firestore()
-      .collection("rooms")
-      .doc(this.props.roomId)
-      .onSnapshot((snapshot) => {
-        const timerInfo = snapshot.get("timerInfo");
-        this.setState({
-          timerOn: timerInfo.timerOn,
-          speechStart: timerInfo.speechStart,
-          timeLeft: timerInfo.timeLeft,
-          timeDisplayed: timerInfo.timeLeft,
-        });
-        if (this.state.timerOn) {
-          if (
-            this.state.timeLeft - (Date.now() - this.state.speechStart) >
-            -60
-          ) {
-            this.timer = setInterval(() => {
-              this.setState({
-                timeDisplayed:
-                  this.state.timeLeft - (Date.now() - this.state.speechStart),
-              });
-            }, 1000);
-          }
-        } else {
-          clearInterval(this.timer);
+  const [timerOn, setTimerOn] = useState<boolean>(false);
+  const [speechStart, setSpeechStart] = useState<number>(Date.now());
+  const [timeLeft, setTimeLeft] = useState<number>(speechDuration);
+  const [timeDisplayed, setTimeDisplayed] = useState<number>(speechDuration);
+  let timer;
+
+  useEffect(() => {
+    roomRef.onSnapshot((snapshot) => {
+      const timerInfo = snapshot.get("timerInfo");
+      setTimerOn(timerInfo.timerOn);
+      setSpeechStart(timerInfo.speechStart);
+      setTimeLeft(timerInfo.timeLeft);
+      setTimeDisplayed(timerInfo.timeLeft);
+      if (timerOn) {
+        if (timeLeft - (Date.now() - speechStart) > -60) {
+          timer = setInterval(() => {
+            setTimeDisplayed(timeLeft - (Date.now() - speechStart));
+          }, 1000);
         }
-      });
-  }
+      } else {
+        clearInterval(timer);
+      }
+    });
+  }, []);
 
-  startTimer = () => {
-    app
-      .firestore()
-      .collection("rooms")
-      .doc(this.props.roomId)
+  const startTimer = () => {
+    roomRef
       .update({
         "timerInfo.speechStart": Date.now(),
         "timerInfo.timerOn": true,
@@ -80,28 +51,21 @@ export class Timer extends React.Component<Props, State> {
       });
   };
 
-  pauseTimer = () => {
-    app
-      .firestore()
-      .collection("rooms")
-      .doc(this.props.roomId)
+  const pauseTimer = () => {
+    roomRef
       .update({
         "timerInfo.timerOn": false,
-        "timerInfo.timeLeft":
-          this.state.timeLeft - (Date.now() - this.state.speechStart),
+        "timerInfo.timeLeft": timeLeft - (Date.now() - speechStart),
       })
       .then(function () {
         console.log("Timer was paused!");
       });
   };
 
-  resetTimer = () => {
-    app
-      .firestore()
-      .collection("rooms")
-      .doc(this.props.roomId)
+  const resetTimer = () => {
+    roomRef
       .update({
-        "timerInfo.timeLeft": this.speechDuration,
+        "timerInfo.timeLeft": speechDuration,
         "timerInfo.speechStart": Date.now(),
       })
       .then(function () {
@@ -109,7 +73,7 @@ export class Timer extends React.Component<Props, State> {
       });
   };
 
-  secondsToTime(secs: number) {
+  const secondsToTime = (secs: number) => {
     const hours = Math.floor(secs / (60 * 60));
 
     const divisor_for_minutes = secs % (60 * 60);
@@ -118,91 +82,90 @@ export class Timer extends React.Component<Props, State> {
     const divisor_for_seconds = divisor_for_minutes % 60;
     const seconds = Math.ceil(divisor_for_seconds);
 
-    const obj = {
+    return {
       h: hours,
       m: minutes,
       s: seconds,
     };
-    return obj;
-  }
+  };
 
-  Box = styled("div")(compose(spacing, palette));
+  const timeInSeconds = useMemo(() => Math.round(timeDisplayed / 1000), [
+    timeDisplayed,
+  ]);
+  const addTime = useMemo(() => timeInSeconds < 0, [timeInSeconds]);
+  const time = useMemo(
+    () =>
+      addTime ? secondsToTime(-timeInSeconds) : secondsToTime(timeInSeconds),
+    [addTime, timeInSeconds]
+  );
 
-  render() {
-    const timeInSeconds = Math.round(this.state.timeDisplayed / 1000);
-    const addTime = timeInSeconds < 0;
-    const timeDisplayed = addTime
-      ? this.secondsToTime(-timeInSeconds)
-      : this.secondsToTime(timeInSeconds);
-    return (
-      <Container maxWidth="sm">
-        <Box
-          display="flex"
-          justifyContent="center"
-          p={1}
-          color="white"
-          fontSize={40}
-          margin="5px"
-          borderRadius="borderRadius"
-          bgcolor={
-            timeInSeconds > 360
-              ? "text.primary"
-              : timeInSeconds > 60
-              ? "success.main"
-              : timeInSeconds > 0
-              ? "warning.main"
-              : "error.main"
-          }
-        >
-          {addTime ? "+" : null}
-          {timeDisplayed.m < 10 ? 0 : null}
-          {timeDisplayed.m}:{timeDisplayed.s < 10 ? 0 : null}
-          {timeDisplayed.s}
-        </Box>
-        {this.props.isOwner && (
-          <Box display="flex" flexDirection="row" padding="5px">
-            <Box pr={0.5} flexGrow={1}>
-              {!this.state.timerOn && (
-                <Button
-                  color="primary"
-                  fullWidth
-                  onClick={this.startTimer}
-                  variant="contained"
-                  disabled={timeInSeconds === 0 || !this.props.isOwner}
-                >
-                  {timeInSeconds === this.speechDuration / 1000
-                    ? "START"
-                    : "RESUME"}
-                </Button>
-              )}
-              {this.state.timerOn && (
-                <Button
-                  color="secondary"
-                  fullWidth
-                  onClick={this.pauseTimer}
-                  variant="contained"
-                  disabled={!this.props.isOwner}
-                >
-                  PAUSE
-                </Button>
-              )}
-            </Box>
-            <Box pl={0.5} flexGrow={1}>
+  return (
+    <Container maxWidth="sm">
+      <Box
+        display="flex"
+        justifyContent="center"
+        p={1}
+        color="white"
+        fontSize={40}
+        margin="5px"
+        borderRadius="borderRadius"
+        bgcolor={
+          timeInSeconds > 360
+            ? "text.primary"
+            : timeInSeconds > 60
+            ? "success.main"
+            : timeInSeconds > 0
+            ? "warning.main"
+            : "error.main"
+        }
+      >
+        {addTime ? "+" : null}
+        {time.m < 10 ? 0 : null}
+        {time.m}:{time.s < 10 ? 0 : null}
+        {time.s}
+      </Box>
+      {isOwner && (
+        <Box display="flex" flexDirection="row" padding="5px">
+          <Box pr={0.5} flexGrow={1}>
+            {!timerOn && (
               <Button
-                variant="contained"
+                color="primary"
                 fullWidth
-                onClick={this.resetTimer}
-                disabled={
-                  this.state.timerOn ||
-                  timeInSeconds === this.speechDuration / 1000
-                }
+                onClick={startTimer}
+                variant="contained"
+                disabled={timeInSeconds === 0 || !isOwner}
               >
-                RESET
+                {timeInSeconds === speechDuration / 1000 ? "START" : "RESUME"}
               </Button>
-            </Box>
+            )}
+            {timerOn && (
+              <Button
+                color="secondary"
+                fullWidth
+                onClick={pauseTimer}
+                variant="contained"
+                disabled={!isOwner}
+              >
+                PAUSE
+              </Button>
+            )}
           </Box>
-        )}
-      </Container>
-    );
-  }
-}
+          <Box pl={0.5} flexGrow={1}>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={resetTimer}
+              disabled={
+                this.state.timerOn || timeInSeconds === speechDuration / 1000
+              }
+            >
+              RESET
+            </Button>
+          </Box>
+        </Box>
+      )}
+    </Container>
+  );
+};
+
+export default Timer;

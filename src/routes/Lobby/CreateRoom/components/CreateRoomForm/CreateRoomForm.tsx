@@ -83,6 +83,7 @@ const CreateRoomForm: React.FC = () => {
           name: null,
         },
       ],
+      judgeJoinedRoundRoom: false,
       judge: {
         id: null,
         name: null,

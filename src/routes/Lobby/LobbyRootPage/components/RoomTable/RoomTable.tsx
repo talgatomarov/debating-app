@@ -7,24 +7,27 @@ import {
   TableRow,
   Tooltip,
   Typography,
+  List,
+  ListItem,
 } from "@material-ui/core";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import HelpIcon from "@material-ui/icons/Help";
 import { Room } from "interfaces/Room";
 import React, { useCallback } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 export interface RoomListProps {
   rooms: Room[] | undefined;
-  props: RouteComponentProps;
 }
 
-const RoomList: React.FC<RoomListProps> = ({ rooms, props }) => {
+const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
+  const history = useHistory();
+  const location = useLocation();
   const onJoinRoomClick = useCallback(
     (room: Room) => () => {
-      props.history.push(`${props.match.url}/${room.id}/waiting-room`);
+      history.push(`${location.pathname}/${room.id}/waiting-room`);
     },
-    [props.history, props.match.url]
+    [history, location]
   );
 
   return (
@@ -42,6 +45,7 @@ const RoomList: React.FC<RoomListProps> = ({ rooms, props }) => {
               </Tooltip>
             </Typography>
           </TableCell>
+          <TableCell>Participants joined</TableCell>
           <TableCell>Players</TableCell>
           <TableCell>Judge</TableCell>
           <TableCell>Join</TableCell>
@@ -55,10 +59,19 @@ const RoomList: React.FC<RoomListProps> = ({ rooms, props }) => {
               <TableCell>{room.format}</TableCell>
               <TableCell>{room.participantsCount}</TableCell>
               <TableCell>
-                {room.judge.name === "" ? "no judge" : room.judge.name}
+                <List>
+                  {room.players.map((n, i) => (
+                    <div>
+                      {n.id !== null && <ListItem key={i}>{n.id}</ListItem>}
+                    </div>
+                  ))}
+                </List>
+              </TableCell>
+              <TableCell>
+                {room.judge.id === null ? "no judge" : room.judge.id}
               </TableCell>
               <TableCell onClick={onJoinRoomClick(room)}>
-                <IconButton>
+                <IconButton data-testid={"join-" + room.id}>
                   <ArrowForwardIcon />
                 </IconButton>
               </TableCell>

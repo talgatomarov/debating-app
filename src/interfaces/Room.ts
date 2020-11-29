@@ -1,4 +1,6 @@
-// TODO: Should we use numeric enum or string enum?
+import { Player } from "./Player";
+import { Judge } from "./Judge";
+
 export enum Format {
   UNKNOWN = "Unknown",
   BPF = "British Parliamentary Format",
@@ -12,9 +14,10 @@ export interface Room {
   motion: string;
   infoslide: string | null;
   owner: string;
-  players: { id: string | null; name: string | null }[];
+  players: Player[];
   participantsCount: number;
-  judge: { id: string | null; name: string | null };
+  judge: Judge;
+  judgeJoinedRoundRoom: boolean;
   timerInfo: {
     timerOn: boolean;
     speechStart: number;

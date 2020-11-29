@@ -1,13 +1,6 @@
-import PreRoomPage from "./PreRoom";
-import RoomPage from "./Room";
+import WaitingRoomPage from "./WaitingRoom";
 import RoundRoomPage from "./RoundRoom";
 import ChoosePosition from "./ChoosePosition";
 import PreparationRoomPage from "./PreparationRoom";
 
-export {
-  PreRoomPage,
-  RoomPage,
-  ChoosePosition,
-  PreparationRoomPage,
-  RoundRoomPage,
-};
+export { WaitingRoomPage, ChoosePosition, PreparationRoomPage, RoundRoomPage };

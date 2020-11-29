@@ -12,6 +12,7 @@ const LobbyRootPage: React.FC = () => {
     app.firestore().collection("rooms").where("publicRoom", "==", true),
     { idField: "id" }
   );
+
   return (
     <LobbyLayout>
       <Typography variant="h5">Public Rooms</Typography>

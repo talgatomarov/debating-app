@@ -82,15 +82,12 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
   const [judgeJoinedRoom, setJudgeJoinedRoom] = useState<boolean>(false);
   const [playerIsJudge, setPlayerIsJudge] = useState<boolean>(false);
 
-  const [players, judge, playersCount] = useMemo(
+  const [players, judge, participantsCount] = useMemo(
     () =>
       (rawRoomData && [
         rawRoomData.players,
         rawRoomData.judge,
-        rawRoomData.players.reduce(
-          (sum: number, n: Player) => sum + (n.id !== null ? 1 : 0),
-          0
-        ) + (rawRoomData.judge.id !== null ? 1 : 0),
+        rawRoomData.participantsCount,
       ]) ||
       [],
     [rawRoomData]
@@ -120,26 +117,33 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
   const addPlayer = useCallback(
     (positionIndex: number) => {
       const newPlayers = players;
-      console.log(currentUser);
       newPlayers[positionIndex] = {
         id: currentUser && currentUser.uid,
         name: currentUser && currentUser.displayName,
       };
-      database.collection("rooms").doc(roomId).update({
-        players: newPlayers,
-      });
+      database
+        .collection("rooms")
+        .doc(roomId)
+        .update({
+          players: newPlayers,
+          participantsCount: participantsCount + 1,
+        });
     },
-    [currentUser, players, roomId, database]
+    [currentUser, players, roomId, database, participantsCount]
   );
   const addJudge = useCallback(() => {
     const newJudge = {
       id: currentUser && currentUser.uid,
       name: currentUser && currentUser.displayName,
     };
-    database.collection("rooms").doc(roomId).update({
-      judge: newJudge,
-    });
-  }, [currentUser, roomId, database]);
+    database
+      .collection("rooms")
+      .doc(roomId)
+      .update({
+        judge: newJudge,
+        participantsCount: participantsCount + 1,
+      });
+  }, [currentUser, roomId, database, participantsCount]);
   const cancelPlayer = useCallback(() => {
     database
       .collection("rooms")
@@ -153,8 +157,9 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
               }
             : n
         ),
+        participantsCount: participantsCount - 1,
       });
-  }, [currentUser, roomId, database, players]);
+  }, [currentUser, roomId, database, players, participantsCount]);
   const cancelJudge = useCallback(() => {
     database
       .collection("rooms")
@@ -164,8 +169,9 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
           id: null,
           name: null,
         },
+        participantsCount: participantsCount - 1,
       });
-  }, [roomId, database]);
+  }, [roomId, database, participantsCount]);
   const onJudgeJoinedRoom = useCallback(() => {
     database.collection("room").doc(roomId).update({
       judgeJoinedRoundRoom: true,
@@ -485,12 +491,12 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
               }}
             >
               <Typography>
-                {playersCount} participant(s) joined the room
+                {participantsCount} participant(s) joined the room
               </Typography>
               <CircularProgress
                 size="3rem"
                 variant="static"
-                value={(playersCount * 100) / 9}
+                value={(participantsCount * 100) / 9}
               />
             </div>
             <div

@@ -49,6 +49,8 @@ export interface LobbyDrawerProps {
 
 const LobbyDrawer: React.FC<LobbyDrawerProps> = ({ window, open, onClose }) => {
   const classes = useStyles();
+
+  /* istanbul ignore next */
   const container =
     window !== undefined ? () => window().document.body : undefined;
 

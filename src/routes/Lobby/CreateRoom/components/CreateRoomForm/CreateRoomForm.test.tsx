@@ -1,9 +1,9 @@
 import React from "react";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within, act } from "@testing-library/react";
 import CreateRoomForm from "./CreateRoomForm";
 import app from "app";
 import firebase from "firebase";
-import { Format } from "interfaces/Room";
+import { Format, Room } from "interfaces/Room";
 import { when } from "jest-when";
 
 const mockCollection = jest.spyOn(app.firestore(), "collection");
@@ -19,9 +19,9 @@ describe("CreateRoomForm", () => {
     render(<CreateRoomForm />);
   });
 
-  test("Success", () => {
+  test("Success", async () => {
     const roomName = "testRoom";
-    const format = "British Parliamentary";
+    const format = Format.BPF;
     const motion = "THBT";
     const infoslide = "INFO";
 
@@ -52,6 +52,7 @@ describe("CreateRoomForm", () => {
       });
 
     render(<CreateRoomForm />);
+
     fireEvent.change(screen.getByLabelText(/room name/i), {
       target: { value: roomName },
     });
@@ -59,10 +60,6 @@ describe("CreateRoomForm", () => {
     fireEvent.mouseDown(screen.getByLabelText(/format/i));
     const listbox = within(screen.getByRole("listbox"));
     fireEvent.click(listbox.getByText(format));
-
-    fireEvent.change(screen.getByLabelText(/room name/i), {
-      target: { value: roomName },
-    });
 
     fireEvent.change(screen.getByLabelText(/motion/i), {
       target: { value: motion },
@@ -74,18 +71,64 @@ describe("CreateRoomForm", () => {
 
     fireEvent.click(screen.getByLabelText(/make public/i));
 
-    fireEvent.submit(screen.getByText(/create/i));
+    await act(async () => {
+      fireEvent.submit(screen.getByText(/create/i));
+    });
 
     expect(mockAddRoom).toBeCalledTimes(1);
 
-    const data = {
+    const data: Room = {
       roomName: roomName,
       format: Format.BPF,
       publicRoom: true,
       motion: motion,
       infoslide: infoslide,
       owner: user.uid,
-      players: [user.uid],
+      judge: {
+        id: null,
+        name: null,
+      },
+      participantsCount: 0,
+      players: [
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+      ],
+      judgeJoinedRoundRoom: false,
+      timerInfo: {
+        timerOn: false,
+        speechStart: 0,
+        timeLeft: 420000,
+      },
     };
 
     expect(mockAddRoom).toBeCalledWith(data);

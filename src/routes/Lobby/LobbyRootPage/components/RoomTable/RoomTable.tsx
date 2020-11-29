@@ -45,6 +45,7 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
               </Tooltip>
             </Typography>
           </TableCell>
+          <TableCell>Participants joined</TableCell>
           <TableCell>Players</TableCell>
           <TableCell>Judge</TableCell>
           <TableCell>Join</TableCell>
@@ -56,10 +57,13 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
             <TableRow key={room.id}>
               <TableCell>{room.roomName}</TableCell>
               <TableCell>{room.format}</TableCell>
+              <TableCell>{room.participantsCount}</TableCell>
               <TableCell>
                 <List>
                   {room.players.map((n, i) => (
-                    <ListItem key={i}>{n.id}</ListItem>
+                    <div>
+                      {n.id !== null && <ListItem key={i}>{n.id}</ListItem>}
+                    </div>
                   ))}
                 </List>
               </TableCell>
@@ -67,7 +71,7 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
                 {room.judge.id === null ? "no judge" : room.judge.id}
               </TableCell>
               <TableCell onClick={onJoinRoomClick(room)}>
-                <IconButton>
+                <IconButton data-testid={"join-" + room.id}>
                   <ArrowForwardIcon />
                 </IconButton>
               </TableCell>

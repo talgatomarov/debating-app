@@ -50,6 +50,7 @@
       "plugin:import/typescript",
       "plugin:@typescript-eslint/recommended"
     ],
+    "rules": {"@typescript-eslint/no-non-null-assertion": "off"},
     "settings": {
       "import/resolver": {
         "node": {

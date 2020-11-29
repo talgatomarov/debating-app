@@ -16,6 +16,7 @@ import {
   Theme,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
   createStyles({
@@ -27,77 +28,80 @@ const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
 
 const CreateRoomForm: React.FC = () => {
   const classes = useStyles();
-  const [roomName, setRoomName] = useState("");
-  const [format, setFormat] = useState<Format>(Format.UNKNOWN);
-  const [publicRoom, setPublicRoom] = useState(false);
-  const [motion, setMotion] = useState("");
-  const [infoslide, setInfoslide] = useState("");
+  const history = useHistory();
+
+  const [roomName, setRoomName] = useState<Room["roomName"]>("");
+  const [format, setFormat] = useState<Room["format"]>(Format.BPF);
+  const [publicRoom, setPublicRoom] = useState<Room["publicRoom"]>(false);
+  const [motion, setMotion] = useState<Room["motion"]>("");
+  const [infoslide, setInfoslide] = useState<Room["infoslide"]>(null);
   const [error, setError] = useState<FirebaseError | null>(null);
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const currentUser = app.auth().currentUser;
+    const currentUser = app.auth().currentUser!;
 
-    let data: Room;
-
-    if (currentUser) {
-      data = {
-        roomName: roomName,
-        format: format,
-        publicRoom: publicRoom,
-        motion: motion,
-        infoslide: infoslide,
-        owner: currentUser.uid,
-        participantsCount: 0,
-        players: [
-          {
-            id: "",
-            name: "",
-          },
-          {
-            id: "",
-            name: "",
-          },
-          {
-            id: "",
-            name: "",
-          },
-          {
-            id: "",
-            name: "",
-          },
-          {
-            id: "",
-            name: "",
-          },
-          {
-            id: "",
-            name: "",
-          },
-          {
-            id: "",
-            name: "",
-          },
-          {
-            id: "",
-            name: "",
-          },
-        ],
-        judge: {
-          id: "",
-          name: "",
+    const data: Room = {
+      roomName: roomName,
+      format: format,
+      publicRoom: publicRoom,
+      motion: motion,
+      infoslide: infoslide,
+      owner: currentUser.uid,
+      participantsCount: 0,
+      players: [
+        {
+          id: null,
+          name: null,
         },
-        judgeJoinedRoundRoom: false,
-      };
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+        {
+          id: null,
+          name: null,
+        },
+      ],
+      judgeJoinedRoundRoom: false,
+      judge: {
+        id: null,
+        name: null,
+      },
+      timerInfo: {
+        timerOn: false,
+        speechStart: 0,
+        timeLeft: 420000,
+      },
+    };
 
-      try {
-        await app.firestore().collection("rooms").add(data);
-        setError(null);
-      } catch (error) {
-        setError(error);
-      }
+    try {
+      const ref = await app.firestore().collection("rooms").add(data);
+      setError(null);
+      history.push(`/lobby/${ref.id}/waiting-room`);
+    } catch (error) {
+      setError(error);
     }
-    // TODO: else throw/set error? But what kind
   };
 
   return (
@@ -121,12 +125,13 @@ const CreateRoomForm: React.FC = () => {
           <Select
             name="format"
             value={format}
-            onChange={(e) => setFormat(parseInt(e.target.value as string))}
+            onChange={(e) => setFormat(e.target.value as Format)}
             labelId="format-label"
+            data-testid="format-select"
             fullWidth
             required
           >
-            <MenuItem value={Format.BPF}>British Parliamentary</MenuItem>
+            <MenuItem value={Format.BPF}>{Format.BPF}</MenuItem>
           </Select>
         </Grid>
         <Grid item xs={12}>

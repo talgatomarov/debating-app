@@ -30,12 +30,18 @@ const SignUpForm: React.FC = () => {
     e.preventDefault();
     const elements = (e.target as HTMLFormElement).elements;
     const email = elements.namedItem("email") as HTMLInputElement;
+    const name = elements.namedItem("name") as HTMLInputElement;
     const password = elements.namedItem("password") as HTMLInputElement;
 
     try {
-      await app
+      const user = await app
         .auth()
         .createUserWithEmailAndPassword(email.value, password.value);
+
+      await user.user?.updateProfile({
+        displayName: name.value,
+        photoURL: "",
+      });
       history.push("/");
     } catch (err) {
       setError(err);
@@ -55,6 +61,15 @@ const SignUpForm: React.FC = () => {
         name="email"
         autoComplete="email"
         autoFocus
+      />
+      <TextField
+        variant="outlined"
+        margin="normal"
+        required
+        fullWidth
+        id="name"
+        label="Name"
+        name="name"
       />
       <TextField
         variant="outlined"

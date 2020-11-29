@@ -66,7 +66,7 @@ export class Timer extends React.Component<Props, State> {
       });
   }
 
-  startTimer = () => {
+  startTimer = (): void => {
     app
       .firestore()
       .collection("rooms")
@@ -80,7 +80,7 @@ export class Timer extends React.Component<Props, State> {
       });
   };
 
-  pauseTimer = () => {
+  pauseTimer = (): void => {
     app
       .firestore()
       .collection("rooms")
@@ -95,7 +95,7 @@ export class Timer extends React.Component<Props, State> {
       });
   };
 
-  resetTimer = () => {
+  resetTimer = (): void => {
     app
       .firestore()
       .collection("rooms")
@@ -109,7 +109,7 @@ export class Timer extends React.Component<Props, State> {
       });
   };
 
-  secondsToTime(secs: number) {
+  secondsToTime(secs: number): { h: number; m: number; s: number } {
     const hours = Math.floor(secs / (60 * 60));
 
     const divisor_for_minutes = secs % (60 * 60);
@@ -128,7 +128,7 @@ export class Timer extends React.Component<Props, State> {
 
   Box = styled("div")(compose(spacing, palette));
 
-  render() {
+  render(): React.ReactElement {
     const timeInSeconds = Math.round(this.state.timeDisplayed / 1000);
     const addTime = timeInSeconds < 0;
     const timeDisplayed = addTime

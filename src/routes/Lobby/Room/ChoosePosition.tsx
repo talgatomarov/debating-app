@@ -6,7 +6,7 @@ import {
   CardActions,
   Button,
 } from "@material-ui/core";
-import { Player } from "interfaces/Room";
+import { Player } from "interfaces/Player";
 
 const positions = [
   "Prime Minister",

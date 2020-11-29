@@ -123,6 +123,7 @@ describe("CreateRoomForm", () => {
           name: null,
         },
       ],
+      judgeJoinedRoundRoom: false,
       timerInfo: {
         timerOn: false,
         speechStart: 0,

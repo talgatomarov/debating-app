@@ -1,11 +1,6 @@
 import React from "react";
 import { LobbyLayout } from "containers/layout";
-import {
-  makeStyles,
-  createStyles,
-  Typography,
-  Button,
-} from "@material-ui/core";
+import { Typography, Button } from "@material-ui/core";
 import JitsiMeet from "components/JitsiMeet";
 import app from "app";
 import { useParams, Link as RouterLink } from "react-router-dom";

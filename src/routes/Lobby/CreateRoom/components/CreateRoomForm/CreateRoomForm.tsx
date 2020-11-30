@@ -84,6 +84,7 @@ const CreateRoomForm: React.FC = () => {
         },
       ],
       judgeJoinedRoundRoom: false,
+      enteredPlayersCount: 0,
       judge: {
         id: null,
         name: null,

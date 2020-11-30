@@ -18,6 +18,7 @@ export interface Room {
   participantsCount: number;
   judge: Judge;
   judgeJoinedRoundRoom: boolean;
+  enteredPlayersCount: number;
   timerInfo: {
     timerOn: boolean;
     speechStart: number;

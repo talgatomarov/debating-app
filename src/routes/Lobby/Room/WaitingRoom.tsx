@@ -82,12 +82,13 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
   const [judgeJoinedRoom, setJudgeJoinedRoom] = useState<boolean>(false);
   const [playerIsJudge, setPlayerIsJudge] = useState<boolean>(false);
 
-  const [players, judge, participantsCount] = useMemo(
+  const [players, judge, participantsCount, enteredPlayersCount] = useMemo(
     () =>
       (rawRoomData && [
         rawRoomData.players,
         rawRoomData.judge,
         rawRoomData.participantsCount,
+        rawRoomData.enteredPlayersCount,
       ]) ||
       [],
     [rawRoomData]
@@ -144,51 +145,64 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
         participantsCount: participantsCount + 1,
       });
   }, [currentUser, roomId, database, participantsCount]);
-  const cancelPlayer = useCallback(() => {
-    database
-      .collection("rooms")
-      .doc(roomId)
-      .update({
-        players: players.map((n: Player) =>
-          n.id === (currentUser && currentUser.uid)
-            ? {
-                id: null,
-                name: null,
-              }
-            : n
-        ),
-        participantsCount: participantsCount - 1,
-      });
-  }, [currentUser, roomId, database, players, participantsCount]);
-  const cancelJudge = useCallback(() => {
-    database
-      .collection("rooms")
-      .doc(roomId)
-      .update({
-        judge: {
-          id: null,
-          name: null,
-        },
-        participantsCount: participantsCount - 1,
-      });
-  }, [roomId, database, participantsCount]);
+  const cancelPlayer = useCallback(
+    () =>
+      database
+        .collection("rooms")
+        .doc(roomId)
+        .update({
+          players: players.map((n: Player) =>
+            n.id === (currentUser && currentUser.uid)
+              ? {
+                  id: null,
+                  name: null,
+                }
+              : n
+          ),
+          participantsCount: participantsCount - 1,
+        }),
+    [currentUser, roomId, database, players, participantsCount]
+  );
+  const cancelJudge = useCallback(
+    () =>
+      database
+        .collection("rooms")
+        .doc(roomId)
+        .update({
+          judge: {
+            id: null,
+            name: null,
+          },
+          participantsCount: participantsCount - 1,
+        }),
+    [roomId, database, participantsCount]
+  );
   const onJudgeJoinedRoom = useCallback(() => {
     database.collection("room").doc(roomId).update({
       judgeJoinedRoundRoom: true,
     });
   }, [database, roomId]);
-  const handleNext = useCallback(() => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  }, []);
+  const incrementEnteredPlayers = useCallback(
+    () =>
+      database
+        .collection("rooms")
+        .doc(roomId)
+        .update({
+          enteredPlayersCount: enteredPlayersCount + 1,
+        }),
+    [database, enteredPlayersCount, roomId]
+  );
+  const handleNext = useCallback(
+    () => setActiveStep((prevActiveStep) => prevActiveStep + 1),
+    []
+  );
   const handleBack = useCallback(() => {
     if (activeStep === 0) {
       history.push("/lobby");
     }
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   }, [activeStep, history]);
-  const handleReset = useCallback(() => {
-    setActiveStep(0);
-  }, []);
+  const handleReset = useCallback(() => setActiveStep(0), []);
   const handleChange = useCallback(() => {
     if (judge.id === (currentUser && currentUser.uid)) {
       cancelJudge();
@@ -262,10 +276,11 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
   }, [players, currentUser, rawRoomData, judge]);
   useEffect(() => {
     if (activeStep === 2 && (playerIsJudge || judgeJoinedRoom)) {
+      incrementEnteredPlayers();
+      if (playerIsJudge) {
+        onJudgeJoinedRoom();
+      }
       history.push(`/lobby/${roomId}/round-room`);
-    }
-    if (playerIsJudge) {
-      onJudgeJoinedRoom();
     }
   }, [
     playerIsJudge,
@@ -274,6 +289,7 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
     history,
     roomId,
     activeStep,
+    incrementEnteredPlayers,
   ]);
 
   const getStepContent = (stepIndex: number) => {
@@ -399,7 +415,7 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
                           variant="contained"
                           color="primary"
                           size="small"
-                          disabled={n.name !== null || playerChosePosition}
+                          disabled={n.id !== null || playerChosePosition}
                           onClick={onChoosePositionClick(i)}
                         >
                           Choose this position

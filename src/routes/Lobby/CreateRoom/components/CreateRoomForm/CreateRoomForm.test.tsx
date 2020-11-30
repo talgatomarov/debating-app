@@ -124,6 +124,7 @@ describe("CreateRoomForm", () => {
         },
       ],
       judgeJoinedRoundRoom: false,
+      enteredPlayersCount: 0,
       timerInfo: {
         timerOn: false,
         speechStart: 0,

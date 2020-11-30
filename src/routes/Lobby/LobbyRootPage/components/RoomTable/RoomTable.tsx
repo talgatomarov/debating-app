@@ -62,13 +62,17 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
                 <List>
                   {room.players.map((n, i) => (
                     <div>
-                      {n.id !== null && <ListItem key={i}>{n.id}</ListItem>}
+                      {n.id !== null && <ListItem key={i}>{n.name}</ListItem>}
                     </div>
                   ))}
                 </List>
               </TableCell>
               <TableCell>
-                {room.judge.id === null ? "no judge" : room.judge.id}
+                {room.judge.id === null
+                  ? "no judge"
+                  : room.judge.name === null
+                  ? room.judge.id
+                  : room.judge.name}
               </TableCell>
               <TableCell onClick={onJoinRoomClick(room)}>
                 <IconButton data-testid={"join-" + room.id}>

@@ -11,7 +11,10 @@ const Timer: React.FC<Props> = (props) => {
   const speechDuration = 420000;
   const roomId = props.roomId;
   const isOwner = props.isOwner;
-  const roomRef = app.firestore().collection("rooms").doc(roomId);
+
+  const roomRef = useMemo(() => {
+    return app.firestore().collection("rooms").doc(roomId);
+  }, [roomId]);
 
   const [timerOn, setTimerOn] = useState<boolean>(false);
   const [speechStart, setSpeechStart] = useState<number>(Date.now());
@@ -86,7 +89,7 @@ const Timer: React.FC<Props> = (props) => {
       setTimeLeft(timerInfo.timeLeft);
       setTimeDisplayed(timerInfo.timeLeft);
     });
-  }, []);
+  }, [roomRef]);
 
   useEffect(() => {
     if (timerOn) {

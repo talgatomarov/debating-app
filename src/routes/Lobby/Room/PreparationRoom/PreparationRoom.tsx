@@ -5,31 +5,18 @@ import {
   createStyles,
   Typography,
   Button,
-  Grid,
 } from "@material-ui/core";
 import JitsiMeet from "components/JitsiMeet";
 import app from "app";
 import { useParams, Link as RouterLink } from "react-router-dom";
+import Loader from "components/Loader";
 
 interface RouteParams {
   roomId: string;
   position: string;
 }
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    layout: {
-      maxWidth: "100%",
-      padding: "0 1rem",
-    },
-    title: {
-      paddingBottom: "2rem",
-    },
-  })
-);
-
 const PreparationRoom: React.FC = () => {
-  const classes = useStyles();
   const { roomId, position } = useParams<RouteParams>();
 
   const linkToRoom = `/lobby/${roomId}/round-room`;
@@ -39,25 +26,48 @@ const PreparationRoom: React.FC = () => {
 
   return (
     <LobbyLayout>
-      <div className={classes.layout}>
-        <Typography variant="h5" className={classes.title}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignContent: "center",
+        }}
+      >
+        <Typography variant="h5" color="primary" align="center">
           Preparation Room
         </Typography>
-        <Grid container justify="center" alignItems="center" spacing={4}>
-          <Grid item xs={12}>
-            <JitsiMeet displayName={displayName} roomName={roomName} />
-          </Grid>
-          <Grid item xs={12}>
+        <br />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignSelf: "center",
+            alignContent: "center",
+          }}
+        >
+          <JitsiMeet
+            loadingComponent={Loader}
+            displayName={displayName}
+            roomName={roomName}
+          />
+          <br />
+          <div
+            style={{
+              maxWidth: "3rem !important",
+              alignSelf: "center",
+            }}
+          >
             <Button
               color="primary"
+              size="medium"
               variant="contained"
               component={RouterLink}
               to={linkToRoom}
             >
               Link to the room
             </Button>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       </div>
     </LobbyLayout>
   );

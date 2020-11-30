@@ -1,9 +1,15 @@
 import React from "react";
 import { LobbyLayout } from "containers/layout";
-import { makeStyles, createStyles, Typography } from "@material-ui/core";
+import {
+  makeStyles,
+  createStyles,
+  Typography,
+  Button,
+  Grid,
+} from "@material-ui/core";
 import JitsiMeet from "components/JitsiMeet";
 import app from "app";
-import { useParams } from "react-router-dom";
+import { useParams, Link as RouterLink } from "react-router-dom";
 
 interface RouteParams {
   roomId: string;
@@ -13,7 +19,7 @@ interface RouteParams {
 const useStyles = makeStyles(() =>
   createStyles({
     layout: {
-      maxWidth: "600px",
+      maxWidth: "100%",
       padding: "0 1rem",
     },
     title: {
@@ -26,6 +32,8 @@ const PreparationRoom: React.FC = () => {
   const classes = useStyles();
   const { roomId, position } = useParams<RouteParams>();
 
+  const linkToRoom = `/lobby/${roomId}/round-room`;
+
   const displayName = app.auth().currentUser!.displayName!;
   const roomName = roomId + "-" + position;
 
@@ -35,7 +43,21 @@ const PreparationRoom: React.FC = () => {
         <Typography variant="h5" className={classes.title}>
           Preparation Room
         </Typography>
-        <JitsiMeet displayName={displayName} roomName={roomName} />
+        <Grid container justify="center" alignItems="center" spacing={4}>
+          <Grid item xs={12}>
+            <JitsiMeet displayName={displayName} roomName={roomName} />
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              color="primary"
+              variant="contained"
+              component={RouterLink}
+              to={linkToRoom}
+            >
+              Link to the room
+            </Button>
+          </Grid>
+        </Grid>
       </div>
     </LobbyLayout>
   );

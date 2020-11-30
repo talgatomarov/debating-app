@@ -7,6 +7,7 @@ import { useParams, useHistory } from "react-router-dom";
 import RoomLink from "components/RoundRoom/RoomLink";
 import Timer from "components/RoundRoom/Timer";
 import { Player } from "interfaces/Player";
+import Loader from "components/Loader";
 
 interface RouteParams {
   roomId: string;
@@ -40,8 +41,9 @@ const RoundRoom: React.FC = () => {
   const database = app.firestore();
   const classes = useStyles();
   const { roomId } = useParams<RouteParams>();
-  const [motion, setMotion] = useState();
-  const [owner, setOwner] = useState();
+  const [motion, setMotion] = useState<string>();
+  const [owner, setOwner] = useState<string>();
+  const [title, setTitle] = useState<string>();
   const [enteredPlayersCount, setEnteredPlayersCount] = useState<number>();
   const [showMotion, setShowMotion] = useState<boolean>(false);
   const [players, setPlayers] = useState<Player[]>();
@@ -70,6 +72,7 @@ const RoundRoom: React.FC = () => {
           if (room.exists) {
             setMotion(room.get("motion"));
             setOwner(room.get("owner"));
+            setTitle(room.get("roomName"));
           } else {
             console.log("cannot retrieve room info");
           }
@@ -92,10 +95,19 @@ const RoundRoom: React.FC = () => {
 
   return (
     <LobbyLayout>
-      <div className={classes.layout}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignContent: "center",
+        }}
+      >
+        <Typography variant="h5" color="primary" align="center">
+          {title}
+        </Typography>
         {showMotion && (
           <>
-            <Typography variant="h5" className={classes.title}>
+            <Typography variant="h6" className={classes.title}>
               {motion}
             </Typography>
             {playerTeam && (
@@ -110,9 +122,22 @@ const RoundRoom: React.FC = () => {
             s
           </>
         )}
-        <RoomLink linkToCopy={roomId} />
         <Timer roomId={roomId} isOwner={owner === currentUser.uid} />
-        <JitsiMeet displayName={currentUser.displayName!} roomName={roomId} />
+        <br />
+        <div
+          style={{
+            display: "flex",
+            alignSelf: "center",
+            alignContent: "center",
+          }}
+        >
+          <JitsiMeet
+            loadingComponent={Loader}
+            displayName={currentUser.displayName!}
+            roomName={roomId}
+          />
+        </div>
+        <RoomLink linkToCopy={roomId} />
       </div>
     </LobbyLayout>
   );

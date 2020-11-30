@@ -9,7 +9,6 @@ const JitsiMeet: React.FC<JitsiProps> = (props) => {
       {...props}
       domain="debatingapp-jitsi.ml"
       interfaceConfig={interfaceConfig}
-      frameStyle={{ display: "block", width: "100%", height: "100%" }}
     />
   );
 };

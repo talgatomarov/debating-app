@@ -106,12 +106,17 @@ const RoundRoom: React.FC = () => {
           alignContent: "center",
         }}
       >
-        <Typography variant="h5" color="primary" align="center">
+        <Typography variant="h6" color="textPrimary" align="center">
           {title}
         </Typography>
         {showMotion && (
           <>
-            <Typography variant="h6" className={classes.title}>
+            <Typography
+              variant="h4"
+              color="primary"
+              align="center"
+              className={classes.title}
+            >
               {motion}
             </Typography>
             {playerTeam && (
@@ -123,7 +128,6 @@ const RoundRoom: React.FC = () => {
                 Link to your Preparation Room
               </Link>
             )}
-            s
           </>
         )}
         <Timer roomId={roomId} isOwner={owner === currentUser.uid} />

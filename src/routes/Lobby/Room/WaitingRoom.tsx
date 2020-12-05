@@ -483,7 +483,11 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
                 justifyContent: "flex-end",
               }}
             >
-              <Button onClick={handleChange} className={classes.backButton}>
+              <Button
+                onClick={handleChange}
+                className={classes.backButton}
+                disabled={!playerChosePosition}
+              >
                 Change position
               </Button>
               <Button

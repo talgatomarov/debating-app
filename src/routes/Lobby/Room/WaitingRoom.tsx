@@ -69,7 +69,7 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
   const history = useHistory();
   const steps = getSteps();
   const roomId = match.params.roomId;
-  const currentUser = app.auth().currentUser;
+  const currentUser = app.auth().currentUser!;
   const database = app.firestore();
   const [activeStep, setActiveStep] = useState<number>(0);
   const [stream, setStream] = useState<MediaStream>();
@@ -119,8 +119,8 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
     (positionIndex: number) => {
       const newPlayers = players;
       newPlayers[positionIndex] = {
-        id: currentUser && currentUser.uid,
-        name: currentUser && currentUser.displayName,
+        id: currentUser.uid,
+        name: currentUser.displayName,
       };
       database
         .collection("rooms")
@@ -134,8 +134,8 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
   );
   const addJudge = useCallback(() => {
     const newJudge = {
-      id: currentUser && currentUser.uid,
-      name: currentUser && currentUser.displayName,
+      id: currentUser.uid,
+      name: currentUser.displayName,
     };
     database
       .collection("rooms")
@@ -143,6 +143,7 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
       .update({
         judge: newJudge,
         participantsCount: participantsCount + 1,
+        owner: currentUser.uid,
       });
   }, [currentUser, roomId, database, participantsCount]);
   const cancelPlayer = useCallback(
@@ -152,7 +153,7 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
         .doc(roomId)
         .update({
           players: players.map((n: Player) =>
-            n.id === (currentUser && currentUser.uid)
+            n.id === currentUser.uid
               ? {
                   id: null,
                   name: null,
@@ -204,7 +205,7 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
   }, [activeStep, history]);
   const handleReset = useCallback(() => setActiveStep(0), []);
   const handleChange = useCallback(() => {
-    if (judge.id === (currentUser && currentUser.uid)) {
+    if (judge.id === currentUser.uid) {
       cancelJudge();
       setPlayerIsJudge(false);
     } else {
@@ -265,11 +266,11 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
     if (
       rawRoomData &&
       players &&
-      players.find((n: Player) => n.id === (currentUser && currentUser.uid))
+      players.find((n: Player) => n.id === currentUser.uid)
     ) {
       setPlayerChosePosition(true);
     }
-    if (rawRoomData && judge && judge.id === (currentUser && currentUser.uid)) {
+    if (rawRoomData && judge && judge.id === currentUser.uid) {
       setPlayerChosePosition(true);
       setPlayerIsJudge(true);
     }

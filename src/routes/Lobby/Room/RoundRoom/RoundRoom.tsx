@@ -57,6 +57,10 @@ const RoundRoom: React.FC = () => {
     () => history.push(`/lobby/${roomId}/prep/${playerTeam}`),
     [history, playerTeam, roomId]
   );
+
+  const handleAPI = useCallback((JitsiMeetAPI) => {
+    JitsiMeetAPI.executeCommand("participantLeft");
+  }, []);
   useEffect(() => {
     if (enteredPlayersCount === 9) {
       setShowMotion(true);
@@ -132,6 +136,7 @@ const RoundRoom: React.FC = () => {
           }}
         >
           <JitsiMeet
+            onAPILoad={handleAPI}
             loadingComponent={Loader}
             displayName={currentUser.displayName!}
             roomName={roomId}

@@ -18,8 +18,6 @@
     "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.5",
-    "@types/simple-peer": "^9.6.0",
-    "@types/socket.io-client": "^1.4.34",
     "firebase": "^7.22.0",
     "fontsource-roboto": "^3.0.3",
     "mobx": "^5.15.7",
@@ -30,8 +28,6 @@
     "react-jitsi": "^1.0.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
-    "simple-peer": "^9.6.2",
-    "socket.io-client": "^2.3.1",
     "typescript": "^4.1.2"
   },
   "scripts": {
@@ -50,7 +46,9 @@
       "plugin:import/typescript",
       "plugin:@typescript-eslint/recommended"
     ],
-    "rules": {"@typescript-eslint/no-non-null-assertion": "off"},
+    "rules": {
+      "@typescript-eslint/no-non-null-assertion": "off"
+    },
     "settings": {
       "import/resolver": {
         "node": {

@@ -178,11 +178,6 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
         }),
     [roomId, database, participantsCount]
   );
-  const onJudgeJoinedRoom = useCallback(() => {
-    database.collection("room").doc(roomId).update({
-      judgeJoinedRoundRoom: true,
-    });
-  }, [database, roomId]);
   const incrementEnteredPlayers = useCallback(
     () =>
       database
@@ -279,18 +274,20 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
     if (activeStep === 2 && (playerIsJudge || judgeJoinedRoom)) {
       incrementEnteredPlayers();
       if (playerIsJudge) {
-        onJudgeJoinedRoom();
+        database.collection("room").doc(roomId).update({
+          judgeJoinedRoundRoom: true,
+        });
       }
       history.push(`/lobby/${roomId}/round-room`);
     }
   }, [
     playerIsJudge,
-    onJudgeJoinedRoom,
     judgeJoinedRoom,
     history,
     roomId,
     activeStep,
     incrementEnteredPlayers,
+    database,
   ]);
 
   const getStepContent = (stepIndex: number) => {

@@ -8,6 +8,8 @@ import RoomLink from "components/RoundRoom/RoomLink";
 import Timer from "components/RoundRoom/Timer";
 import { Player } from "interfaces/Player";
 import Loader from "components/Loader";
+import { useDocumentData } from "react-firebase-hooks/firestore";
+import { Room } from "interfaces/Room";
 
 interface RouteParams {
   roomId: string;
@@ -47,6 +49,9 @@ const RoundRoom: React.FC = () => {
   const [enteredPlayersCount, setEnteredPlayersCount] = useState<number>();
   const [showMotion, setShowMotion] = useState<boolean>(false);
   const [players, setPlayers] = useState<Player[]>();
+  const [room, loading, error] = useDocumentData<Room>(
+    app.firestore().doc(`rooms/${roomId}`)
+  );
 
   const playerTeam = useMemo(() => {
     const index =
@@ -96,6 +101,20 @@ const RoundRoom: React.FC = () => {
         }),
     [database, roomId]
   );
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  // TODO: Handle firestore error properly
+
+  if (
+    !room?.players.map((user) => user.id).includes(currentUser.uid) &&
+    room?.owner !== currentUser.uid
+  ) {
+    // TODO: Create a proper page to handle unauthorized access
+    return <h1>Unauthorized access</h1>;
+  }
 
   return (
     <LobbyLayout>

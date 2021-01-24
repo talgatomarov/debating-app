@@ -1,13 +1,14 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { LobbyLayout } from "containers/layout";
 import { makeStyles, createStyles, Typography, Link } from "@material-ui/core";
 import JitsiMeet from "components/JitsiMeet";
 import app from "app";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, Link as RouterLink } from "react-router-dom";
 import RoomLink from "components/RoundRoom/RoomLink";
 import Timer from "components/RoundRoom/Timer";
-import { Player } from "interfaces/Player";
 import Loader from "components/Loader";
+import { useDocumentData } from "react-firebase-hooks/firestore";
+import { Room } from "interfaces/Room";
 
 interface RouteParams {
   roomId: string;
@@ -24,6 +25,8 @@ const useStyles = makeStyles(() =>
     },
   })
 );
+
+// TODO: Refactor to a separate interface?
 const teamMap = new Map([
   [0, "og"],
   [1, "og"],
@@ -36,66 +39,32 @@ const teamMap = new Map([
 ]);
 
 const RoundRoom: React.FC = () => {
-  const history = useHistory();
   const currentUser = app.auth().currentUser!;
-  const database = app.firestore();
   const classes = useStyles();
   const { roomId } = useParams<RouteParams>();
-  const [motion, setMotion] = useState<string>();
-  const [owner, setOwner] = useState<string>();
-  const [title, setTitle] = useState<string>();
-  const [enteredPlayersCount, setEnteredPlayersCount] = useState<number>();
-  const [showMotion, setShowMotion] = useState<boolean>(false);
-  const [players, setPlayers] = useState<Player[]>();
+  const [room, loading, error] = useDocumentData<Room>(
+    app.firestore().doc(`rooms/${roomId}`)
+  );
 
   const playerTeam = useMemo(() => {
     const index =
-      (players && players.findIndex((n) => n.id === currentUser.uid)) || -1;
+      (room?.players &&
+        room?.players.findIndex((n) => n.id === currentUser.uid)) ||
+      -1;
     return teamMap.get(index);
-  }, [players, currentUser]);
-  const onLinkToPrepRoomClick = useCallback(
-    () => history.push(`/lobby/${roomId}/prep/${playerTeam}`),
-    [history, playerTeam, roomId]
-  );
+  }, [room, currentUser]);
 
   const handleAPI = useCallback((JitsiMeetAPI) => {
     JitsiMeetAPI.executeCommand("participantLeft");
   }, []);
-  useEffect(() => {
-    if (enteredPlayersCount === 9) {
-      setShowMotion(true);
-    }
-  }, [enteredPlayersCount]);
-  useEffect(() => {
-    if (roomId) {
-      database
-        .collection("rooms")
-        .doc(roomId)
-        .get()
-        .then((room) => {
-          if (room.exists) {
-            setMotion(room.get("motion"));
-            setOwner(room.get("owner"));
-            setTitle(room.get("roomName"));
-          } else {
-            console.log("cannot retrieve room info");
-          }
-        })
-        .catch(() => console.log("cannot retrieve room info"));
-    }
-  });
-  useEffect(
-    () =>
-      database
-        .collection("rooms")
-        .doc(roomId)
-        .onSnapshot((doc) => {
-          const data = doc.data();
-          setEnteredPlayersCount(data!.enteredPlayersCount);
-          setPlayers(data!.players);
-        }),
-    [database, roomId]
-  );
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return <p>Could not load the room data. {error.message}</p>;
+  }
 
   return (
     <LobbyLayout>
@@ -107,9 +76,9 @@ const RoundRoom: React.FC = () => {
         }}
       >
         <Typography variant="h6" color="textPrimary" align="center">
-          {title}
+          {room?.roomName}
         </Typography>
-        {showMotion && (
+        {room?.enteredPlayersCount === 9 && (
           <>
             <Typography
               variant="h4"
@@ -117,20 +86,20 @@ const RoundRoom: React.FC = () => {
               align="center"
               className={classes.title}
             >
-              {motion}
+              {room?.motion}
             </Typography>
             {playerTeam && (
               <Link
-                component="button"
+                component={RouterLink}
                 variant="body2"
-                onClick={onLinkToPrepRoomClick}
+                to={`/lobby/${roomId}/prep/${playerTeam}`}
               >
                 Link to your Preparation Room
               </Link>
             )}
           </>
         )}
-        <Timer roomId={roomId} isOwner={owner === currentUser.uid} />
+        <Timer roomId={roomId} isOwner={room?.owner === currentUser.uid} />
         <br />
         <div
           style={{

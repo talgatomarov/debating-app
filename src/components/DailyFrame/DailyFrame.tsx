@@ -9,7 +9,7 @@ interface DailyFrameProps {
 const useStyles = makeStyles(() => ({
   dailyiframe: {
     width: "100%",
-    height: "100%",
+    height: "90vh",
     border: "0",
   },
 }));
@@ -19,7 +19,9 @@ const DailyFrame: React.FC<DailyFrameProps> = ({ url }) => {
   const classes = useStyles();
 
   useEffect(() => {
-    const daily = DailyIframe.wrap(iframeRef.current!);
+    const daily = DailyIframe.wrap(iframeRef.current!, {
+      showFullscreenButton: true,
+    });
     daily.join({ url });
   }, [url]);
 

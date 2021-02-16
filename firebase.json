@@ -10,10 +10,6 @@
       ],
       "rewrites": [
         {
-          "source": "/daily/**",
-          "function": "daily"
-        },
-        {
           "source": "**",
           "destination": "/index.html"
         } 
@@ -28,10 +24,6 @@
         "**/node_modules/**"
       ],
       "rewrites": [
-        {
-          "source": "/daily/**",
-          "function": "daily"
-        },
         {
           "source": "**",
           "destination": "/index.html"

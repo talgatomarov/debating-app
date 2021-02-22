@@ -3,6 +3,13 @@ import axios from "axios";
 import { dailyKey } from "../../config";
 
 const getRooms = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "only authenticated users are allowed"
+    );
+  }
+
   const url = "https://api.daily.co/v1/rooms";
 
   try {

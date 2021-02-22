@@ -11,21 +11,41 @@ testEnv.mockConfig(dailyConfig);
 const wrapped = testEnv.wrap(getRooms);
 
 describe("getRooms", () => {
-  it("Successful call", async () => {
-    const data = { message: "Success" };
-    mockAxiosGet.mockResolvedValueOnce({ data: data });
-    const response = await wrapped({});
+  test("Successful call", async () => {
+    const mockResponse = { message: "Success" };
+    const mockData = { query: undefined };
 
-    expect(response).toEqual(data);
+    mockAxiosGet.mockResolvedValueOnce({ data: mockResponse });
+    const response = await wrapped(mockData, {
+      auth: {
+        uid: "testuid",
+      },
+    });
+
+    expect(response).toEqual(mockResponse);
     expect(mockAxiosGet).toHaveBeenCalled();
   });
 
-  it("Failed call", async () => {
+  test("Unauthenticated call", async () => {
+    try {
+      await wrapped({});
+    } catch (error) {
+      expect(error.code).toBe("unauthenticated");
+    }
+  });
+
+  test("Failed call", async () => {
     const mockError = { message: "Failed" };
+    const mockData = { query: undefined };
+
     mockAxiosGet.mockRejectedValueOnce(mockError);
 
     try {
-      await wrapped({});
+      await wrapped(mockData, {
+        auth: {
+          uid: "testuid",
+        },
+      });
     } catch (error) {
       expect(error.code).toBe("unavailable");
       expect(error.message).toBe(mockError.message);

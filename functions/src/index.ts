@@ -8,13 +8,16 @@ admin.initializeApp({
 });
 
 const app = express();
+const router = express.Router();
 
-app.get("/rooms", (req, res) => {
+router.get("/rooms", (req, res) => {
   res.send("get room");
 });
 
-app.post("/rooms", (req, res) => {
+router.post("/rooms", (req, res) => {
   res.send("post room");
 });
 
-exports.widgets = functions.https.onRequest(app);
+app.use("/api", router);
+
+exports.api = functions.https.onRequest(app);

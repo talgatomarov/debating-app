@@ -10,8 +10,8 @@
       ],
       "rewrites": [
         {
-          "source": "/daily/**",
-          "function": "daily"
+          "source": "/api/**",
+          "function": "api"
         },
         {
           "source": "**",
@@ -29,8 +29,8 @@
       ],
       "rewrites": [
         {
-          "source": "/daily/**",
-          "function": "daily"
+          "source": "/api/**",
+          "function": "api"
         },
         {
           "source": "**",

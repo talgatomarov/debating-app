@@ -76,9 +76,9 @@ const RoundRoom: React.FC = () => {
         }}
       >
         <Typography variant="h6" color="textPrimary" align="center">
-          {room?.roomName}
+          {room?.name}
         </Typography>
-        {room?.enteredPlayersCount === 9 && (
+        {room?.players.length === 9 && (
           <>
             <Typography
               variant="h4"

@@ -28,7 +28,7 @@ const CreateRoomForm: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
 
-  const [roomName, setRoomName] = useState<Room["roomName"]>("");
+  const [roomName, setRoomName] = useState<Room["name"]>("");
   const [format, setFormat] = useState<Room["format"]>(Format.BPF);
   const [privacy, setPrivacy] = useState<Room["privacy"]>("public");
   const [motion, setMotion] = useState<Room["motion"]>("");
@@ -40,54 +40,16 @@ const CreateRoomForm: React.FC = () => {
     const currentUser = app.auth().currentUser!;
 
     const data: Room = {
-      roomName: roomName,
+      name: roomName,
       stage: Stage.preparation,
       format: format,
       privacy: privacy,
       motion: motion,
       infoslide: infoslide,
       owner: currentUser.uid,
-      participantsCount: 0,
-      players: [
-        {
-          id: null,
-          name: null,
-        },
-        {
-          id: null,
-          name: null,
-        },
-        {
-          id: null,
-          name: null,
-        },
-        {
-          id: null,
-          name: null,
-        },
-        {
-          id: null,
-          name: null,
-        },
-        {
-          id: null,
-          name: null,
-        },
-        {
-          id: null,
-          name: null,
-        },
-        {
-          id: null,
-          name: null,
-        },
-      ],
-      judgeJoinedRoundRoom: false,
-      enteredPlayersCount: 0,
-      judge: {
-        id: null,
-        name: null,
-      },
+      players: [{ id: currentUser.uid, name: currentUser.displayName }],
+      judges: [],
+      chair: null,
       timerInfo: {
         timerOn: false,
         speechStart: 0,

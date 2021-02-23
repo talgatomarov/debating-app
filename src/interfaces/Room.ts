@@ -15,7 +15,7 @@ export enum Stage {
 }
 export interface Room {
   id?: string;
-  roomName: string;
+  name: string;
   stage: Stage;
   format: Format;
   privacy: string;
@@ -23,10 +23,8 @@ export interface Room {
   infoslide: string | null;
   owner: string;
   players: Player[];
-  participantsCount: number;
-  judge: Judge;
-  judgeJoinedRoundRoom: boolean;
-  enteredPlayersCount: number;
+  judges: Judge[];
+  chair: Judge | null;
   timerInfo: {
     timerOn: boolean;
     speechStart: number;

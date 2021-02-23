@@ -45,7 +45,7 @@ rooms.post("/rooms/:roomId/join", async (req, res) => {
     const ref = admin.firestore().collection("rooms").doc(roomId);
     const doc = await ref.get();
 
-    if (!doc.data()?.playerIds.includes(req.authId)) {
+    if (!doc.data()?.players.includes(req.authId)) {
       await ref.update({
         players: admin.firestore.FieldValue.arrayUnion({
           uid: uid,

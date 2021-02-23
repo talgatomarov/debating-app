@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import app from "app";
 import { Format, Room, Stage } from "interfaces/Room";
 import {
@@ -58,16 +57,15 @@ const CreateRoomForm: React.FC = () => {
     };
 
     try {
-      const authToken = await app.auth().currentUser?.getIdToken(true);
-
-      const response = await axios.post("/api/rooms", data, {
-        headers: { authorization: `Bearer ${authToken}` },
-      });
-
-      console.log(response);
+      const ref = await app.firestore().collection("rooms").add(data);
+      await app
+        .firestore()
+        .collection("users")
+        .doc(currentUser.uid)
+        .update({ currentRoom: ref.id });
 
       setError(null);
-      // history.push(`/lobby/${ref.id}/waiting-room`);
+      history.push(`/lobby/${ref.id}/waiting-room`);
     } catch (error) {
       setError(error);
     }

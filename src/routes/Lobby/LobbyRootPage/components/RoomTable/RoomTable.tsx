@@ -13,22 +13,35 @@ import {
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import HelpIcon from "@material-ui/icons/Help";
 import { Room } from "interfaces/Room";
-import React, { useCallback } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import React from "react";
+import axios from "axios";
+import app from "app";
+import { useHistory } from "react-router-dom";
 
 export interface RoomListProps {
   rooms: Room[] | undefined;
 }
 
 const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
+  const currentUser = app.auth().currentUser!;
   const history = useHistory();
-  const location = useLocation();
-  const onJoinRoomClick = useCallback(
-    (room: Room) => () => {
-      history.push(`${location.pathname}/${room.id}/waiting-room`);
-    },
-    [history, location]
-  );
+
+  const onJoinRoomClick = (room: Room) => {
+    return async () => {
+      const authToken = await app.auth().currentUser!.getIdToken();
+      await axios.post(
+        `/api/rooms/${room.id}/join`,
+        { uid: currentUser.uid, displayName: currentUser.displayName },
+        {
+          headers: {
+            authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+
+      history.push(`/rooms/${room.id}`);
+    };
+  };
 
   return (
     <Table data-testid="room-table">
@@ -62,16 +75,16 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
                 <List>
                   {room.players.map((n, i) => (
                     <div>
-                      {n.id !== null && <ListItem key={i}>{n.name}</ListItem>}
+                      {n.uid !== null && <ListItem key={i}>{n.name}</ListItem>}
                     </div>
                   ))}
                 </List>
               </TableCell>
               <TableCell>
-                {room.chair?.id === null
+                {room.chair?.uid === null
                   ? "no judge"
                   : room.chair?.name === null
-                  ? room.chair?.id
+                  ? room.chair?.uid
                   : room.chair?.name}
               </TableCell>
               <TableCell onClick={onJoinRoomClick(room)}>

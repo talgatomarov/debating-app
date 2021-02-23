@@ -5,9 +5,10 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import { SignUp, SignIn, ResetPassword, LobbyRoutes } from "routes";
+import { SignUp, SignIn, ResetPassword, LobbyRoutes, Room } from "routes";
 import { CssBaseline } from "@material-ui/core";
 import "fontsource-roboto";
+import PrivateRoute from "components/PrivateRoute";
 
 const App: React.FC = () => {
   return (
@@ -18,6 +19,7 @@ const App: React.FC = () => {
           <Route path="/signup" component={SignUp} />
           <Route path="/signin" component={SignIn} />
           <Route path="/reset-password" component={ResetPassword} />
+          <PrivateRoute exact path="/rooms/:roomId" component={Room} />
           <LobbyRoutes path="/lobby" />
           <Redirect exact from="/" to={"/lobby"} />
         </Switch>

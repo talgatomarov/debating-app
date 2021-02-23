@@ -96,17 +96,16 @@ const CreateRoomForm: React.FC = () => {
     };
 
     try {
-      const ref = await app.firestore().collection("rooms").add(data);
       const authToken = await app.auth().currentUser?.getIdToken(true);
 
-      const response = await axios.post(
-        "/api/rooms",
-        {},
-        { headers: { authorization: `Bearer ${authToken}` } }
-      );
+      const response = await axios.post("/api/rooms", data, {
+        headers: { authorization: `Bearer ${authToken}` },
+      });
+
+      console.log(response);
 
       setError(null);
-      history.push(`/lobby/${ref.id}/waiting-room`);
+      // history.push(`/lobby/${ref.id}/waiting-room`);
     } catch (error) {
       setError(error);
     }

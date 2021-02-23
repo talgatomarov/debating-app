@@ -26,24 +26,29 @@ rooms.get("/rooms", async (req, res) => {
 });
 
 rooms.post("/rooms", async (req, res) => {
-  const url = "https://api.daily.co/v1/rooms";
-  const { name, privacy } = req.body;
+  // const url = "https://api.daily.co/v1/rooms";
+  // const { name, privacy } = req.body;
   try {
-    const result = await axios.post(
-      url,
-      { name, privacy },
-      {
-        headers: {
-          Authorization: `Bearer ${dailyKey}`,
-        },
-        params: req.query,
-      }
-    );
+    // const result = await axios.post(
+    //   url,
+    //   { name, privacy },
+    //   {
+    //     headers: {
+    //       Authorization: `Bearer ${dailyKey}`,
+    //     },
+    //     params: req.query,
+    //   }
+    // );
 
-    const id = result.data.id;
-    await admin.firestore().collection("rooms").doc(id).set(req.body);
+    // const id = result.data.id;
+    const ref = await admin.firestore().collection("rooms").add(req.body);
+    await admin
+      .firestore()
+      .collection("users")
+      .doc(req.authId!)
+      .update({ currentRoom: ref.id });
 
-    res.send({ id: id });
+    res.send({ id: ref.id });
   } catch (error) {
     res.status(503).send({ error: error.message });
   }

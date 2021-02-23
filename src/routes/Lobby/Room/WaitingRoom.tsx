@@ -18,6 +18,7 @@ import { LobbyLayout } from "containers/layout";
 import { useHistory, RouteComponentProps } from "react-router-dom";
 import { Player } from "interfaces/Player";
 import app from "app";
+import firebase from "firebase";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

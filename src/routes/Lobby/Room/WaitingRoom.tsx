@@ -154,7 +154,7 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
         .doc(roomId)
         .update({
           players: players.map((n: Player) =>
-            n.id === currentUser.uid
+            n.uid === currentUser.uid
               ? {
                   id: null,
                   name: null,
@@ -262,11 +262,11 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
     if (
       rawRoomData &&
       players &&
-      players.find((n: Player) => n.id === currentUser.uid)
+      players.find((n: Player) => n.uid === currentUser.uid)
     ) {
       setPlayerChosePosition(true);
     }
-    if (rawRoomData && judge && judge.id === currentUser.uid) {
+    if (rawRoomData && judge && judge.uid === currentUser.uid) {
       setPlayerChosePosition(true);
       setPlayerIsJudge(true);
     }
@@ -403,8 +403,8 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
                           >
                             {n.name !== null
                               ? n.name
-                              : n.id !== null
-                              ? n.id
+                              : n.uid !== null
+                              ? n.uid
                               : "No one is here yet."}
                           </Typography>
                         </div>
@@ -414,7 +414,7 @@ const WaitingRoomPage: FC<RouteComponentProps<RouteParams>> = ({ match }) => {
                           variant="contained"
                           color="primary"
                           size="small"
-                          disabled={n.id !== null || playerChosePosition}
+                          disabled={n.uid !== null || playerChosePosition}
                           onClick={onChoosePositionClick(i)}
                         >
                           Choose this position

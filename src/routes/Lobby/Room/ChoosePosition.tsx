@@ -21,35 +21,35 @@ const positions = [
 
 const mockPLayers: Player[] = [
   {
-    id: "1",
+    uid: "1",
     name: "Aiya Yegenberdiyeva",
   },
   {
-    id: null,
+    uid: null,
     name: null,
   },
   {
-    id: "2",
+    uid: "2",
     name: "Lyailya Mussakhanova",
   },
   {
-    id: "3",
+    uid: "3",
     name: "Talgat Omarov",
   },
   {
-    id: null,
+    uid: null,
     name: null,
   },
   {
-    id: null,
+    uid: null,
     name: null,
   },
   {
-    id: "4",
+    uid: "4",
     name: "John Doe",
   },
   {
-    id: null,
+    uid: null,
     name: null,
   },
 ];

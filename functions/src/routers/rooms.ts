@@ -22,31 +22,19 @@ rooms.get("/rooms", async (req, res) => {
     res.send(result.data);
   } catch (error) {
     res.status(503).send({ error: error.message });
+    console.log(error);
   }
 });
 
 rooms.post("/rooms", async (req, res) => {
-  // const url = "https://api.daily.co/v1/rooms";
-  // const { name, privacy } = req.body;
   try {
-    // const result = await axios.post(
-    //   url,
-    //   { name, privacy },
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${dailyKey}`,
-    //     },
-    //     params: req.query,
-    //   }
-    // );
-
-    // const id = result.data.id;
     const ref = await admin.firestore().collection("rooms").add(req.body);
     await admin.auth().setCustomUserClaims(req.authId!, { roomId: ref.id });
 
     res.send({ id: ref.id });
   } catch (error) {
     res.status(503).send({ error: error.message });
+    console.log(error);
   }
 });
 
@@ -71,6 +59,7 @@ rooms.post("/rooms/:roomId/join", async (req, res) => {
     res.send({ id: ref.id });
   } catch (error) {
     res.status(503).send({ error: error.message });
+    console.log(error);
   }
 });
 

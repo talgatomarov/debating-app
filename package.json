@@ -36,7 +36,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "lint": "eslint --ext js,ts,tsx src",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "watch": "npm-watch"
+  },
+  "watch": {
+    "build": "src/"
   },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",
@@ -91,6 +95,7 @@
     "husky": "^4.3.0",
     "jest-when": "^2.7.2",
     "lint-staged": "^10.4.0",
+    "npm-watch": "^0.7.0",
     "prettier": "^2.1.2"
   }
 }

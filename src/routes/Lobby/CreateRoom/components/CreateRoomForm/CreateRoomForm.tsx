@@ -1,16 +1,15 @@
 import React, { useState } from "react";
+import axios from "axios";
 import app from "app";
 import { Format, Room, Stage } from "interfaces/Room";
 import {
   Button,
   createStyles,
-  FormControlLabel,
   Grid,
   InputLabel,
   makeStyles,
   MenuItem,
   Select,
-  Switch,
   TextField,
   Theme,
 } from "@material-ui/core";
@@ -98,6 +97,14 @@ const CreateRoomForm: React.FC = () => {
 
     try {
       const ref = await app.firestore().collection("rooms").add(data);
+      const authToken = await app.auth().currentUser?.getIdToken(true);
+
+      const response = await axios.post(
+        "/api/rooms",
+        {},
+        { headers: { authorization: `Bearer ${authToken}` } }
+      );
+
       setError(null);
       history.push(`/lobby/${ref.id}/waiting-room`);
     } catch (error) {

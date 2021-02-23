@@ -35,7 +35,7 @@ rooms.post("/rooms", async (req, res) => {
       params: req.query,
     });
 
-    return result.data;
+    res.send(result.data);
   } catch (error) {
     res.status(503).send({ error: error.message });
   }

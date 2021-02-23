@@ -4,10 +4,9 @@ import * as functions from "firebase-functions";
 import rooms from "./routers/rooms";
 import { userOnCreate, userOnDelete } from "./triggers/auth";
 
-admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
-  databaseURL: "https://debating-app.firebaseio.com",
-});
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+
+admin.initializeApp();
 
 export const dailyKey = functions.config().daily.key;
 

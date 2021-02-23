@@ -50,4 +50,21 @@ rooms.post("/rooms", async (req, res) => {
   }
 });
 
+rooms.post("/rooms/:roomId/join", async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const ref = admin.firestore().collection("rooms").doc(roomId);
+
+    await ref.update({
+      players: admin.firestore.FieldValue.arrayUnion(req.authId!),
+    });
+
+    await admin.auth().setCustomUserClaims(req.authId!, { roomId: ref.id });
+
+    res.send({ id: ref.id });
+  } catch (error) {
+    res.status(503).send({ error: error.message });
+  }
+});
+
 export default rooms;

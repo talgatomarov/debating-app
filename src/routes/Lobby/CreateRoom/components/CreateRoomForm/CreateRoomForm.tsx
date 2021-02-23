@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import app from "app";
 import { FirebaseError } from "firebase";
-import { Format, Room } from "interfaces/Room";
+import { Format, Room, Stage } from "interfaces/Room";
 import {
   Button,
   createStyles,
@@ -43,6 +43,7 @@ const CreateRoomForm: React.FC = () => {
 
     const data: Room = {
       roomName: roomName,
+      stage: Stage.preparation,
       format: format,
       publicRoom: publicRoom,
       motion: motion,

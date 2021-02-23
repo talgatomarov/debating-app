@@ -6,9 +6,17 @@ export enum Format {
   BPF = "British Parliamentary Format",
 }
 
+export enum Stage {
+  formation = "formation",
+  preparation = "preparation",
+  ongoing = "ongoing",
+  deliberation = "deliberation",
+  adjudication = "adjudication",
+}
 export interface Room {
   id?: string;
   roomName: string;
+  stage: Stage;
   format: Format;
   publicRoom: boolean;
   motion: string;

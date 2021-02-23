@@ -42,11 +42,7 @@ rooms.post("/rooms", async (req, res) => {
 
     // const id = result.data.id;
     const ref = await admin.firestore().collection("rooms").add(req.body);
-    await admin
-      .firestore()
-      .collection("users")
-      .doc(req.authId!)
-      .update({ currentRoom: ref.id });
+    await admin.auth().setCustomUserClaims(req.authId!, { roomId: ref.id });
 
     res.send({ id: ref.id });
   } catch (error) {

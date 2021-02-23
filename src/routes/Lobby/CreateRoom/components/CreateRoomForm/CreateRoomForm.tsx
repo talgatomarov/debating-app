@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import app from "app";
-import { FirebaseError } from "firebase";
 import { Format, Room, Stage } from "interfaces/Room";
 import {
   Button,
@@ -35,7 +34,7 @@ const CreateRoomForm: React.FC = () => {
   const [publicRoom, setPublicRoom] = useState<Room["publicRoom"]>(false);
   const [motion, setMotion] = useState<Room["motion"]>("");
   const [infoslide, setInfoslide] = useState<Room["infoslide"]>(null);
-  const [error, setError] = useState<FirebaseError | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();

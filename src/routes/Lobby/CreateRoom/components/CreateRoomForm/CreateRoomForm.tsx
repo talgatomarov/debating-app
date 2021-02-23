@@ -31,7 +31,7 @@ const CreateRoomForm: React.FC = () => {
 
   const [roomName, setRoomName] = useState<Room["roomName"]>("");
   const [format, setFormat] = useState<Room["format"]>(Format.BPF);
-  const [publicRoom, setPublicRoom] = useState<Room["publicRoom"]>(false);
+  const [privacy, setPrivacy] = useState<Room["privacy"]>("public");
   const [motion, setMotion] = useState<Room["motion"]>("");
   const [infoslide, setInfoslide] = useState<Room["infoslide"]>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -44,7 +44,7 @@ const CreateRoomForm: React.FC = () => {
       roomName: roomName,
       stage: Stage.preparation,
       format: format,
-      publicRoom: publicRoom,
+      privacy: privacy,
       motion: motion,
       infoslide: infoslide,
       owner: currentUser.uid,
@@ -120,6 +120,23 @@ const CreateRoomForm: React.FC = () => {
           />
         </Grid>
         <Grid item xs={12}>
+          <InputLabel id="privacy-label" required>
+            Privacy
+          </InputLabel>
+          <Select
+            name="privacy"
+            value={privacy}
+            onChange={(e) => setPrivacy(e.target.value as string)}
+            labelId="privacy-label"
+            data-testid="privacy-select"
+            fullWidth
+            required
+          >
+            <MenuItem value="public">Public</MenuItem>
+            <MenuItem value="private">Private</MenuItem>
+          </Select>
+        </Grid>
+        <Grid item xs={12}>
           <InputLabel id="format-label" required>
             Format
           </InputLabel>
@@ -151,18 +168,6 @@ const CreateRoomForm: React.FC = () => {
             label="Infoslide"
             fullWidth
             multiline
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={publicRoom}
-                onChange={(e) => setPublicRoom(e.target.checked)}
-              />
-            }
-            label="Make Public"
-            labelPlacement="end"
           />
         </Grid>
         <Grid item xs={12}>

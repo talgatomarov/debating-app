@@ -18,7 +18,7 @@ export interface Room {
   roomName: string;
   stage: Stage;
   format: Format;
-  publicRoom: boolean;
+  privacy: string;
   motion: string;
   infoslide: string | null;
   owner: string;

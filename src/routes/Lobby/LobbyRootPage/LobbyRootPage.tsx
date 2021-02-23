@@ -9,9 +9,11 @@ import RoomTable from "./components/RoomTable";
 
 const LobbyRootPage: React.FC = () => {
   const [rooms, loading, error] = useCollectionData<Room>(
-    app.firestore().collection("rooms").where("publicRoom", "==", true),
+    app.firestore().collection("rooms").where("privacy", "==", "public"),
     { idField: "id" }
   );
+
+  console.log(rooms);
 
   return (
     <LobbyLayout>

@@ -57,7 +57,7 @@ const BPFFormation: React.FC<BPFFormationProps> = ({ room }) => {
         margin: "5px",
       }}
     >
-      // TODO: Fix HTML element keys
+      {/* TODO: Fix HTML element keys */}
       {Object.keys(room.positions).map((teamName) => {
         const teamMembers = room.positions[teamName];
 

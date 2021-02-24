@@ -23,10 +23,10 @@ const Room: React.FC = () => {
     app.firestore().collection("rooms").doc(roomId)
   );
 
-  const selectComponent = (stage: string) => {
+  const selectStage = (stage: string) => {
     switch (stage) {
       case Stage.formation:
-        return <Formation />;
+        return <Formation room={room!} />;
       case Stage.preparation:
         return <Preparation />;
       case Stage.ongoing:
@@ -56,7 +56,7 @@ const Room: React.FC = () => {
           <CircularProgress />
         </Box>
       )}
-      {room && selectComponent(room.stage)}
+      {room && selectStage(room.stage)}
     </LobbyLayout>
   );
 };

@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { LobbyLayout } from "containers/layout";
 import { Typography, Button } from "@material-ui/core";
-import JitsiMeet from "components/JitsiMeet";
 import app from "app";
+import firebase from "firebase";
 import { useParams, Link as RouterLink } from "react-router-dom";
-import Loader from "components/Loader";
 
 interface RouteParams {
   roomId: string;
@@ -12,12 +11,9 @@ interface RouteParams {
 }
 
 const PreparationRoom: React.FC = () => {
-  const { roomId, position } = useParams<RouteParams>();
+  const { roomId } = useParams<RouteParams>();
 
   const linkToRoom = `/lobby/${roomId}/round-room`;
-
-  const displayName = app.auth().currentUser!.displayName!;
-  const roomName = roomId + "-" + position;
 
   return (
     <LobbyLayout>
@@ -40,11 +36,6 @@ const PreparationRoom: React.FC = () => {
             alignContent: "center",
           }}
         >
-          <JitsiMeet
-            loadingComponent={Loader}
-            displayName={displayName}
-            roomName={roomName}
-          />
           <br />
           <div
             style={{
@@ -56,8 +47,13 @@ const PreparationRoom: React.FC = () => {
               color="primary"
               size="medium"
               variant="contained"
-              component={RouterLink}
-              to={linkToRoom}
+              onClick={() => {
+                const fn = firebase.functions().httpsCallable("getRooms");
+
+                fn({})
+                  .then((res) => console.log(res.data))
+                  .catch((err) => console.log(err));
+              }}
             >
               Link to the room
             </Button>

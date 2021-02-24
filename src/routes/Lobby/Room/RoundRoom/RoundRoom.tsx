@@ -49,7 +49,7 @@ const RoundRoom: React.FC = () => {
   const playerTeam = useMemo(() => {
     const index =
       (room?.players &&
-        room?.players.findIndex((n) => n.uid === currentUser.uid)) ||
+        room?.players.findIndex((n) => n === currentUser.uid)) ||
       -1;
     return teamMap.get(index);
   }, [room, currentUser]);

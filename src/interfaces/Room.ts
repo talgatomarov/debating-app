@@ -6,6 +6,25 @@ export enum Format {
   BPF = "British Parliamentary Format",
 }
 
+export interface BPFPositions {
+  "Opening Government": {
+    "Prime Minister": Player | null;
+    "Deputy Prime Minister": Player | null;
+  };
+  "Opening Opposition": {
+    "Leader of Opposition": Player | null;
+    "Deputy Prime Minister": Player | null;
+  };
+  "Closing Government": {
+    "Government Member": Player | null;
+    "Government Whip": Player | null;
+  };
+  "Closing Opposition": {
+    "Opposition Member": Player | null;
+    "Opposition Whip": Player | null;
+  };
+}
+
 export enum Stage {
   formation = "formation",
   preparation = "preparation",
@@ -25,6 +44,7 @@ export interface Room {
   players: Player[];
   judges: Judge[];
   chair: Judge | null;
+  positions: any;
   timerInfo: {
     timerOn: boolean;
     speechStart: number;

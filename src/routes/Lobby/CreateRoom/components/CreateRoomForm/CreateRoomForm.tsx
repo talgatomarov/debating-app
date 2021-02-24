@@ -15,6 +15,7 @@ import {
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { useHistory } from "react-router-dom";
+import { createPositions } from "./Positions";
 
 const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
   createStyles({
@@ -48,6 +49,7 @@ const CreateRoomForm: React.FC = () => {
       infoslide: infoslide,
       owner: currentUser.uid,
       players: [{ uid: currentUser.uid, name: currentUser.displayName }],
+      positions: createPositions(format),
       judges: [],
       chair: null,
       timerInfo: {

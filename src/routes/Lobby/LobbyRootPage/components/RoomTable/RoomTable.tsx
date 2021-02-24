@@ -59,7 +59,6 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
             </Typography>
           </TableCell>
           <TableCell>Participants joined</TableCell>
-          <TableCell>Players</TableCell>
           <TableCell>Judge</TableCell>
           <TableCell>Join</TableCell>
         </TableRow>
@@ -71,15 +70,6 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
               <TableCell>{room.name}</TableCell>
               <TableCell>{room.format}</TableCell>
               <TableCell>{room.players.length}</TableCell>
-              <TableCell>
-                <List>
-                  {room.players.map((n, i) => (
-                    <div>
-                      {n.uid !== null && <ListItem key={i}>{n.name}</ListItem>}
-                    </div>
-                  ))}
-                </List>
-              </TableCell>
               <TableCell>
                 {room.chair?.uid === null
                   ? "no judge"

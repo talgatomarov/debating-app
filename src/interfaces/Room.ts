@@ -41,7 +41,7 @@ export interface Room {
   motion: string;
   infoslide: string | null;
   owner: string;
-  players: Player[];
+  players: string[];
   judges: Judge[];
   chair: Judge | null;
   positions: any;

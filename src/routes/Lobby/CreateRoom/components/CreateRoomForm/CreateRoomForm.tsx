@@ -48,7 +48,7 @@ const CreateRoomForm: React.FC = () => {
       motion: motion,
       infoslide: infoslide,
       owner: currentUser.uid,
-      players: [{ uid: currentUser.uid, name: currentUser.displayName }],
+      players: [currentUser.uid],
       positions: createPositions(format),
       judges: [],
       chair: null,

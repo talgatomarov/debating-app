@@ -12,7 +12,7 @@ import Ongoing from "./Ongoing";
 import Deliberation from "./Deliberation";
 import Adjudication from "./Adjudication";
 
-interface RouteParams {
+export interface RouteParams {
   roomId: string;
 }
 

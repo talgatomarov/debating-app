@@ -63,4 +63,44 @@ rooms.post("/rooms/:roomId/join", async (req, res) => {
   }
 });
 
+rooms.post("/rooms/:roomId/select", async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const { displayName, teamName, speakerTitle } = req.body;
+
+    const ref = admin.firestore().collection("rooms").doc(roomId);
+    const doc = await ref.get();
+
+    if (doc.data()?.players.includes(req.authId)) {
+      const positions = doc.data()?.positions;
+
+      if (!positions[teamName][speakerTitle]) {
+        Object.keys(positions).forEach((t) => {
+          Object.keys(positions[t]).forEach((s) => {
+            if (positions[t][s]?.uid === req.authId) {
+              positions[t][s] = null;
+            }
+          });
+        });
+
+        positions[teamName][speakerTitle] = {
+          uid: req.authId,
+          name: displayName,
+        };
+
+        await ref.update({
+          positions: positions,
+        });
+
+        return res.status(200).send();
+      } else {
+        return res.status(400).send("Position is not empty");
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(503).send({ error: error.message });
+  }
+});
+
 export default rooms;

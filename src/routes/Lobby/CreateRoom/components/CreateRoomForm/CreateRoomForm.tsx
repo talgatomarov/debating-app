@@ -69,7 +69,7 @@ const CreateRoomForm: React.FC = () => {
       });
 
       setError(null);
-      history.push(`/lobby/${response.data.id}/waiting-room`);
+      history.push(`/rooms/${response.data.id}`);
     } catch (error) {
       setError(error);
     }

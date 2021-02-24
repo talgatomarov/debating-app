@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as admin from "firebase-admin";
 import axios from "axios";
 import { checkIfAuthenticated } from "../utils";
+import { createMeeting, createMeetingToken } from "../daily";
 import { dailyKey } from "../config";
 
 const rooms = Router();
@@ -94,6 +95,53 @@ rooms.post("/rooms/:roomId/select", async (req, res) => {
         return res.status(400).send("Position is not empty");
       }
     }
+  } catch (error) {
+    console.log(error);
+    return res.status(503).send({ error: error.message });
+  }
+});
+
+rooms.post("/rooms/:roomId/startPreparation", async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    // const { displayName } = req.body;
+
+    const ref = admin.firestore().collection("rooms").doc(roomId);
+    const doc = await ref.get();
+
+    const owner = doc.data()?.owner;
+    const positions = doc.data()?.positions;
+
+    if (req.authId !== owner) {
+      return res.status(401).send("Only owner can start preparation");
+    }
+
+    Object.keys(positions).forEach(async (team) => {
+      const createMeetingResponse = await createMeeting();
+      const meetingName = createMeetingResponse.name;
+
+      Object.keys(positions[team]).forEach(async (speaker) => {
+        const user = positions[team][speaker];
+
+        if (user) {
+          const isOwner = user.uid === owner;
+
+          const { token } = await createMeetingToken(meetingName, isOwner);
+
+          await admin.auth().setCustomUserClaims(req.authId!, {
+            roomId: roomId,
+            meetingToken: token,
+            meetingName: meetingName,
+          });
+        }
+      });
+    });
+
+    await ref.update({
+      stage: "preparation",
+    });
+
+    res.status(200).send();
   } catch (error) {
     console.log(error);
     return res.status(503).send({ error: error.message });

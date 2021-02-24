@@ -17,7 +17,6 @@ const BPFFormation: React.FC<BPFFormationProps> = ({ room }) => {
   const handleSelectPosition = (teamName: string, speakerTitle: string) => {
     return async () => {
       const requestBody = {
-        uid: currentUser.uid,
         displayName: currentUser.displayName,
         teamName,
         speakerTitle,
@@ -27,6 +26,19 @@ const BPFFormation: React.FC<BPFFormationProps> = ({ room }) => {
 
       // TODO: handle error
       await axios.post(`/api/rooms/${roomId}/select`, requestBody, {
+        headers: {
+          authorization: `Bearer ${authToken}`,
+        },
+      });
+    };
+  };
+
+  const handleStartPreparation = () => {
+    return async () => {
+      const authToken = await currentUser.getIdToken(true);
+
+      // TODO: handle error
+      await axios.post(`/api/rooms/${roomId}/startPreparation`, null, {
         headers: {
           authorization: `Bearer ${authToken}`,
         },
@@ -45,6 +57,7 @@ const BPFFormation: React.FC<BPFFormationProps> = ({ room }) => {
         margin: "5px",
       }}
     >
+      // TODO: Fix HTML element keys
       {Object.keys(room.positions).map((teamName) => {
         const teamMembers = room.positions[teamName];
 
@@ -59,6 +72,7 @@ const BPFFormation: React.FC<BPFFormationProps> = ({ room }) => {
                   flexDirection: "row",
                   alignItems: "center",
                 }}
+                key={teamName}
               >
                 <CardContent>
                   <Typography color="textSecondary" gutterBottom>
@@ -98,6 +112,16 @@ const BPFFormation: React.FC<BPFFormationProps> = ({ room }) => {
           </div>
         );
       })}
+      {room.owner === currentUser.uid && (
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={handleStartPreparation()}
+        >
+          Start preparation
+        </Button>
+      )}
     </div>
   );
 };

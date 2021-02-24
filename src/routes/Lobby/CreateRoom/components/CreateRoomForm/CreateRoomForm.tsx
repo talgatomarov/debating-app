@@ -41,7 +41,7 @@ const CreateRoomForm: React.FC = () => {
 
     const data: Room = {
       name: roomName,
-      stage: Stage.preparation,
+      stage: Stage.formation,
       format: format,
       privacy: privacy,
       motion: motion,

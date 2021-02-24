@@ -28,16 +28,12 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
 
   const onJoinRoomClick = (room: Room) => {
     return async () => {
-      const authToken = await app.auth().currentUser!.getIdToken();
-      await axios.post(
-        `/api/rooms/${room.id}/join`,
-        { uid: currentUser.uid, displayName: currentUser.displayName },
-        {
-          headers: {
-            authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
+      const authToken = await currentUser.getIdToken();
+      await axios.post(`/api/rooms/${room.id}/join`, null, {
+        headers: {
+          authorization: `Bearer ${authToken}`,
+        },
+      });
 
       history.push(`/rooms/${room.id}`);
     };

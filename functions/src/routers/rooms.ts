@@ -41,22 +41,19 @@ rooms.post("/rooms", async (req, res) => {
 rooms.post("/rooms/:roomId/join", async (req, res) => {
   try {
     const { roomId } = req.params;
-    const { displayName, uid } = req.body;
     const ref = admin.firestore().collection("rooms").doc(roomId);
     const doc = await ref.get();
 
     if (!doc.data()?.players.includes(req.authId)) {
       await ref.update({
-        players: admin.firestore.FieldValue.arrayUnion({
-          uid: uid,
-          name: displayName,
-        }),
+        players: admin.firestore.FieldValue.arrayUnion(req.authId),
       });
     }
 
     await admin.auth().setCustomUserClaims(req.authId!, { roomId: ref.id });
 
     res.send({ id: ref.id });
+    console.log(`User ${req.authId} successfully joined ${roomId}`);
   } catch (error) {
     res.status(503).send({ error: error.message });
     console.log(error);

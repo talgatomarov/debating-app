@@ -3,8 +3,11 @@ import DailyIframe from "@daily-co/daily-js";
 import { makeStyles } from "@material-ui/core";
 
 interface DailyFrameProps {
-  url: string;
+  meetingName: string;
+  meetingToken?: string;
 }
+
+const dailyUrl = "https://debating-app.daily.co";
 
 const useStyles = makeStyles(() => ({
   dailyiframe: {
@@ -14,7 +17,10 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const DailyFrame: React.FC<DailyFrameProps> = ({ url }) => {
+const DailyFrame: React.FC<DailyFrameProps> = ({
+  meetingName,
+  meetingToken,
+}) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const classes = useStyles();
 
@@ -22,8 +28,8 @@ const DailyFrame: React.FC<DailyFrameProps> = ({ url }) => {
     const daily = DailyIframe.wrap(iframeRef.current!, {
       showFullscreenButton: true,
     });
-    daily.join({ url });
-  }, [url]);
+    daily.join({ url: `${dailyUrl}/${meetingName}?t=${meetingToken}` });
+  }, [meetingName, meetingToken]);
 
   return (
     <iframe

@@ -2,15 +2,15 @@
   "name": "functions",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
-    "build": "npm run env && tsc",
+    "build": "tsc",
     "build:watch": "tsc -w",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "test": "jest",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log",
-    "env": "firebase functions:config:get > .runtimeconfig.json"
+    "logs": "firebase functions:log"
+    // "env": "firebase functions:config:get > .runtimeconfig.json"
   },
   "engines": {
     "node": "8"

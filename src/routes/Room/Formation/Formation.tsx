@@ -1,7 +1,7 @@
 import React from "react";
 
 const Formation: React.FC = () => {
-  return <div></div>;
+  return <div>Formation</div>;
 };
 
 export default Formation;

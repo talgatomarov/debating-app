@@ -128,7 +128,7 @@ rooms.post("/rooms/:roomId/startPreparation", async (req, res) => {
 
           const { token } = await createMeetingToken(meetingName, isOwner);
 
-          await admin.auth().setCustomUserClaims(req.authId!, {
+          await admin.auth().setCustomUserClaims(user.uid, {
             roomId: roomId,
             meetingToken: token,
             meetingName: meetingName,

@@ -116,10 +116,7 @@ rooms.post("/rooms/:roomId/startPreparation", async (req, res) => {
 
           const { token } = await createMeetingToken(meetingName, isOwner);
 
-          const userRef = admin
-            .firestore()
-            .collection("users")
-            .doc(req.authId!);
+          const userRef = admin.firestore().collection("users").doc(user.uid!);
 
           await userRef.update({
             roomId: roomId,

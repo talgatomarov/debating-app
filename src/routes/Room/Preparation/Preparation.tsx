@@ -1,29 +1,34 @@
-import React, { useEffect, useState } from "react";
-import app from "app";
+import React from "react";
 import DailyFrame from "components/DailyFrame";
+import app from "app";
+import { UserData } from "interfaces/UserData";
+import { useDocumentData } from "react-firebase-hooks/firestore";
+import { Alert } from "@material-ui/lab";
+import { Box, CircularProgress } from "@material-ui/core";
 
 const Preparation: React.FC = () => {
-  const [meetingName, setMeetingName] = useState<string | null>(null);
-  const [meetingToken, setMeetingToken] = useState<string>();
-
-  useEffect(() => {
-    app
-      .auth()
-      .currentUser!.getIdTokenResult()
-      .then((idTokenResult) => {
-        const { meetingToken, meetingName } = idTokenResult.claims;
-        setMeetingToken(meetingToken);
-        setMeetingName(meetingName);
-        console.log(meetingName);
-        console.log(meetingToken);
-      });
-  }, []);
+  const [userData, loading, error] = useDocumentData<UserData>(
+    app.firestore().collection("users").doc(app.auth().currentUser!.uid)
+  );
 
   return (
     <>
+      {error && (
+        <Alert severity="error" data-testid="error">
+          Room does not exists or could not fetch the data
+        </Alert>
+      )}
+      {loading && (
+        <Box display="flex" justifyContent="center" data-testid="loading">
+          <CircularProgress />
+        </Box>
+      )}
       <div>Preparation</div>
-      {meetingName && (
-        <DailyFrame meetingName={meetingName} meetingToken={meetingToken} />
+      {userData?.meetingName && (
+        <DailyFrame
+          meetingName={userData.meetingName}
+          meetingToken={userData.meetingToken}
+        />
       )}
     </>
   );

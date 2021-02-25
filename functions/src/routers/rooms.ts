@@ -1,38 +1,22 @@
 import { Router } from "express";
 import * as admin from "firebase-admin";
-import axios from "axios";
 import { checkIfAuthenticated } from "../utils";
 import { createMeeting, createMeetingToken } from "../daily";
-import { dailyKey } from "../config";
 
 const rooms = Router();
 
 rooms.use(checkIfAuthenticated);
 
-rooms.get("/rooms", async (req, res) => {
-  const url = "https://api.daily.co/v1/rooms";
-
-  try {
-    const result = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${dailyKey}`,
-      },
-      params: req.query,
-    });
-
-    res.send(result.data);
-  } catch (error) {
-    res.status(503).send({ error: error.message });
-    console.log(error);
-  }
-});
-
 rooms.post("/rooms", async (req, res) => {
   try {
-    const ref = await admin.firestore().collection("rooms").add(req.body);
-    await admin.auth().setCustomUserClaims(req.authId!, { roomId: ref.id });
+    const roomRef = await admin.firestore().collection("rooms").add(req.body);
+    const userRef = admin.firestore().collection("users").doc(req.authId!);
 
-    res.send({ id: ref.id });
+    await userRef.update({
+      roomId: roomRef.id,
+    });
+
+    res.send({ id: roomRef.id });
   } catch (error) {
     res.status(503).send({ error: error.message });
     console.log(error);
@@ -51,7 +35,11 @@ rooms.post("/rooms/:roomId/join", async (req, res) => {
       });
     }
 
-    await admin.auth().setCustomUserClaims(req.authId!, { roomId: ref.id });
+    const userRef = admin.firestore().collection("users").doc(req.authId!);
+
+    await userRef.update({
+      roomId: roomId,
+    });
 
     res.send({ id: ref.id });
     console.log(`User ${req.authId} successfully joined ${roomId}`);
@@ -128,7 +116,12 @@ rooms.post("/rooms/:roomId/startPreparation", async (req, res) => {
 
           const { token } = await createMeetingToken(meetingName, isOwner);
 
-          await admin.auth().setCustomUserClaims(user.uid, {
+          const userRef = admin
+            .firestore()
+            .collection("users")
+            .doc(req.authId!);
+
+          await userRef.update({
             roomId: roomId,
             meetingToken: token,
             meetingName: meetingName,

@@ -8,6 +8,7 @@ interface FormationProps {
 }
 
 const Formation: React.FC<FormationProps> = ({ room }) => {
+  // TODO: Maybe we do not need separate components for each format
   const selectFormation = (format: string) => {
     switch (format) {
       case Format.BPF:

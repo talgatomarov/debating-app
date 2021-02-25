@@ -17,6 +17,7 @@ const firebaseConfig = {
 
 const app = firebase.initializeApp(firebaseConfig);
 
+// TODO: Maybe it would better to setup it via environmental variables?
 // eslint-disable-next-line no-restricted-globals
 if (location.hostname === "localhost") {
   app.firestore().useEmulator("localhost", 8080);

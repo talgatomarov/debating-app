@@ -52,36 +52,52 @@ rooms.post("/rooms/:roomId/join", async (req, res) => {
 rooms.post("/rooms/:roomId/select", async (req, res) => {
   try {
     const { roomId } = req.params;
-    const { displayName, teamName, speakerTitle } = req.body;
+    // Request contains either teamName and speakerTitle, or adjudicate flag is set to true
+    // If teamName, speakerTitle, and adjudicate fields are all present, then adjudicate option will be prioritized
+    const { displayName, teamName, speakerTitle, adjudicate } = req.body;
 
     const ref = admin.firestore().collection("rooms").doc(roomId);
     const doc = await ref.get();
 
+    // User has to be listed in players array field
     if (doc.data()?.players.includes(req.authId)) {
       const positions = doc.data()?.positions;
+      let judges = doc.data()?.judges || [];
 
-      if (!positions[teamName][speakerTitle]) {
-        Object.keys(positions).forEach((t) => {
-          Object.keys(positions[t]).forEach((s) => {
-            if (positions[t][s]?.uid === req.authId) {
-              positions[t][s] = null;
-            }
-          });
+      // Clear previous position
+      Object.keys(positions).forEach((t) => {
+        Object.keys(positions[t]).forEach((s) => {
+          if (positions[t][s]?.uid === req.authId) {
+            positions[t][s] = null;
+          }
         });
+      });
+      judges = judges.filter(
+        (judge: { uid: string; name: string }) => judge.uid !== req.authId
+      );
 
-        positions[teamName][speakerTitle] = {
+      if (adjudicate) {
+        judges.push({
           uid: req.authId,
           name: displayName,
-        };
-
-        await ref.update({
-          positions: positions,
         });
-
-        return res.status(200).send();
       } else {
-        return res.status(400).send("Position is not empty");
+        // User does not wish to adjudicate
+        if (!positions[teamName][speakerTitle]) {
+          positions[teamName][speakerTitle] = {
+            uid: req.authId,
+            name: displayName,
+          };
+        } else {
+          return res.status(400).send("Position is not empty");
+        }
       }
+      await ref.update({
+        positions: positions,
+        judges: judges,
+      });
+
+      res.status(200).send();
     }
   } catch (error) {
     console.log(error);

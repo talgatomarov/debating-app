@@ -64,7 +64,7 @@ const LobbyDrawer: React.FC<LobbyDrawerProps> = ({ window, open, onClose }) => {
             </ListItemIcon>
             <ListItemText primary="Lobby" />
           </ListItem>
-          <ListItem button component={RouterLink} to="/lobby/create-room">
+          <ListItem button component={RouterLink} to="/create-room">
             <ListItemIcon>
               <AddIcon />
             </ListItemIcon>

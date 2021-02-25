@@ -7,8 +7,6 @@ import {
   TableRow,
   Tooltip,
   Typography,
-  List,
-  ListItem,
 } from "@material-ui/core";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import HelpIcon from "@material-ui/icons/Help";

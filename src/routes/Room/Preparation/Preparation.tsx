@@ -4,12 +4,23 @@ import app from "app";
 import { UserData } from "interfaces/UserData";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { Alert } from "@material-ui/lab";
-import { Box, CircularProgress } from "@material-ui/core";
+import { Box, Button, CircularProgress } from "@material-ui/core";
+import { Room } from "interfaces/Room";
 
-const Preparation: React.FC = () => {
+interface PreparationProps {
+  room: Room;
+}
+
+const Preparation: React.FC<PreparationProps> = ({ room }) => {
+  const currentUser = app.auth().currentUser!;
   const [userData, loading, error] = useDocumentData<UserData>(
     app.firestore().collection("users").doc(app.auth().currentUser!.uid)
   );
+
+  const handleStartRound = async () => {
+    // TODO: Implement "start round" logic
+    console.log("Start round");
+  };
 
   return (
     <>
@@ -29,6 +40,19 @@ const Preparation: React.FC = () => {
           meetingName={userData.meetingName}
           meetingToken={userData.meetingToken}
         />
+      )}
+
+      {/* TODO: Integrate preparation timer here */}
+
+      {room.judges.some((judge) => judge.uid === currentUser.uid) && (
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => handleStartRound()}
+        >
+          Start preparation
+        </Button>
       )}
     </>
   );

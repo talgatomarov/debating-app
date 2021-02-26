@@ -18,7 +18,7 @@ export interface RouteParams {
 
 const Room: React.FC = () => {
   const { roomId } = useParams<RouteParams>();
-
+  // TODO: Refactor all the states to MobX store
   const [room, loading, error] = useDocumentData<IRoom>(
     app.firestore().collection("rooms").doc(roomId)
   );
@@ -28,7 +28,7 @@ const Room: React.FC = () => {
       case Stage.formation:
         return <Formation room={room!} />;
       case Stage.preparation:
-        return <Preparation />;
+        return <Preparation room={room!} />;
       case Stage.ongoing:
         return <Ongoing />;
       case Stage.deliberation:

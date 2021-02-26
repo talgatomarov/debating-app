@@ -20,7 +20,7 @@ export const createMeeting = async (
     }
   );
 
-  console.log(`Room ${response.data.name} was created`);
+  console.log(`Meeting ${response.data.name} was created`);
 
   return response.data;
 };

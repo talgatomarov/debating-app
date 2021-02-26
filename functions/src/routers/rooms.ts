@@ -8,6 +8,7 @@ const rooms = Router();
 rooms.use(checkIfAuthenticated);
 
 rooms.post("/rooms", async (req, res) => {
+  // Enpoints creates a new room
   try {
     const roomRef = await admin.firestore().collection("rooms").add(req.body);
     const userRef = admin.firestore().collection("users").doc(req.authId!);
@@ -29,6 +30,7 @@ rooms.post("/rooms/:roomId/join", async (req, res) => {
     const ref = admin.firestore().collection("rooms").doc(roomId);
     const doc = await ref.get();
 
+    // Add user to the players list if he is not already there
     if (!doc.data()?.players.includes(req.authId)) {
       await ref.update({
         players: admin.firestore.FieldValue.arrayUnion(req.authId),
@@ -37,6 +39,8 @@ rooms.post("/rooms/:roomId/join", async (req, res) => {
 
     const userRef = admin.firestore().collection("users").doc(req.authId!);
 
+    // Set up roomId
+    // Info about room is stored at "users" firestore collection
     await userRef.update({
       roomId: roomId,
     });
@@ -52,7 +56,7 @@ rooms.post("/rooms/:roomId/join", async (req, res) => {
 rooms.post("/rooms/:roomId/select", async (req, res) => {
   try {
     const { roomId } = req.params;
-    // Request contains either teamName and speakerTitle, or adjudicate flag is set to true
+    // Request contains either (teamName and speakerTitle), or adjudicate flag is set to true
     // If teamName, speakerTitle, and adjudicate fields are all present, then adjudicate option will be prioritized
     const { displayName, teamName, speakerTitle, adjudicate } = req.body;
 
@@ -108,19 +112,23 @@ rooms.post("/rooms/:roomId/select", async (req, res) => {
 rooms.post("/rooms/:roomId/startPreparation", async (req, res) => {
   try {
     const { roomId } = req.params;
-    // const { displayName } = req.body;
 
     const ref = admin.firestore().collection("rooms").doc(roomId);
     const doc = await ref.get();
 
     const owner = doc.data()?.owner;
     const positions = doc.data()?.positions;
+    const judges = doc.data()?.judges;
 
+    // Only room owner can start preparation
     if (req.authId !== owner) {
       return res.status(401).send("Only owner can start preparation");
     }
 
+    // Tala's note: idk how to properly iterate through the object
+    // If you have better way, feel free to change
     Object.keys(positions).forEach(async (team) => {
+      // Create Daily meeting for each team
       const createMeetingResponse = await createMeeting();
       const meetingName = createMeetingResponse.name;
 
@@ -130,16 +138,39 @@ rooms.post("/rooms/:roomId/startPreparation", async (req, res) => {
         if (user) {
           const isOwner = user.uid === owner;
 
+          // Create Meeting Token for each speaker
+          // Note: users will not be able to access the meeting without token
           const { token } = await createMeetingToken(meetingName, isOwner);
 
           const userRef = admin.firestore().collection("users").doc(user.uid!);
 
+          // Set Meeting Token for each speaker
+          // meetingName and meetingToken is stored at "users" firestore collection
           await userRef.update({
             roomId: roomId,
             meetingToken: token,
             meetingName: meetingName,
           });
         }
+      });
+    });
+
+    // Create a separate meeting for judges
+    const judgeMeetingResponse = await createMeeting();
+    const judgeMeetingName = judgeMeetingResponse.name;
+
+    judges.forEach(async (judge: { uid: string; name: string }) => {
+      // Create Meeting Token for each judge$
+      // All judges are owners of the room
+      const { token } = await createMeetingToken(judgeMeetingName, true);
+
+      const judgeRef = admin.firestore().collection("users").doc(judge.uid!);
+
+      // Set Meeting Token for each judge
+      await judgeRef.update({
+        roomId: roomId,
+        meetingToken: token,
+        meetingName: judgeMeetingName,
       });
     });
 

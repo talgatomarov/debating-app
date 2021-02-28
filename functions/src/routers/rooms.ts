@@ -214,21 +214,11 @@ rooms.post("/rooms/:roomId/startRound", async (req, res) => {
     const { token } = await createMeetingToken(meetingName, true);
 
     // Set meeting tokens for players
-    players.forEach(async (player: { uid: string; name: string }) => {
-      const playerRef = admin.firestore().collection("users").doc(player.uid!);
+    // Note that judge is also a player
+    players.forEach(async (playerId: string) => {
+      const playerRef = admin.firestore().collection("users").doc(playerId);
 
       await playerRef.update({
-        roomId: roomId,
-        meetingToken: token,
-        meetingName: meetingName,
-      });
-    });
-
-    // Set meeting tokens for judges
-    judges.forEach(async (judge: { uid: string; name: string }) => {
-      const judgeRef = admin.firestore().collection("users").doc(judge.uid!);
-
-      await judgeRef.update({
         roomId: roomId,
         meetingToken: token,
         meetingName: meetingName,

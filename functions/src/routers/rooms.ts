@@ -1,7 +1,7 @@
 import { Router } from "express";
 import * as admin from "firebase-admin";
 import { checkIfAuthenticated } from "../utils";
-import { createMeeting, createMeetingToken } from "../daily";
+import { createMeeting, createMeetingToken, deleteMeetings } from "../daily";
 
 const rooms = Router();
 
@@ -125,12 +125,15 @@ rooms.post("/rooms/:roomId/startPreparation", async (req, res) => {
       return res.status(401).send("Only owner can start preparation");
     }
 
+    const activeMeetings = [];
+
     // Tala's note: idk how to properly iterate through the object
-    // If you have better way, feel free to change
+    // If you know a better way, feel free to change
     Object.keys(positions).forEach(async (team) => {
       // Create Daily meeting for each team
       const createMeetingResponse = await createMeeting();
       const meetingName = createMeetingResponse.name;
+      activeMeetings.push(meetingName);
 
       Object.keys(positions[team]).forEach(async (speaker) => {
         const user = positions[team][speaker];
@@ -158,6 +161,7 @@ rooms.post("/rooms/:roomId/startPreparation", async (req, res) => {
     // Create a separate meeting for judges
     const judgeMeetingResponse = await createMeeting();
     const judgeMeetingName = judgeMeetingResponse.name;
+    activeMeetings.push(judgeMeetingName);
 
     judges.forEach(async (judge: { uid: string; name: string }) => {
       // Create Meeting Token for each judge$
@@ -176,9 +180,68 @@ rooms.post("/rooms/:roomId/startPreparation", async (req, res) => {
 
     await ref.update({
       stage: "preparation",
+      activeMeetings: activeMeetings,
     });
 
     res.status(200).send();
+  } catch (error) {
+    console.log(error);
+    return res.status(503).send({ error: error.message });
+  }
+});
+
+rooms.post("/rooms/:roomId/startRound", async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const ref = admin.firestore().collection("rooms").doc(roomId);
+    const doc = await ref.get();
+
+    const judges = doc.data()?.judges;
+    const players = doc.data()?.players;
+    const activeMeetings = doc.data()?.activeMeetings;
+
+    if (
+      !judges.some(
+        (judge: { uid: string; name: string }) => judge.uid === req.authId
+      )
+    ) {
+      return res.status(401).send("Only judges can start round");
+    }
+
+    const createMeetingResponse = await createMeeting();
+    const meetingName = createMeetingResponse.name;
+
+    const { token } = await createMeetingToken(meetingName, true);
+
+    // Set meeting tokens for players
+    players.forEach(async (player: { uid: string; name: string }) => {
+      const playerRef = admin.firestore().collection("users").doc(player.uid!);
+
+      await playerRef.update({
+        roomId: roomId,
+        meetingToken: token,
+        meetingName: meetingName,
+      });
+    });
+
+    // Set meeting tokens for judges
+    judges.forEach(async (judge: { uid: string; name: string }) => {
+      const judgeRef = admin.firestore().collection("users").doc(judge.uid!);
+
+      await judgeRef.update({
+        roomId: roomId,
+        meetingToken: token,
+        meetingName: meetingName,
+      });
+    });
+
+    // Delete meetings from the previous stage
+    await deleteMeetings(activeMeetings);
+
+    await ref.update({
+      stage: "ongoing",
+      activeMeetings: [meetingName],
+    });
   } catch (error) {
     console.log(error);
     return res.status(503).send({ error: error.message });

@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import DailyFrame from "components/DailyFrame";
 import app from "app";
 import { UserData } from "interfaces/UserData";
@@ -6,6 +7,8 @@ import { useDocumentData } from "react-firebase-hooks/firestore";
 import { Alert } from "@material-ui/lab";
 import { Box, Button, CircularProgress } from "@material-ui/core";
 import { Room } from "interfaces/Room";
+import { RouteParams } from "../Room";
+import { useParams } from "react-router-dom";
 
 interface PreparationProps {
   room: Room;
@@ -13,13 +16,20 @@ interface PreparationProps {
 
 const Preparation: React.FC<PreparationProps> = ({ room }) => {
   const currentUser = app.auth().currentUser!;
+  const { roomId } = useParams<RouteParams>();
   const [userData, loading, error] = useDocumentData<UserData>(
     app.firestore().collection("users").doc(app.auth().currentUser!.uid)
   );
 
   const handleStartRound = async () => {
-    // TODO: Implement "start round" logic
-    console.log("Start round");
+    const authToken = await currentUser.getIdToken(true);
+
+    // TODO: handle error
+    await axios.post(`/api/rooms/${roomId}/startRound`, null, {
+      headers: {
+        authorization: `Bearer ${authToken}`,
+      },
+    });
   };
 
   return (
@@ -35,15 +45,7 @@ const Preparation: React.FC<PreparationProps> = ({ room }) => {
         </Box>
       )}
       <div>Preparation</div>
-      {userData?.meetingName && (
-        <DailyFrame
-          meetingName={userData.meetingName}
-          meetingToken={userData.meetingToken}
-        />
-      )}
-
       {/* TODO: Integrate preparation timer here */}
-
       {room.judges.some((judge) => judge.uid === currentUser.uid) && (
         <Button
           variant="contained"
@@ -51,8 +53,14 @@ const Preparation: React.FC<PreparationProps> = ({ room }) => {
           size="small"
           onClick={() => handleStartRound()}
         >
-          Start preparation
+          Start round
         </Button>
+      )}
+      {userData?.meetingName && (
+        <DailyFrame
+          meetingName={userData.meetingName}
+          meetingToken={userData.meetingToken}
+        />
       )}
     </>
   );

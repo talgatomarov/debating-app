@@ -242,6 +242,8 @@ rooms.post("/rooms/:roomId/startRound", async (req, res) => {
       stage: "ongoing",
       activeMeetings: [meetingName],
     });
+
+    return res.status(200).send();
   } catch (error) {
     console.log(error);
     return res.status(503).send({ error: error.message });

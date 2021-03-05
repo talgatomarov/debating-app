@@ -2,12 +2,14 @@ import { Box, CircularProgress, Typography } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import app from "app";
 import { LobbyLayout } from "containers/layout";
+import { useStores } from "hooks";
 import { Room } from "interfaces/Room";
+import { observer } from "mobx-react";
 import React from "react";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import RoomTable from "./components/RoomTable";
 
-const LobbyRootPage: React.FC = () => {
+const LobbyRootPage: React.FC = observer(() => {
   const [rooms, loading, error] = useCollectionData<Room>(
     app
       .firestore()
@@ -17,7 +19,9 @@ const LobbyRootPage: React.FC = () => {
     { idField: "id" }
   );
 
-  console.log(rooms);
+  const { userStore } = useStores();
+
+  console.log(userStore.email);
 
   return (
     <LobbyLayout>
@@ -35,6 +39,6 @@ const LobbyRootPage: React.FC = () => {
       {!error && !loading && <RoomTable rooms={rooms} />}
     </LobbyLayout>
   );
-};
+});
 
 export default LobbyRootPage;

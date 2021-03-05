@@ -1,9 +1,13 @@
+import { Room } from "interfaces/Room";
 import { observable } from "mobx";
-import { IRoomStore } from "./interfaces";
+import app from "app";
 
-class RoomStore implements IRoomStore {
-  @observable roomId!: string;
-  @observable players!: string[];
+class RoomStore {
+  @observable room: Room | null = null;
+
+  constructor() {
+    app.firestore().collection("rooms");
+  }
 }
 
 export default RoomStore;

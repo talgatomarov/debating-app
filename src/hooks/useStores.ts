@@ -1,7 +1,6 @@
 import React from "react";
-import { storesContext } from "contexts";
-import { RoomStore } from "stores";
+import { StoresContext, Stores } from "contexts";
 
-export const useStores = (): { roomStore: RoomStore } => {
-  return React.useContext(storesContext);
+export const useStores = (): Stores => {
+  return React.useContext(StoresContext);
 };

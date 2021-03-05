@@ -19,9 +19,10 @@ const LobbyRootPage: React.FC = observer(() => {
     { idField: "id" }
   );
 
-  const { userStore } = useStores();
-
+  // TODO: Remove
+  const { userStore, roomStore } = useStores();
   console.log(userStore.email);
+  console.log(roomStore.name);
 
   return (
     <LobbyLayout>

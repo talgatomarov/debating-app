@@ -2,7 +2,6 @@ import { Box, CircularProgress, Typography } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import app from "app";
 import { LobbyLayout } from "containers/layout";
-import { useStores } from "hooks";
 import { Room } from "interfaces/Room";
 import { observer } from "mobx-react";
 import React from "react";
@@ -18,11 +17,6 @@ const LobbyRootPage: React.FC = observer(() => {
       .where("stage", "==", "formation"),
     { idField: "id" }
   );
-
-  // TODO: Remove
-  const { userStore, roomStore } = useStores();
-  console.log(userStore.email);
-  console.log(roomStore.name);
 
   return (
     <LobbyLayout>

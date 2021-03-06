@@ -1,8 +1,10 @@
-import { Format, Stage } from "interfaces/Room";
+import { Format, Room, Stage } from "interfaces/Room";
 import { Judge } from "interfaces/Judge";
 import { autorun, observable } from "mobx";
 import app from "app";
+import axios from "axios";
 import UserStore from "stores/UserStore";
+import { createPositions } from "./Positions";
 
 class RoomStore {
   @observable id?: string;
@@ -49,6 +51,49 @@ class RoomStore {
           (error) => console.log(error.message)
         );
     });
+  }
+
+  async create({
+    name,
+    format,
+    privacy,
+    motion,
+    infoslide,
+  }: {
+    name: string;
+    format: Format;
+    privacy: string;
+    motion: string;
+    infoslide?: string;
+  }): Promise<any> {
+    const authToken = await this.userStore.currentUser?.getIdToken(true);
+
+    const data: Room = {
+      name: name,
+      stage: Stage.formation,
+      format: format,
+      privacy: privacy,
+      motion: motion,
+      infoslide: infoslide,
+      owner: this.userStore.currentUser!.uid,
+      players: [this.userStore.currentUser!.uid],
+      positions: createPositions(format),
+      judges: [],
+      chair: null,
+      timerInfo: {
+        timerOn: false,
+        speechStart: 0,
+        timeLeft: 420000,
+      },
+    };
+
+    const response = await axios.post("/api/rooms", data, {
+      headers: {
+        authorization: `Bearer ${authToken}`,
+      },
+    });
+
+    return response.data;
   }
 }
 

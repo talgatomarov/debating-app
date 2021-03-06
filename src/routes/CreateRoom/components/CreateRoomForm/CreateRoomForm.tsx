@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
-import app from "app";
-import { Format, Room, Stage } from "interfaces/Room";
+import { Format, Room } from "interfaces/Room";
 import {
   Button,
   createStyles,
@@ -15,7 +13,7 @@ import {
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { useHistory } from "react-router-dom";
-import { createPositions } from "./Positions";
+import { useStores } from "hooks";
 
 const useStyles = makeStyles(({ spacing, zIndex, mixins }: Theme) =>
   createStyles({
@@ -29,47 +27,28 @@ const CreateRoomForm: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
 
-  const [roomName, setRoomName] = useState<Room["name"]>("");
+  const [name, setName] = useState<Room["name"]>("");
   const [format, setFormat] = useState<Room["format"]>(Format.BPF);
   const [privacy, setPrivacy] = useState<Room["privacy"]>("public");
   const [motion, setMotion] = useState<Room["motion"]>("");
-  const [infoslide, setInfoslide] = useState<Room["infoslide"]>(null);
+  const [infoslide, setInfoslide] = useState<Room["infoslide"]>();
   const [error, setError] = useState<Error | null>(null);
+  const { roomStore } = useStores();
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const currentUser = app.auth().currentUser!;
-
-    const data: Room = {
-      name: roomName,
-      stage: Stage.formation,
-      format: format,
-      privacy: privacy,
-      motion: motion,
-      infoslide: infoslide,
-      owner: currentUser.uid,
-      players: [currentUser.uid],
-      positions: createPositions(format),
-      judges: [],
-      chair: null,
-      timerInfo: {
-        timerOn: false,
-        speechStart: 0,
-        timeLeft: 420000,
-      },
-    };
 
     try {
-      const authToken = await currentUser.getIdToken(true);
-
-      const response = await axios.post("/api/rooms", data, {
-        headers: {
-          authorization: `Bearer ${authToken}`,
-        },
+      const { id } = await roomStore.create({
+        name,
+        format,
+        privacy,
+        motion,
+        infoslide,
       });
 
       setError(null);
-      history.push(`/rooms/${response.data.id}`);
+      history.push(`/rooms/${id}`);
     } catch (error) {
       setError(error);
     }
@@ -84,7 +63,7 @@ const CreateRoomForm: React.FC = () => {
             id="roomName"
             name="roomName"
             required
-            onChange={(e) => setRoomName(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
             label="Room name"
             fullWidth
           />

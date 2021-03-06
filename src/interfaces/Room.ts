@@ -39,7 +39,7 @@ export interface Room {
   format: Format;
   privacy: string;
   motion: string;
-  infoslide: string | null;
+  infoslide?: string;
   owner: string;
   players: string[];
   judges: Judge[];

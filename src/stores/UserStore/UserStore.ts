@@ -1,10 +1,9 @@
 import { observable } from "mobx";
 import app from "app";
+import firebase from "firebase";
 
 class UserStore {
-  @observable uid: string | null = null;
-  @observable displayName: string | null = null;
-  @observable email: string | null = null;
+  @observable currentUser: firebase.User | null = null;
   @observable roomId?: string;
   @observable meetingName?: string;
   @observable meetingToken?: string;
@@ -12,14 +11,12 @@ class UserStore {
   constructor() {
     app.auth().onAuthStateChanged((user) => {
       if (user) {
-        this.uid = user.uid;
-        this.displayName = user.displayName;
-        this.email = user.email;
+        this.currentUser = user;
 
         app
           .firestore()
           .collection("users")
-          .doc(this.uid)
+          .doc(user.uid)
           .onSnapshot((doc) => {
             this.roomId = doc.data()?.roomId;
             this.meetingName = doc.data()?.meetingName;

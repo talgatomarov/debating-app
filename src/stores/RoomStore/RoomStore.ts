@@ -95,6 +95,15 @@ class RoomStore {
 
     return response.data;
   }
+
+  async join(roomId: string) {
+    const authToken = await this.userStore.currentUser!.getIdToken(true);
+    await axios.post(`/api/rooms/${roomId}/join`, null, {
+      headers: {
+        authorization: `Bearer ${authToken}`,
+      },
+    });
+  }
 }
 
 export default RoomStore;

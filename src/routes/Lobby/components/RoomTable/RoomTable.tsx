@@ -12,28 +12,21 @@ import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import HelpIcon from "@material-ui/icons/Help";
 import { Room } from "interfaces/Room";
 import React from "react";
-import axios from "axios";
-import app from "app";
 import { useHistory } from "react-router-dom";
+import { useStores } from "hooks";
 
 export interface RoomListProps {
   rooms: Room[] | undefined;
 }
 
 const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
-  const currentUser = app.auth().currentUser!;
   const history = useHistory();
+  const { roomStore } = useStores();
 
-  const onJoinRoomClick = (room: Room) => {
+  const onJoinRoomClick = (roomId: string) => {
     return async () => {
-      const authToken = await currentUser.getIdToken();
-      await axios.post(`/api/rooms/${room.id}/join`, null, {
-        headers: {
-          authorization: `Bearer ${authToken}`,
-        },
-      });
-
-      history.push(`/rooms/${room.id}`);
+      await roomStore.join(roomId);
+      history.push(`/rooms/${roomId}`);
     };
   };
 
@@ -71,7 +64,7 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
                   ? room.chair?.uid
                   : room.chair?.name}
               </TableCell>
-              <TableCell onClick={onJoinRoomClick(room)}>
+              <TableCell onClick={onJoinRoomClick(room.id!)}>
                 <IconButton data-testid={"join-" + room.id}>
                   <ArrowForwardIcon />
                 </IconButton>

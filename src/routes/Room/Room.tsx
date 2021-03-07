@@ -26,7 +26,7 @@ const Room: React.FC = () => {
   const selectStage = (stage: string) => {
     switch (stage) {
       case Stage.formation:
-        return <Formation room={room!} />;
+        return <Formation />;
       case Stage.preparation:
         return <Preparation room={room!} />;
       case Stage.ongoing:

@@ -96,9 +96,50 @@ class RoomStore {
     return response.data;
   }
 
-  async join(roomId: string) {
+  async join(roomId: string): Promise<void> {
     const authToken = await this.userStore.currentUser!.getIdToken(true);
     await axios.post(`/api/rooms/${roomId}/join`, null, {
+      headers: {
+        authorization: `Bearer ${authToken}`,
+      },
+    });
+  }
+
+  async selectPosition(teamName: string, speakerTitle: string): Promise<void> {
+    const requestBody = {
+      displayName: this.userStore.currentUser!.displayName,
+      teamName,
+      speakerTitle,
+    };
+
+    const authToken = await this.userStore.currentUser!.getIdToken(true);
+
+    await axios.post(`/api/rooms/${this.id}/select`, requestBody, {
+      headers: {
+        authorization: `Bearer ${authToken}`,
+      },
+    });
+  }
+
+  async adjudicate(): Promise<void> {
+    const requestBody = {
+      displayName: this.userStore.currentUser!.displayName,
+      adjudicate: true,
+    };
+
+    const authToken = await this.userStore.currentUser!.getIdToken(true);
+
+    await axios.post(`/api/rooms/${this.id}/select`, requestBody, {
+      headers: {
+        authorization: `Bearer ${authToken}`,
+      },
+    });
+  }
+
+  async startPreparation(): Promise<void> {
+    const authToken = await this.userStore.currentUser!.getIdToken(true);
+
+    await axios.post(`/api/rooms/${this.id}/startPreparation`, null, {
       headers: {
         authorization: `Bearer ${authToken}`,
       },

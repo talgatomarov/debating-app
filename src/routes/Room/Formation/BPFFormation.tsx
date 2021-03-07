@@ -1,65 +1,11 @@
 import { Button, Card, CardContent, Typography } from "@material-ui/core";
-import { Room } from "interfaces/Room";
 import React from "react";
-import axios from "axios";
 import app from "app";
-import { RouteParams } from "../Room";
-import { useParams } from "react-router-dom";
+import { useStores } from "hooks";
 
-interface BPFFormationProps {
-  room: Room;
-}
-
-const BPFFormation: React.FC<BPFFormationProps> = ({ room }) => {
+const BPFFormation: React.FC = () => {
   const currentUser = app.auth().currentUser!;
-  const { roomId } = useParams<RouteParams>();
-
-  const handleSelectPosition = async (
-    teamName: string,
-    speakerTitle: string
-  ) => {
-    const requestBody = {
-      displayName: currentUser.displayName,
-      teamName,
-      speakerTitle,
-    };
-
-    const authToken = await currentUser.getIdToken(true);
-
-    // TODO: handle error
-    await axios.post(`/api/rooms/${roomId}/select`, requestBody, {
-      headers: {
-        authorization: `Bearer ${authToken}`,
-      },
-    });
-  };
-
-  const handleStartPreparation = async () => {
-    const authToken = await currentUser.getIdToken(true);
-
-    // TODO: handle error
-    await axios.post(`/api/rooms/${roomId}/startPreparation`, null, {
-      headers: {
-        authorization: `Bearer ${authToken}`,
-      },
-    });
-  };
-
-  const handleAdjudicate = async () => {
-    const requestBody = {
-      displayName: currentUser.displayName,
-      adjudicate: true,
-    };
-
-    const authToken = await currentUser.getIdToken(true);
-
-    // TODO: handle error
-    await axios.post(`/api/rooms/${roomId}/select`, requestBody, {
-      headers: {
-        authorization: `Bearer ${authToken}`,
-      },
-    });
-  };
+  const { roomStore } = useStores();
 
   return (
     <>
@@ -74,8 +20,8 @@ const BPFFormation: React.FC<BPFFormationProps> = ({ room }) => {
         }}
       >
         {/* TODO: Fix HTML element keys */}
-        {Object.keys(room.positions).map((teamName) => {
-          const teamMembers = room.positions[teamName];
+        {Object.keys(roomStore.positions).map((teamName) => {
+          const teamMembers = roomStore.positions[teamName];
 
           return (
             <div>
@@ -95,7 +41,7 @@ const BPFFormation: React.FC<BPFFormationProps> = ({ room }) => {
                       {teamName}
                     </Typography>
                     {Object.keys(teamMembers).map((speakerTitle) => {
-                      const user = room.positions[teamName][speakerTitle];
+                      const user = roomStore.positions[teamName][speakerTitle];
                       return (
                         <>
                           <Typography variant="body1" component="p">
@@ -111,7 +57,10 @@ const BPFFormation: React.FC<BPFFormationProps> = ({ room }) => {
                                 size="small"
                                 disabled={user !== null}
                                 onClick={() =>
-                                  handleSelectPosition(teamName, speakerTitle)
+                                  roomStore.selectPosition(
+                                    teamName,
+                                    speakerTitle
+                                  )
                                 }
                               >
                                 Select
@@ -128,11 +77,11 @@ const BPFFormation: React.FC<BPFFormationProps> = ({ room }) => {
           );
         })}
       </div>
-      {room.judges ? (
+      {roomStore.judges ? (
         <>
           <p>Judges</p>
           <ul>
-            {room.judges.map((judge) => (
+            {roomStore.judges.map((judge) => (
               <li key={judge.name}>{judge.name}</li>
             ))}
           </ul>
@@ -144,17 +93,17 @@ const BPFFormation: React.FC<BPFFormationProps> = ({ room }) => {
         variant="contained"
         color="primary"
         size="small"
-        onClick={() => handleAdjudicate()}
+        onClick={() => roomStore.adjudicate()}
       >
         Adjudicate
       </Button>
       <br />
-      {room.owner === currentUser.uid && (
+      {roomStore.owner === currentUser.uid && (
         <Button
           variant="contained"
           color="primary"
           size="small"
-          onClick={() => handleStartPreparation()}
+          onClick={() => roomStore.startPreparation()}
         >
           Start preparation
         </Button>

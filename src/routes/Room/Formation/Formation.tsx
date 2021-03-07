@@ -1,18 +1,16 @@
 import React from "react";
-import { Room, Format } from "interfaces/Room";
+import { Format } from "interfaces/Room";
 import BPFFormation from "./BPFFormation";
 import { Alert } from "@material-ui/lab";
+import { useStores } from "hooks";
 
-interface FormationProps {
-  room: Room;
-}
-
-const Formation: React.FC<FormationProps> = ({ room }) => {
+const Formation: React.FC = () => {
+  const { roomStore } = useStores();
   // TODO: Maybe we do not need separate components for each format
-  const selectFormation = (format: string) => {
+  const selectFormation = (format: string | undefined) => {
     switch (format) {
       case Format.BPF:
-        return <BPFFormation room={room} />;
+        return <BPFFormation />;
       default:
         return (
           <Alert severity="error" data-testid="error">
@@ -21,7 +19,7 @@ const Formation: React.FC<FormationProps> = ({ room }) => {
         );
     }
   };
-  return selectFormation(room.format);
+  return selectFormation(roomStore.format);
 };
 
 export default Formation;

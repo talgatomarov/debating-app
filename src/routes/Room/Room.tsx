@@ -1,34 +1,27 @@
 import { LobbyLayout } from "containers/layout";
 import React from "react";
-import { useDocumentData } from "react-firebase-hooks/firestore";
-import { useParams } from "react-router-dom";
-import app from "app";
-import { Room as IRoom, Stage } from "interfaces/Room";
-import { Box, CircularProgress } from "@material-ui/core";
+import { Stage } from "interfaces/Room";
 import { Alert } from "@material-ui/lab";
 import Formation from "./Formation";
 import Preparation from "./Preparation";
 import Ongoing from "./Ongoing";
 import Deliberation from "./Deliberation";
 import Adjudication from "./Adjudication";
+import { useStores } from "hooks";
 
 export interface RouteParams {
   roomId: string;
 }
 
 const Room: React.FC = () => {
-  const { roomId } = useParams<RouteParams>();
-  // TODO: Refactor all the states to MobX store
-  const [room, loading, error] = useDocumentData<IRoom>(
-    app.firestore().collection("rooms").doc(roomId)
-  );
+  const { roomStore } = useStores();
 
-  const selectStage = (stage: string) => {
+  const selectStage = (stage: string | undefined) => {
     switch (stage) {
       case Stage.formation:
         return <Formation />;
       case Stage.preparation:
-        return <Preparation room={room!} />;
+        return <Preparation />;
       case Stage.ongoing:
         return <Ongoing />;
       case Stage.deliberation:
@@ -46,17 +39,12 @@ const Room: React.FC = () => {
 
   return (
     <LobbyLayout>
-      {error && (
+      {!roomStore.id && (
         <Alert severity="error" data-testid="error">
           Room does not exists or could not fetch the data
         </Alert>
       )}
-      {loading && (
-        <Box display="flex" justifyContent="center" data-testid="loading">
-          <CircularProgress />
-        </Box>
-      )}
-      {room && selectStage(room.stage)}
+      {roomStore.id && selectStage(roomStore.stage)}
     </LobbyLayout>
   );
 };

@@ -8,12 +8,13 @@ import Ongoing from "./Ongoing";
 import Deliberation from "./Deliberation";
 import Adjudication from "./Adjudication";
 import { useStores } from "hooks";
+import { observer } from "mobx-react";
 
 export interface RouteParams {
   roomId: string;
 }
 
-const Room: React.FC = () => {
+const Room: React.FC = observer(() => {
   const { roomStore } = useStores();
 
   const selectStage = (stage: string | undefined) => {
@@ -47,6 +48,6 @@ const Room: React.FC = () => {
       {roomStore.id && selectStage(roomStore.stage)}
     </LobbyLayout>
   );
-};
+});
 
 export default Room;

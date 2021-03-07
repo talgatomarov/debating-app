@@ -4,8 +4,9 @@ import app from "app";
 import { Alert } from "@material-ui/lab";
 import { Button } from "@material-ui/core";
 import { useStores } from "hooks";
+import { observer } from "mobx-react";
 
-const Preparation: React.FC = () => {
+const Preparation: React.FC = observer(() => {
   const currentUser = app.auth().currentUser!;
   const { roomStore, userStore } = useStores();
 
@@ -36,6 +37,6 @@ const Preparation: React.FC = () => {
       )}
     </>
   );
-};
+});
 
 export default Preparation;

@@ -2,8 +2,9 @@ import React from "react";
 import { Alert } from "@material-ui/lab";
 import DailyFrame from "components/DailyFrame";
 import { useStores } from "hooks";
+import { observer } from "mobx-react";
 
-const Ongoing: React.FC = () => {
+const Ongoing: React.FC = observer(() => {
   const { userStore } = useStores();
 
   return (
@@ -22,6 +23,6 @@ const Ongoing: React.FC = () => {
       )}
     </>
   );
-};
+});
 
 export default Ongoing;

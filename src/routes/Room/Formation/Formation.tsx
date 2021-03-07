@@ -3,8 +3,9 @@ import { Format } from "interfaces/Room";
 import BPFFormation from "./BPFFormation";
 import { Alert } from "@material-ui/lab";
 import { useStores } from "hooks";
+import { observer } from "mobx-react";
 
-const Formation: React.FC = () => {
+const Formation: React.FC = observer(() => {
   const { roomStore } = useStores();
   // TODO: Maybe we do not need separate components for each format
   const selectFormation = (format: string | undefined) => {
@@ -20,6 +21,6 @@ const Formation: React.FC = () => {
     }
   };
   return selectFormation(roomStore.format);
-};
+});
 
 export default Formation;

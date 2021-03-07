@@ -2,8 +2,9 @@ import { Button, Card, CardContent, Typography } from "@material-ui/core";
 import React from "react";
 import app from "app";
 import { useStores } from "hooks";
+import { observer } from "mobx-react";
 
-const BPFFormation: React.FC = () => {
+const BPFFormation: React.FC = observer(() => {
   const currentUser = app.auth().currentUser!;
   const { roomStore } = useStores();
 
@@ -110,6 +111,6 @@ const BPFFormation: React.FC = () => {
       )}
     </>
   );
-};
+});
 
 export default BPFFormation;

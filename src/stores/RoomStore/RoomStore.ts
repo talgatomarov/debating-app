@@ -145,6 +145,16 @@ class RoomStore {
       },
     });
   }
+
+  async startRound(): Promise<void> {
+    const authToken = await this.userStore.currentUser!.getIdToken(true);
+
+    await axios.post(`/api/rooms/${this.id}/startRound`, null, {
+      headers: {
+        authorization: `Bearer ${authToken}`,
+      },
+    });
+  }
 }
 
 export default RoomStore;

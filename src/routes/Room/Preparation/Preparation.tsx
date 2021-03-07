@@ -1,65 +1,37 @@
 import React from "react";
-import axios from "axios";
 import DailyFrame from "components/DailyFrame";
 import app from "app";
-import { UserData } from "interfaces/UserData";
-import { useDocumentData } from "react-firebase-hooks/firestore";
 import { Alert } from "@material-ui/lab";
-import { Box, Button, CircularProgress } from "@material-ui/core";
-import { Room } from "interfaces/Room";
-import { RouteParams } from "../Room";
-import { useParams } from "react-router-dom";
+import { Button } from "@material-ui/core";
+import { useStores } from "hooks";
 
-interface PreparationProps {
-  room: Room;
-}
-
-const Preparation: React.FC<PreparationProps> = ({ room }) => {
+const Preparation: React.FC = () => {
   const currentUser = app.auth().currentUser!;
-  const { roomId } = useParams<RouteParams>();
-  const [userData, loading, error] = useDocumentData<UserData>(
-    app.firestore().collection("users").doc(app.auth().currentUser!.uid)
-  );
-
-  const handleStartRound = async () => {
-    const authToken = await currentUser.getIdToken(true);
-
-    // TODO: handle error
-    await axios.post(`/api/rooms/${roomId}/startRound`, null, {
-      headers: {
-        authorization: `Bearer ${authToken}`,
-      },
-    });
-  };
+  const { roomStore, userStore } = useStores();
 
   return (
     <>
-      {error && (
+      {!userStore.meetingName && (
         <Alert severity="error" data-testid="error">
           Room does not exists or could not fetch the data
         </Alert>
       )}
-      {loading && (
-        <Box display="flex" justifyContent="center" data-testid="loading">
-          <CircularProgress />
-        </Box>
-      )}
       <div>Preparation</div>
       {/* TODO: Integrate preparation timer here */}
-      {room.judges.some((judge) => judge.uid === currentUser.uid) && (
+      {roomStore.judges?.some((judge) => judge.uid === currentUser.uid) && (
         <Button
           variant="contained"
           color="primary"
           size="small"
-          onClick={() => handleStartRound()}
+          onClick={() => roomStore.startRound()}
         >
           Start round
         </Button>
       )}
-      {userData?.meetingName && (
+      {userStore.meetingName && (
         <DailyFrame
-          meetingName={userData.meetingName}
-          meetingToken={userData.meetingToken}
+          meetingName={userStore.meetingName}
+          meetingToken={userStore.meetingToken}
         />
       )}
     </>

@@ -145,7 +145,7 @@ rooms.post("/rooms/:roomId/startPreparation", async (req, res) => {
           // Note: users will not be able to access the meeting without token
           const { token } = await createMeetingToken(meetingName, isOwner);
 
-          const userRef = admin.firestore().collection("users").doc(user.uid!);
+          const userRef = admin.firestore().collection("users").doc(user.uid);
 
           // Set Meeting Token for each speaker
           // meetingName and meetingToken is stored at "users" firestore collection
@@ -168,7 +168,7 @@ rooms.post("/rooms/:roomId/startPreparation", async (req, res) => {
       // All judges are owners of the room
       const { token } = await createMeetingToken(judgeMeetingName, true);
 
-      const judgeRef = admin.firestore().collection("users").doc(judge.uid!);
+      const judgeRef = admin.firestore().collection("users").doc(judge.uid);
 
       // Set Meeting Token for each judge
       await judgeRef.update({

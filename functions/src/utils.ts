@@ -24,7 +24,7 @@ export const checkIfAuthenticated: Handler = (req, res, next) => {
     try {
       const userInfo = await admin.auth().verifyIdToken(req.authToken);
       req.authId = userInfo.uid;
-      return next();
+      next();
     } catch (e) {
       return res
         .status(401)

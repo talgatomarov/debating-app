@@ -24,36 +24,44 @@ class RoomStore {
 
   constructor() {
     autorun(() => {
-      this.loading = true;
-      app
-        .firestore()
-        .collection("rooms")
-        .doc(userStore.roomId)
-        .onSnapshot(
-          (doc) => {
-            const data = doc.data();
-            if (data) {
-              this.id = userStore.roomId;
-              this.name = data.name;
-              this.stage = data.stage;
-              this.format = data.format;
-              this.privacy = data.privacy;
-              this.motion = data.motion;
-              this.infoslide = data.infoslide;
-              this.owner = data.owner;
-              this.players = data.players;
-              this.judges = data.judges;
-              this.chair = data.chair;
-              this.positions = data.positions;
+      this.error = null;
+
+      // Since roomStore depends on userStore, if userStore is loading then roomStore is also loading
+      if (userStore.loading) {
+        this.loading = true;
+      } else if (userStore.roomId) {
+        this.loading = true;
+        app
+          .firestore()
+          .collection("rooms")
+          .doc(userStore.roomId)
+          .onSnapshot(
+            (doc) => {
+              const data = doc.data();
+              if (data) {
+                this.id = userStore.roomId;
+                this.name = data.name;
+                this.stage = data.stage;
+                this.format = data.format;
+                this.privacy = data.privacy;
+                this.motion = data.motion;
+                this.infoslide = data.infoslide;
+                this.owner = data.owner;
+                this.players = data.players;
+                this.judges = data.judges;
+                this.chair = data.chair;
+                this.positions = data.positions;
+              }
+              this.loading = false;
+            },
+            (error) => {
+              this.loading = false;
+              this.error = error;
             }
-            this.loading = false;
-          },
-          (error) => {
-            this.loading = false;
-            this.error = error;
-            console.log(error.message);
-          }
-        );
+          );
+      } else {
+        this.loading = false;
+      }
     });
   }
 

@@ -9,6 +9,7 @@ import Deliberation from "./Deliberation";
 import Adjudication from "./Adjudication";
 import { useStores } from "hooks";
 import { observer } from "mobx-react";
+import { Box, CircularProgress } from "@material-ui/core";
 
 export interface RouteParams {
   roomId: string;
@@ -40,12 +41,22 @@ const Room: React.FC = observer(() => {
 
   return (
     <LobbyLayout>
-      {!roomStore.id && (
+      {roomStore.error && (
         <Alert severity="error" data-testid="error">
-          Room does not exists or could not fetch the data
+          {roomStore.error.message}
         </Alert>
       )}
-      {roomStore.id && selectStage(roomStore.stage)}
+      {roomStore.loading && (
+        <Box display="flex" justifyContent="center" data-testid="loading">
+          <CircularProgress />
+        </Box>
+      )}
+      {!roomStore.loading && !roomStore.id && (
+        <Alert severity="error" data-testid="error">
+          Room does not exists
+        </Alert>
+      )}
+      {!roomStore.loading && roomStore.id && selectStage(roomStore.stage)}
     </LobbyLayout>
   );
 });

@@ -10,9 +10,9 @@ const Ongoing: React.FC = observer(() => {
   return (
     <>
       <div>Ongoing</div>
-      {!userStore.meetingName && (
+      {!userStore.loading && !userStore.meetingName && (
         <Alert severity="error" data-testid="error">
-          Room does not exists or could not fetch the data
+          Meeting does not exists.
         </Alert>
       )}
       {userStore.meetingName && (

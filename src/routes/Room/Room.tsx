@@ -11,12 +11,8 @@ import { useStores } from "hooks";
 import { observer } from "mobx-react";
 import { Box, CircularProgress } from "@material-ui/core";
 
-export interface RouteParams {
-  roomId: string;
-}
-
 const Room: React.FC = observer(() => {
-  const { roomStore } = useStores();
+  const { roomStore, userStore } = useStores();
 
   const selectStage = (stage: string | undefined) => {
     switch (stage) {
@@ -51,12 +47,12 @@ const Room: React.FC = observer(() => {
           <CircularProgress />
         </Box>
       )}
-      {!roomStore.loading && !roomStore.id && (
+      {!roomStore.loading && !userStore.roomId && (
         <Alert severity="error" data-testid="error">
           Room does not exists
         </Alert>
       )}
-      {!roomStore.loading && roomStore.id && selectStage(roomStore.stage)}
+      {!roomStore.loading && userStore.roomId && selectStage(roomStore.stage)}
     </LobbyLayout>
   );
 });

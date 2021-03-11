@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 import MeetingRoomIcon from "@material-ui/icons/MeetingRoom";
 import AddIcon from "@material-ui/icons/Add";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 import { useStores } from "hooks";
 
 const useStyles = makeStyles(({ mixins, breakpoints }: Theme) =>
@@ -50,7 +50,8 @@ export interface LobbyDrawerProps {
 
 const LobbyDrawer: React.FC<LobbyDrawerProps> = ({ window, open, onClose }) => {
   const classes = useStyles();
-  const { userStore } = useStores();
+  const history = useHistory();
+  const { userStore, roomStore } = useStores();
 
   /* istanbul ignore next */
   const container =
@@ -79,7 +80,13 @@ const LobbyDrawer: React.FC<LobbyDrawerProps> = ({ window, open, onClose }) => {
           {userStore.roomId && (
             <>
               {/* TODO: Handle exit */}
-              <ListItem button component={RouterLink} to="/exit">
+              <ListItem
+                button
+                onClick={async () => {
+                  await roomStore.exit();
+                  history.push("/lobby");
+                }}
+              >
                 <ListItemIcon>
                   <MeetingRoomIcon />
                 </ListItemIcon>

@@ -64,19 +64,23 @@ export const validateMeetingToken = async (
   return response.data;
 };
 
-export const deleteMeetings = async (meetings: string[]): Promise<any> => {
+export const deleteMeetings = async (
+  meetings: string[] | undefined
+): Promise<any> => {
   const url = "https://api.daily.co/v1/rooms";
 
-  meetings.forEach(async (meeting) => {
-    try {
-      await axios.delete(`${url}/${meeting}`, {
-        headers: {
-          Authorization: `Bearer ${dailyKey}`,
-        },
-      });
-      console.log(`Deleted ${meeting}`);
-    } catch (error) {
-      console.log(error.message);
-    }
-  });
+  if (meetings) {
+    meetings.forEach(async (meeting) => {
+      try {
+        await axios.delete(`${url}/${meeting}`, {
+          headers: {
+            Authorization: `Bearer ${dailyKey}`,
+          },
+        });
+        console.log(`Deleted ${meeting}`);
+      } catch (error) {
+        console.log(error.message);
+      }
+    });
+  }
 };

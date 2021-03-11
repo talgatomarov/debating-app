@@ -240,4 +240,57 @@ rooms.post("/rooms/:roomId/startRound", async (req, res) => {
   }
 });
 
+rooms.post("/rooms/exit", async (req, res) => {
+  try {
+    const userRef = admin.firestore().collection("users").doc(req.authId!);
+    const userDoc = await userRef.get();
+    const user = userDoc.data();
+    if (user) {
+      const roomRef = admin.firestore().collection("rooms").doc(user.roomId);
+      const roomDoc = await roomRef.get();
+      const room = roomDoc.data();
+
+      if (room) {
+        // Delete player from the room
+        room.players = room.players.filter((uid: string) => uid !== req.authId);
+        room.judges = room.judges.filter(
+          ({ uid }: { uid: string }) => uid !== req.authId
+        );
+
+        if (room.positions) {
+          Object.keys(room.positions).forEach((team) => {
+            Object.keys(room.positions[team]).forEach((speaker) => {
+              if (
+                room.positions[team][speaker] &&
+                room.positions[team][speaker].uid === req.authId
+              ) {
+                room.positions[team][speaker] = null;
+              }
+            });
+          });
+        }
+
+        // If room is empty destroy the room
+        if (room.players.length === 0) {
+          await deleteMeetings(room.activeMeetings);
+          await roomRef.delete();
+        } else {
+          await roomRef.update(room);
+        }
+      }
+      // Delete player room info
+      await userRef.update({
+        meetingName: null,
+        meetingToken: null,
+        roomId: null,
+      });
+    }
+
+    res.status(200).send();
+  } catch (error) {
+    console.log(error);
+    return res.status(503).send({ error: error.message });
+  }
+});
+
 export default rooms;

@@ -26,7 +26,7 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
   const onJoinRoomClick = (roomId: string) => {
     return async () => {
       await roomStore.join(roomId);
-      history.push(`/rooms/${roomId}`);
+      history.push(`/room`);
     };
   };
 

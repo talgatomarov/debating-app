@@ -39,7 +39,7 @@ const CreateRoomForm: React.FC = () => {
     event.preventDefault();
 
     try {
-      const { id } = await roomStore.create({
+      await roomStore.create({
         name,
         format,
         privacy,
@@ -48,7 +48,7 @@ const CreateRoomForm: React.FC = () => {
       });
 
       setError(null);
-      history.push(`/rooms/${id}`);
+      history.push(`/room`);
     } catch (error) {
       setError(error);
     }

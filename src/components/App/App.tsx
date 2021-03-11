@@ -21,9 +21,9 @@ const App: React.FC = () => {
             <Route path="/signup" component={SignUp} />
             <Route path="/signin" component={SignIn} />
             <Route path="/reset-password" component={ResetPassword} />
-            <PrivateRoute exact path="/rooms/:roomId" component={Room} />
-            <PrivateRoute exact path="/create-room/" component={CreateRoom} />
-            <PrivateRoute exact path="/lobby/" component={Lobby} />
+            <PrivateRoute exact path="/room" component={Room} />
+            <PrivateRoute exact path="/create-room" component={CreateRoom} />
+            <PrivateRoute exact path="/lobby" component={Lobby} />
             <Redirect exact from="/" to={"/lobby"} />
           </Switch>
         </Router>

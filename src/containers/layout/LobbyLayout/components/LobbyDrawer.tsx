@@ -15,6 +15,7 @@ import {
 import MeetingRoomIcon from "@material-ui/icons/MeetingRoom";
 import AddIcon from "@material-ui/icons/Add";
 import { Link as RouterLink } from "react-router-dom";
+import { useStores } from "hooks";
 
 const useStyles = makeStyles(({ mixins, breakpoints }: Theme) =>
   createStyles({
@@ -49,6 +50,7 @@ export interface LobbyDrawerProps {
 
 const LobbyDrawer: React.FC<LobbyDrawerProps> = ({ window, open, onClose }) => {
   const classes = useStyles();
+  const { userStore } = useStores();
 
   /* istanbul ignore next */
   const container =
@@ -58,18 +60,33 @@ const LobbyDrawer: React.FC<LobbyDrawerProps> = ({ window, open, onClose }) => {
     <div className={classes.toolbar}>
       <div className={classes.drawerContainer}>
         <List>
-          <ListItem button component={RouterLink} to="/lobby">
-            <ListItemIcon>
-              <MeetingRoomIcon />
-            </ListItemIcon>
-            <ListItemText primary="Lobby" />
-          </ListItem>
-          <ListItem button component={RouterLink} to="/create-room">
-            <ListItemIcon>
-              <AddIcon />
-            </ListItemIcon>
-            <ListItemText primary="Create room" />
-          </ListItem>
+          {!userStore.loading && !userStore.roomId && (
+            <>
+              <ListItem button component={RouterLink} to="/lobby">
+                <ListItemIcon>
+                  <MeetingRoomIcon />
+                </ListItemIcon>
+                <ListItemText primary="Lobby" />
+              </ListItem>
+              <ListItem button component={RouterLink} to="/create-room">
+                <ListItemIcon>
+                  <AddIcon />
+                </ListItemIcon>
+                <ListItemText primary="Create room" />
+              </ListItem>
+            </>
+          )}
+          {userStore.roomId && (
+            <>
+              {/* TODO: Handle exit */}
+              <ListItem button component={RouterLink} to="/exit">
+                <ListItemIcon>
+                  <MeetingRoomIcon />
+                </ListItemIcon>
+                <ListItemText primary="Exit" />
+              </ListItem>
+            </>
+          )}
         </List>
       </div>
     </div>

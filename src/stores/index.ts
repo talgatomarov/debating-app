@@ -1,4 +1,4 @@
-import RoomStore from "./RoomStore/RoomStore";
-import UserStore from "./UserStore";
+import roomStore, { RoomStore } from "./RoomStore";
+import userStore, { UserStore } from "./UserStore";
 
-export { RoomStore, UserStore };
+export { roomStore, RoomStore, userStore, UserStore };

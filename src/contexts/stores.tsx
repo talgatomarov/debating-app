@@ -1,14 +1,10 @@
 import React from "react";
-import { RoomStore, UserStore } from "stores";
+import { roomStore, userStore, RoomStore, UserStore } from "stores";
 
 export interface Stores {
   roomStore: RoomStore;
   userStore: UserStore;
 }
-
-// TODO: Refactor to RootStore?
-const userStore = new UserStore();
-const roomStore = new RoomStore(userStore);
 
 const stores: Stores = {
   userStore: userStore,

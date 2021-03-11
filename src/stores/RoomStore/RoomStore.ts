@@ -2,9 +2,9 @@ import { Format, Room, Stage } from "interfaces/Room";
 import { Judge } from "interfaces/Judge";
 import { autorun, observable } from "mobx";
 import app from "app";
-import axios from "axios";
-import UserStore from "stores/UserStore";
+import axios, { AxiosResponse } from "axios";
 import { createPositions } from "./Positions";
+import userStore from "stores/UserStore";
 
 class RoomStore {
   @observable id?: string;
@@ -19,12 +19,12 @@ class RoomStore {
   @observable judges?: Judge[];
   @observable chair?: Judge | null;
   @observable positions?: any;
-  userStore: UserStore;
+  @observable error: Error | null = null;
+  @observable loading = true;
 
-  constructor(userStore: UserStore) {
-    this.userStore = userStore;
-
+  constructor() {
     autorun(() => {
+      this.loading = true;
       app
         .firestore()
         .collection("rooms")
@@ -32,7 +32,6 @@ class RoomStore {
         .onSnapshot(
           (doc) => {
             const data = doc.data();
-
             if (data) {
               this.id = userStore.roomId;
               this.name = data.name;
@@ -47,8 +46,13 @@ class RoomStore {
               this.chair = data.chair;
               this.positions = data.positions;
             }
+            this.loading = false;
           },
-          (error) => console.log(error.message)
+          (error) => {
+            this.loading = false;
+            this.error = error;
+            console.log(error.message);
+          }
         );
     });
   }
@@ -66,7 +70,7 @@ class RoomStore {
     motion: string;
     infoslide?: string;
   }): Promise<any> {
-    const authToken = await this.userStore.currentUser?.getIdToken(true);
+    const authToken = await userStore.currentUser?.getIdToken(true);
 
     const data: Room = {
       name: name,
@@ -75,8 +79,8 @@ class RoomStore {
       privacy: privacy,
       motion: motion,
       infoslide: infoslide,
-      owner: this.userStore.currentUser!.uid,
-      players: [this.userStore.currentUser!.uid],
+      owner: userStore.currentUser!.uid,
+      players: [userStore.currentUser!.uid],
       positions: createPositions(format),
       judges: [],
       chair: null,
@@ -96,9 +100,9 @@ class RoomStore {
     return response.data;
   }
 
-  async join(roomId: string): Promise<void> {
-    const authToken = await this.userStore.currentUser!.getIdToken(true);
-    await axios.post(`/api/rooms/${roomId}/join`, null, {
+  async join(roomId: string): Promise<AxiosResponse> {
+    const authToken = await userStore.currentUser!.getIdToken(true);
+    return await axios.post(`/api/rooms/${roomId}/join`, null, {
       headers: {
         authorization: `Bearer ${authToken}`,
       },
@@ -107,12 +111,12 @@ class RoomStore {
 
   async selectPosition(teamName: string, speakerTitle: string): Promise<void> {
     const requestBody = {
-      displayName: this.userStore.currentUser!.displayName,
+      displayName: userStore.currentUser!.displayName,
       teamName,
       speakerTitle,
     };
 
-    const authToken = await this.userStore.currentUser!.getIdToken(true);
+    const authToken = await userStore.currentUser!.getIdToken(true);
 
     await axios.post(`/api/rooms/${this.id}/select`, requestBody, {
       headers: {
@@ -123,11 +127,11 @@ class RoomStore {
 
   async adjudicate(): Promise<void> {
     const requestBody = {
-      displayName: this.userStore.currentUser!.displayName,
+      displayName: userStore.currentUser!.displayName,
       adjudicate: true,
     };
 
-    const authToken = await this.userStore.currentUser!.getIdToken(true);
+    const authToken = await userStore.currentUser!.getIdToken(true);
 
     await axios.post(`/api/rooms/${this.id}/select`, requestBody, {
       headers: {
@@ -137,7 +141,7 @@ class RoomStore {
   }
 
   async startPreparation(): Promise<void> {
-    const authToken = await this.userStore.currentUser!.getIdToken(true);
+    const authToken = await userStore.currentUser!.getIdToken(true);
 
     await axios.post(`/api/rooms/${this.id}/startPreparation`, null, {
       headers: {
@@ -147,7 +151,7 @@ class RoomStore {
   }
 
   async startRound(): Promise<void> {
-    const authToken = await this.userStore.currentUser!.getIdToken(true);
+    const authToken = await userStore.currentUser!.getIdToken(true);
 
     await axios.post(`/api/rooms/${this.id}/startRound`, null, {
       headers: {
@@ -157,4 +161,6 @@ class RoomStore {
   }
 }
 
-export default RoomStore;
+const roomStore = new RoomStore();
+export default roomStore;
+export { RoomStore };

@@ -1,3 +1,4 @@
-import UserStore from "./UserStore";
+import userStore, { UserStore } from "./UserStore";
 
-export default UserStore;
+export default userStore;
+export { UserStore };

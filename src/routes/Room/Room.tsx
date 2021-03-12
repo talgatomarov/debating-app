@@ -47,11 +47,6 @@ const Room: React.FC = observer(() => {
           <CircularProgress />
         </Box>
       )}
-      {!roomStore.loading && !userStore.roomId && (
-        <Alert severity="error" data-testid="error">
-          Room does not exists
-        </Alert>
-      )}
       {!roomStore.loading && userStore.roomId && selectStage(roomStore.stage)}
     </LobbyLayout>
   );

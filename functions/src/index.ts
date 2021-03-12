@@ -1,4 +1,5 @@
 import * as express from "express";
+import * as cors from "cors";
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import rooms from "./routers/rooms";
@@ -12,6 +13,7 @@ export const dailyKey = functions.config().daily.key;
 
 const app = express();
 
+app.use(cors({ origin: true }));
 app.use("/api", rooms);
 
 exports.api = functions.https.onRequest(app);

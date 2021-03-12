@@ -20,7 +20,7 @@ import { useStores } from "hooks";
 const useStyles = makeStyles(({ mixins, breakpoints }: Theme) =>
   createStyles({
     drawer: {
-      [breakpoints.up("md")]: {
+      [breakpoints.up("sm")]: {
         width: "240px",
         flexShrink: 0,
       },

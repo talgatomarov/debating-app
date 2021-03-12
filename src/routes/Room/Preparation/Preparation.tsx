@@ -12,11 +12,6 @@ const Preparation: React.FC = observer(() => {
 
   return (
     <>
-      {!userStore.loading && !userStore.meetingName && (
-        <Alert severity="error" data-testid="error">
-          Meeting does not exists.
-        </Alert>
-      )}
       <div>Preparation</div>
       {/* TODO: Integrate preparation timer here */}
       {roomStore.judges?.some((judge) => judge.uid === currentUser.uid) && (

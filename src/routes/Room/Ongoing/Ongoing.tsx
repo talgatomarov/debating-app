@@ -10,11 +10,6 @@ const Ongoing: React.FC = observer(() => {
   return (
     <>
       <div>Ongoing</div>
-      {!userStore.loading && !userStore.meetingName && (
-        <Alert severity="error" data-testid="error">
-          Meeting does not exists.
-        </Alert>
-      )}
       {userStore.meetingName && (
         <DailyFrame
           meetingName={userStore.meetingName}

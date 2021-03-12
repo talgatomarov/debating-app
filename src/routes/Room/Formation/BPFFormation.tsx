@@ -3,6 +3,7 @@ import React from "react";
 import app from "app";
 import { useStores } from "hooks";
 import { observer } from "mobx-react";
+import { ChevronRight } from "@material-ui/icons";
 
 const BPFFormation: React.FC = observer(() => {
   const currentUser = app.auth().currentUser!;
@@ -28,16 +29,17 @@ const BPFFormation: React.FC = observer(() => {
         className="grid-container"
         style={{
           display: "grid",
-          gridTemplateColumns: "25% 25% 25% 25%",
-          gridColumnGap: "5px",
-          gridRowGap: "5px",
-          margin: "5px",
+          gridTemplateColumns: "50% 50%",
+          gridTemplateRows: "auto auto",
+          gridColumnGap: "10px",
+          gridRowGap: "10px",
+          margin: "10px",
         }}
       >
         {/* TODO: Fix HTML element keys */}
         {teamOrder.map((teamName: string) => {
           return (
-            <div>
+            <div key={teamName}>
               <div className="grid-item">
                 <Card
                   variant="outlined"
@@ -47,25 +49,43 @@ const BPFFormation: React.FC = observer(() => {
                     flexDirection: "row",
                     alignItems: "center",
                   }}
-                  key={teamName}
+                  key={teamName + "-card"}
                 >
                   <CardContent>
-                    <Typography color="textSecondary" gutterBottom>
+                    <Typography variant="h6" gutterBottom>
                       {teamName}
                     </Typography>
                     {speakerOrder[teamName].map((speakerTitle: string) => {
                       const user = roomStore.positions[teamName][speakerTitle];
                       return (
-                        <>
-                          <Typography variant="body1" component="p">
-                            {speakerTitle}
-                          </Typography>
+                        <div key={teamName + speakerTitle}>
                           <Typography variant="body2" component="p">
+                            {speakerTitle}:
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="textSecondary"
+                            component="p"
+                          >
                             {user ? (
                               user.name
                             ) : (
+                              // <IconButton
+                              //   color="primary"
+                              //   aria-label="add to shopping cart"
+                              //   onClick={() =>
+                              //     roomStore.selectPosition(
+                              //       teamName,
+                              //       speakerTitle
+                              //     )
+                              //   }
+                              //   size="small"
+
+                              // >
+                              //   <Typography>Select</Typography>
+                              //   <ChevronRight />
+                              // </IconButton>
                               <Button
-                                variant="contained"
                                 color="primary"
                                 size="small"
                                 disabled={user !== null}
@@ -75,12 +95,13 @@ const BPFFormation: React.FC = observer(() => {
                                     speakerTitle
                                   )
                                 }
+                                startIcon={<ChevronRight />}
                               >
                                 Select
                               </Button>
                             )}
                           </Typography>
-                        </>
+                        </div>
                       );
                     })}
                   </CardContent>

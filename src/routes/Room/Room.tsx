@@ -35,9 +35,11 @@ const Room: React.FC = observer(() => {
     }
   };
 
+  console.log(roomStore.error);
+
   return (
     <LobbyLayout>
-      {roomStore.error && (
+      {!roomStore.loading && roomStore.error && (
         <Alert severity="error" data-testid="error">
           {roomStore.error.message}
         </Alert>

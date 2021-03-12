@@ -176,6 +176,10 @@ class RoomStore {
         authorization: `Bearer ${authToken}`,
       },
     });
+
+    userStore.roomId = undefined;
+    userStore.meetingName = undefined;
+    userStore.meetingToken = undefined;
   }
 }
 

@@ -8,6 +8,7 @@ import { observer } from "mobx-react";
 import React from "react";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { Redirect } from "react-router-dom";
+import { roomStore } from "stores";
 import RoomTable from "./components/RoomTable";
 
 const LobbyRootPage: React.FC = observer(() => {
@@ -28,7 +29,7 @@ const LobbyRootPage: React.FC = observer(() => {
       </Box>
     );
   }
-  if (userStore.roomId) {
+  if (userStore.roomId && roomStore.id && !roomStore.loading) {
     return <Redirect to="/room" />;
   }
 

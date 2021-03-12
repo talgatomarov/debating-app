@@ -8,6 +8,20 @@ const BPFFormation: React.FC = observer(() => {
   const currentUser = app.auth().currentUser!;
   const { roomStore } = useStores();
 
+  const teamOrder = [
+    "Opening Government",
+    "Opening Opposition",
+    "Closing Government",
+    "Closing Opposition",
+  ];
+
+  const speakerOrder: { [key: string]: string[] } = {
+    "Opening Government": ["Prime Minister", "Deputy Prime Minister"],
+    "Opening Opposition": ["Leader of Opposition", "Deputy Prime Minister"],
+    "Closing Government": ["Government Member", "Government Whip"],
+    "Closing Opposition": ["Opposition Member", "Opposition Whip"],
+  };
+
   return (
     <>
       <div
@@ -21,9 +35,7 @@ const BPFFormation: React.FC = observer(() => {
         }}
       >
         {/* TODO: Fix HTML element keys */}
-        {Object.keys(roomStore.positions).map((teamName) => {
-          const teamMembers = roomStore.positions[teamName];
-
+        {teamOrder.map((teamName: string) => {
           return (
             <div>
               <div className="grid-item">
@@ -41,7 +53,7 @@ const BPFFormation: React.FC = observer(() => {
                     <Typography color="textSecondary" gutterBottom>
                       {teamName}
                     </Typography>
-                    {Object.keys(teamMembers).map((speakerTitle) => {
+                    {speakerOrder[teamName].map((speakerTitle: string) => {
                       const user = roomStore.positions[teamName][speakerTitle];
                       return (
                         <>

@@ -46,7 +46,6 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
             </Typography>
           </TableCell>
           <TableCell>Participants joined</TableCell>
-          <TableCell>Judge</TableCell>
           <TableCell>Join</TableCell>
         </TableRow>
       </TableHead>
@@ -57,13 +56,6 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
               <TableCell>{room.name}</TableCell>
               <TableCell>{room.format}</TableCell>
               <TableCell>{room.players.length}</TableCell>
-              <TableCell>
-                {room.chair?.uid === null
-                  ? "no judge"
-                  : room.chair?.name === null
-                  ? room.chair?.uid
-                  : room.chair?.name}
-              </TableCell>
               <TableCell onClick={onJoinRoomClick(room.id!)}>
                 <IconButton data-testid={"join-" + room.id}>
                   <ArrowForwardIcon />

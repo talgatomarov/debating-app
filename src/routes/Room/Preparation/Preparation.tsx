@@ -1,36 +1,48 @@
 import React from "react";
 import DailyFrame from "components/DailyFrame";
 import app from "app";
-import { Alert } from "@material-ui/lab";
-import { Button } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
 import { useStores } from "hooks";
 import { observer } from "mobx-react";
+import { Judge } from "interfaces/Judge";
 
 const Preparation: React.FC = observer(() => {
   const currentUser = app.auth().currentUser!;
   const { roomStore, userStore } = useStores();
 
   return (
-    <>
-      <div>Preparation</div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        margin: "auto",
+        alignItems: "center",
+      }}
+    >
+      <Typography variant="h4">Preparation</Typography>
       {/* TODO: Integrate preparation timer here */}
-      {roomStore.judges?.some((judge) => judge.uid === currentUser.uid) && (
+      {roomStore.judges?.some(
+        (judge: Judge) => judge.uid === currentUser.uid
+      ) && (
         <Button
           variant="contained"
           color="primary"
-          size="small"
+          size="large"
           onClick={() => roomStore.startRound()}
+          style={{ margin: "1rem 0 1rem 0" }}
         >
           Start round
         </Button>
       )}
       {userStore.meetingName && (
-        <DailyFrame
-          meetingName={userStore.meetingName}
-          meetingToken={userStore.meetingToken}
-        />
+        <div style={{ width: "75%" }}>
+          <DailyFrame
+            meetingName={userStore.meetingName}
+            meetingToken={userStore.meetingToken}
+          />
+        </div>
       )}
-    </>
+    </div>
   );
 });
 

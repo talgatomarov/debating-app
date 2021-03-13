@@ -4,6 +4,7 @@ import app from "app";
 import { useStores } from "hooks";
 import { observer } from "mobx-react";
 import { ChevronRight } from "@material-ui/icons";
+import { Judge } from "interfaces/Judge";
 
 const BPFFormation: React.FC = observer(() => {
   const currentUser = app.auth().currentUser!;
@@ -25,6 +26,9 @@ const BPFFormation: React.FC = observer(() => {
 
   return (
     <>
+      <Typography variant="h6" gutterBottom>
+        Players
+      </Typography>
       <div
         className="grid-container"
         style={{
@@ -37,97 +41,72 @@ const BPFFormation: React.FC = observer(() => {
         }}
       >
         {/* TODO: Fix HTML element keys */}
-        {teamOrder.map((teamName: string) => {
-          return (
-            <div key={teamName}>
-              <div className="grid-item">
-                <Card
-                  variant="outlined"
-                  style={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                  key={teamName + "-card"}
-                >
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      {teamName}
-                    </Typography>
-                    {speakerOrder[teamName].map((speakerTitle: string) => {
-                      const user = roomStore.positions[teamName][speakerTitle];
-                      return (
-                        <div key={teamName + speakerTitle}>
-                          <Typography variant="body2" component="p">
-                            {speakerTitle}:
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            color="textSecondary"
-                            component="p"
+        {teamOrder.map((teamName: string, i: number) => (
+          <div key={i} className="grid-item">
+            <Card
+              variant="outlined"
+              style={{
+                height: "100%",
+                display: "flex",
+              }}
+            >
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  {teamName}
+                </Typography>
+                {speakerOrder[teamName].map((speakerTitle: string) => {
+                  const user = roomStore.positions[teamName][speakerTitle];
+                  return (
+                    <div key={teamName + speakerTitle}>
+                      <Typography variant="body2" component="p">
+                        {speakerTitle}:
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        component="p"
+                      >
+                        {user ? (
+                          user.name
+                        ) : (
+                          <Button
+                            color="primary"
+                            size="small"
+                            disabled={user !== null}
+                            onClick={() =>
+                              roomStore.selectPosition(teamName, speakerTitle)
+                            }
+                            startIcon={<ChevronRight />}
                           >
-                            {user ? (
-                              user.name
-                            ) : (
-                              // <IconButton
-                              //   color="primary"
-                              //   aria-label="add to shopping cart"
-                              //   onClick={() =>
-                              //     roomStore.selectPosition(
-                              //       teamName,
-                              //       speakerTitle
-                              //     )
-                              //   }
-                              //   size="small"
-
-                              // >
-                              //   <Typography>Select</Typography>
-                              //   <ChevronRight />
-                              // </IconButton>
-                              <Button
-                                color="primary"
-                                size="small"
-                                disabled={user !== null}
-                                onClick={() =>
-                                  roomStore.selectPosition(
-                                    teamName,
-                                    speakerTitle
-                                  )
-                                }
-                                startIcon={<ChevronRight />}
-                              >
-                                Select
-                              </Button>
-                            )}
-                          </Typography>
-                        </div>
-                      );
-                    })}
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          );
-        })}
+                            Select
+                          </Button>
+                        )}
+                      </Typography>
+                    </div>
+                  );
+                })}
+              </CardContent>
+            </Card>
+          </div>
+        ))}
       </div>
-      {roomStore.judges ? (
-        <>
-          <p>Judges</p>
-          <ul>
-            {roomStore.judges.map((judge) => (
-              <li key={judge.name}>{judge.name}</li>
-            ))}
-          </ul>
-        </>
+      <Typography variant="h6" gutterBottom>
+        Judges
+      </Typography>
+      {roomStore?.judges?.length !== 0 ? (
+        <ul>
+          {roomStore?.judges?.map((judge: Judge) => (
+            <li key={judge.name}>{judge.name}</li>
+          ))}
+        </ul>
       ) : (
         <div>No judges</div>
       )}
       <Button
-        variant="contained"
         color="primary"
         size="small"
         onClick={() => roomStore.adjudicate()}
+        startIcon={<ChevronRight />}
       >
         Adjudicate
       </Button>
@@ -136,8 +115,12 @@ const BPFFormation: React.FC = observer(() => {
         <Button
           variant="contained"
           color="primary"
-          size="small"
+          size="large"
           onClick={() => roomStore.startPreparation()}
+          style={{
+            display: "flex",
+            margin: "auto",
+          }}
         >
           Start preparation
         </Button>

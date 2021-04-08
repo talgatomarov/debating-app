@@ -4,7 +4,6 @@ import { checkIfAuthenticated } from "../utils";
 import { createMeeting, createMeetingToken, deleteMeetings } from "../daily";
 
 const rooms = Router();
-
 rooms.use(checkIfAuthenticated);
 
 rooms.post("/rooms", async (req, res) => {
@@ -27,25 +26,23 @@ rooms.post("/rooms", async (req, res) => {
 rooms.post("/rooms/:roomId/join", async (req, res) => {
   try {
     const { roomId } = req.params;
-    const ref = admin.firestore().collection("rooms").doc(roomId);
-    const doc = await ref.get();
+    const room = await admin.firestore().collection("rooms").doc(roomId).get();
+    const { players } = room.data()!;
 
     // Add user to the players list if he is not already there
-    if (!doc.data()?.players.includes(req.authId)) {
-      await ref.update({
+    if (!players.includes(req.authId)) {
+      await room.ref.update({
         players: admin.firestore.FieldValue.arrayUnion(req.authId),
       });
     }
 
-    const userRef = admin.firestore().collection("users").doc(req.authId!);
-
     // Set up roomId
     // Info about room is stored at "users" firestore collection
-    await userRef.update({
+    await admin.firestore().collection("users").doc(req.authId!).update({
       roomId: roomId,
     });
 
-    res.send({ id: ref.id });
+    res.send({ id: room.ref.id });
     console.log(`User ${req.authId} successfully joined ${roomId}`);
   } catch (error) {
     res.status(503).send({ error: error.message });
@@ -60,14 +57,11 @@ rooms.post("/rooms/:roomId/select", async (req, res) => {
     // If teamName, speakerTitle, and adjudicate fields are all present, then adjudicate option will be prioritized
     const { displayName, teamName, speakerTitle, adjudicate } = req.body;
 
-    const ref = admin.firestore().collection("rooms").doc(roomId);
-    const doc = await ref.get();
+    const room = await admin.firestore().collection("rooms").doc(roomId).get();
+    let { players, positions, judges } = room.data()!;
 
     // User has to be listed in players array field
-    if (doc.data()?.players.includes(req.authId)) {
-      const positions = doc.data()?.positions;
-      let judges = doc.data()?.judges || [];
-
+    if (players.includes(req.authId)) {
       // Clear previous position
       Object.keys(positions).forEach((t) => {
         Object.keys(positions[t]).forEach((s) => {
@@ -96,7 +90,7 @@ rooms.post("/rooms/:roomId/select", async (req, res) => {
           return res.status(400).send("Position is not empty");
         }
       }
-      await ref.update({
+      await room.ref.update({
         positions: positions,
         judges: judges,
       });
@@ -113,12 +107,8 @@ rooms.post("/rooms/:roomId/startPreparation", async (req, res) => {
   try {
     const { roomId } = req.params;
 
-    const ref = admin.firestore().collection("rooms").doc(roomId);
-    const doc = await ref.get();
-
-    const owner = doc.data()?.owner;
-    const positions = doc.data()?.positions;
-    const judges = doc.data()?.judges;
+    const room = await admin.firestore().collection("rooms").doc(roomId).get();
+    const { owner, positions, judges } = room.data()!;
 
     // Only room owner can start preparation
     if (req.authId !== owner) {
@@ -178,7 +168,7 @@ rooms.post("/rooms/:roomId/startPreparation", async (req, res) => {
       });
     });
 
-    await ref.update({
+    await room.ref.update({
       stage: "preparation",
       activeMeetings: activeMeetings,
     });
@@ -193,12 +183,9 @@ rooms.post("/rooms/:roomId/startPreparation", async (req, res) => {
 rooms.post("/rooms/:roomId/startRound", async (req, res) => {
   try {
     const { roomId } = req.params;
-    const ref = admin.firestore().collection("rooms").doc(roomId);
-    const doc = await ref.get();
 
-    const judges = doc.data()?.judges;
-    const players = doc.data()?.players;
-    const activeMeetings = doc.data()?.activeMeetings;
+    const room = await admin.firestore().collection("rooms").doc(roomId).get();
+    const { judges, players, activeMeetings } = room.data()!;
 
     if (
       !judges.some(
@@ -228,7 +215,7 @@ rooms.post("/rooms/:roomId/startRound", async (req, res) => {
     // Delete meetings from the previous stage
     await deleteMeetings(activeMeetings);
 
-    await ref.update({
+    await room.ref.update({
       stage: "ongoing",
       activeMeetings: [meetingName],
     });
@@ -242,44 +229,51 @@ rooms.post("/rooms/:roomId/startRound", async (req, res) => {
 
 rooms.post("/rooms/exit", async (req, res) => {
   try {
-    const userRef = admin.firestore().collection("users").doc(req.authId!);
-    const userDoc = await userRef.get();
-    const user = userDoc.data();
+    const user = await admin
+      .firestore()
+      .collection("users")
+      .doc(req.authId!)
+      .get();
+    const { roomId } = user.data()!;
+
     if (user) {
-      const roomRef = admin.firestore().collection("rooms").doc(user.roomId);
-      const roomDoc = await roomRef.get();
-      const room = roomDoc.data();
+      const room = await admin
+        .firestore()
+        .collection("rooms")
+        .doc(roomId)
+        .get();
+      let { players, judges, positions, activeMeetings } = room.data()!;
 
       if (room) {
         // Delete player from the room
-        room.players = room.players.filter((uid: string) => uid !== req.authId);
-        room.judges = room.judges.filter(
+        players = players.filter((uid: string) => uid !== req.authId);
+        judges = judges.filter(
           ({ uid }: { uid: string }) => uid !== req.authId
         );
 
-        if (room.positions) {
-          Object.keys(room.positions).forEach((team) => {
-            Object.keys(room.positions[team]).forEach((speaker) => {
+        if (positions) {
+          Object.keys(positions).forEach((team) => {
+            Object.keys(positions[team]).forEach((speaker) => {
               if (
-                room.positions[team][speaker] &&
-                room.positions[team][speaker].uid === req.authId
+                positions[team][speaker] &&
+                positions[team][speaker].uid === req.authId
               ) {
-                room.positions[team][speaker] = null;
+                positions[team][speaker] = null;
               }
             });
           });
         }
 
         // If room is empty destroy the room
-        if (room.players.length === 0) {
-          await deleteMeetings(room.activeMeetings);
-          await roomRef.delete();
+        if (players.length === 0) {
+          await deleteMeetings(activeMeetings);
+          await room.ref.delete();
         } else {
-          await roomRef.update(room);
+          await room.ref.update({ players, judges, positions, activeMeetings });
         }
       }
       // Delete player room info
-      await userRef.update({
+      await user.ref.update({
         meetingName: null,
         meetingToken: null,
         roomId: null,

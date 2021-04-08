@@ -198,12 +198,25 @@ rooms.post("/rooms/:roomId/startRound", async (req, res) => {
     const createMeetingResponse = await createMeeting();
     const meetingName = createMeetingResponse.name;
 
-    const { token } = await createMeetingToken(meetingName, true);
+    const { token: judgeToken } = await createMeetingToken(meetingName, true);
+    const { token: speakerToken } = await createMeetingToken(
+      meetingName,
+      false
+    );
 
     // Set meeting tokens for players
     // Note that judge is also a player
     players.forEach(async (playerId: string) => {
       const playerRef = admin.firestore().collection("users").doc(playerId);
+
+      let token = speakerToken;
+      if (
+        judges.some(
+          (judge: { uid: string; name: string }) => judge.uid === playerId
+        )
+      ) {
+        token = judgeToken;
+      }
 
       await playerRef.update({
         roomId: roomId,

@@ -248,18 +248,25 @@ rooms.post("/rooms/:roomId/startDeliberation", async (req, res) => {
 
     const { name: speakerMeetingName } = await createMeeting();
     Object.values<{ uid: string; name: string }>(positions).forEach(
-      async (user) => {
-        const { token: speakerToken } = await createMeetingToken(
-          speakerMeetingName,
-          false
-        );
+      async (teams) => {
+        Object.values<any>(teams).forEach(async (user) => {
+          if (user?.uid) {
+            const { token: speakerToken } = await createMeetingToken(
+              speakerMeetingName,
+              false
+            );
 
-        const speakerRef = admin.firestore().collection("users").doc(user.uid);
+            const speakerRef = admin
+              .firestore()
+              .collection("users")
+              .doc(user.uid);
 
-        await speakerRef.update({
-          roomId: roomId,
-          meetingToken: speakerToken,
-          meetingName: speakerMeetingName,
+            await speakerRef.update({
+              roomId: roomId,
+              meetingToken: speakerToken,
+              meetingName: speakerMeetingName,
+            });
+          }
         });
       }
     );
@@ -283,7 +290,7 @@ rooms.post("/rooms/:roomId/startDeliberation", async (req, res) => {
     await deleteMeetings(activeMeetings);
 
     await room.ref.update({
-      stage: "delibertaion",
+      stage: "deliberation",
       activeMeetings: [judgeMeetingName, speakerMeetingName],
     });
 

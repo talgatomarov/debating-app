@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as admin from "firebase-admin";
 import { checkIfAuthenticated } from "../utils";
 import { createMeeting, createMeetingToken, deleteMeetings } from "../daily";
+import { stringify } from "querystring";
 
 const rooms = Router();
 rooms.use(checkIfAuthenticated);
@@ -231,6 +232,60 @@ rooms.post("/rooms/:roomId/startRound", async (req, res) => {
     await room.ref.update({
       stage: "ongoing",
       activeMeetings: [meetingName],
+    });
+
+    return res.status(200).send();
+  } catch (error) {
+    console.log(error);
+    return res.status(503).send({ error: error.message });
+  }
+});
+
+rooms.post("/rooms/:roomId/startDeliberation", async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const room = await admin.firestore().collection("rooms").doc(roomId).get();
+    const { judges, positions, activeMeetings } = room.data()!;
+
+    const { name: speakerMeetingName } = await createMeeting();
+    Object.values<{ uid: string; name: string }>(positions).forEach(
+      async (user) => {
+        const { token: speakerToken } = await createMeetingToken(
+          speakerMeetingName,
+          false
+        );
+
+        const speakerRef = admin.firestore().collection("users").doc(user.uid);
+
+        await speakerRef.update({
+          roomId: roomId,
+          meetingToken: speakerToken,
+          meetingName: speakerMeetingName,
+        });
+      }
+    );
+
+    const { name: judgeMeetingName } = await createMeeting();
+    judges.forEach(async (judge: { uid: string; name: string }) => {
+      const { token: judgeToken } = await createMeetingToken(
+        judgeMeetingName,
+        true
+      );
+      const judgeRef = admin.firestore().collection("users").doc(judge.uid);
+
+      await judgeRef.update({
+        roomId: roomId,
+        meetingToken: judgeToken,
+        meetingName: judgeMeetingName,
+      });
+    });
+
+    // Delete meetings from the previous stage
+    await deleteMeetings(activeMeetings);
+
+    await room.ref.update({
+      stage: "delibertaion",
+      activeMeetings: [judgeMeetingName, speakerMeetingName],
     });
 
     return res.status(200).send();

@@ -25,7 +25,7 @@ const Ongoing: React.FC = observer(() => {
           onClick={() => roomStore.startDeliberation()}
           style={{ margin: "1rem 0 1rem 0" }}
         >
-          Start round
+          Start judging
         </Button>
       )}
       {userStore.meetingName && (

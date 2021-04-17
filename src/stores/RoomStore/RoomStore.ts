@@ -168,6 +168,16 @@ class RoomStore {
     });
   }
 
+  async startDeliberation(): Promise<void> {
+    const authToken = await userStore.currentUser!.getIdToken(true);
+
+    await axios.post(`/api/rooms/${this.id}/startDeliberation`, null, {
+      headers: {
+        authorization: `Bearer ${authToken}`,
+      },
+    });
+  }
+
   async exit(): Promise<void> {
     const authToken = await userStore.currentUser!.getIdToken(true);
 

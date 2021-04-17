@@ -2,7 +2,6 @@ import { Router } from "express";
 import * as admin from "firebase-admin";
 import { checkIfAuthenticated } from "../utils";
 import { createMeeting, createMeetingToken, deleteMeetings } from "../daily";
-import { stringify } from "querystring";
 
 const rooms = Router();
 rooms.use(checkIfAuthenticated);

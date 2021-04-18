@@ -7,7 +7,7 @@ const Adjudication: React.FC = () => {
 
   return (
     <>
-      <div>Adjudication</div>;
+      <div>Adjudication</div>
       {userStore.meetingName && (
         <DailyFrame
           meetingName={userStore.meetingName}

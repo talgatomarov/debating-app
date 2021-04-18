@@ -301,6 +301,63 @@ rooms.post("/rooms/:roomId/startDeliberation", async (req, res) => {
   }
 });
 
+rooms.post("/rooms/:roomId/startAdjudication", async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const room = await admin.firestore().collection("rooms").doc(roomId).get();
+    const { judges, players, activeMeetings } = room.data()!;
+
+    if (
+      !judges.some(
+        (judge: { uid: string; name: string }) => judge.uid === req.authId
+      )
+    ) {
+      return res.status(401).send("Only judges can start adjudication");
+    }
+
+    const { name: meetingName } = await createMeeting();
+
+    const { token: judgeToken } = await createMeetingToken(meetingName, true);
+    const { token: speakerToken } = await createMeetingToken(
+      meetingName,
+      false
+    );
+
+    // Set meeting tokens for players
+    // Note that judge is also a player
+    players.forEach(async (playerId: string) => {
+      const playerRef = admin.firestore().collection("users").doc(playerId);
+
+      let token = speakerToken;
+      if (
+        judges.some(
+          (judge: { uid: string; name: string }) => judge.uid === playerId
+        )
+      ) {
+        token = judgeToken;
+      }
+
+      await playerRef.update({
+        roomId: roomId,
+        meetingToken: token,
+        meetingName: meetingName,
+      });
+    });
+
+    await deleteMeetings(activeMeetings);
+
+    await room.ref.update({
+      stage: "adjudication",
+      activeMeetings: [meetingName],
+    });
+
+    return res.status(200).send();
+  } catch (error) {
+    console.log(error);
+    return res.status(503).send({ error: error.message });
+  }
+});
+
 rooms.post("/rooms/exit", async (req, res) => {
   try {
     const user = await admin

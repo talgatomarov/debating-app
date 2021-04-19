@@ -19,7 +19,7 @@ const Adjudication: React.FC = () => {
           variant="contained"
           color="primary"
           size="large"
-          onClick={() => roomStore.startAdjudication()}
+          onClick={() => roomStore.endRound()}
           style={{ margin: "1rem 0 1rem 0" }}
         >
           End round

@@ -4,11 +4,10 @@ import DailyFrame from "components/DailyFrame";
 import { useStores } from "hooks";
 import { Judge } from "interfaces/Judge";
 import React from "react";
-import { roomStore } from "stores";
 
 const Deliberation: React.FC = () => {
   const currentUser = app.auth().currentUser!;
-  const { userStore } = useStores();
+  const { userStore, roomStore } = useStores();
 
   return (
     <>

@@ -358,6 +358,32 @@ rooms.post("/rooms/:roomId/startAdjudication", async (req, res) => {
   }
 });
 
+rooms.post("/rooms/:roomId/endRound", async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const room = await admin.firestore().collection("rooms").doc(roomId).get();
+    const { players, activeMeetings } = room.data()!;
+
+    players.forEach(async (player: string) => {
+      const userRef = admin.firestore().collection("users").doc(player);
+
+      await userRef.update({
+        meetingName: null,
+        meetingToken: null,
+        roomId: null,
+      });
+    });
+
+    await deleteMeetings(activeMeetings);
+    await room.ref.delete();
+
+    return res.status(200).send();
+  } catch (error) {
+    console.log(error);
+    return res.status(503).send({ error: error.message });
+  }
+});
+
 rooms.post("/rooms/exit", async (req, res) => {
   try {
     const user = await admin

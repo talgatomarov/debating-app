@@ -27,6 +27,7 @@ export const createMeeting = async (
 
 export const createMeetingToken = async (
   roomName: string,
+  userName: string,
   isOwner?: boolean
 ): Promise<any> => {
   const url = "https://api.daily.co/v1/meeting-tokens";
@@ -37,6 +38,7 @@ export const createMeetingToken = async (
       properties: {
         room_name: roomName,
         is_owner: isOwner,
+        user_name: userName,
       },
     },
     {

@@ -133,7 +133,11 @@ rooms.post("/rooms/:roomId/startPreparation", async (req, res) => {
 
           // Create Meeting Token for each speaker
           // Note: users will not be able to access the meeting without token
-          const { token } = await createMeetingToken(meetingName, isOwner);
+          const { token } = await createMeetingToken(
+            meetingName,
+            user.name,
+            isOwner
+          );
 
           const userRef = admin.firestore().collection("users").doc(user.uid);
 
@@ -156,7 +160,11 @@ rooms.post("/rooms/:roomId/startPreparation", async (req, res) => {
     judges.forEach(async (judge: { uid: string; name: string }) => {
       // Create Meeting Token for each judge$
       // All judges are owners of the room
-      const { token } = await createMeetingToken(judgeMeetingName, true);
+      const { token } = await createMeetingToken(
+        judgeMeetingName,
+        judge.name,
+        true
+      );
 
       const judgeRef = admin.firestore().collection("users").doc(judge.uid);
 
@@ -198,27 +206,40 @@ rooms.post("/rooms/:roomId/startRound", async (req, res) => {
     const createMeetingResponse = await createMeeting();
     const meetingName = createMeetingResponse.name;
 
-    const { token: judgeToken } = await createMeetingToken(meetingName, true);
-    const { token: speakerToken } = await createMeetingToken(
-      meetingName,
-      false
-    );
-
     // Set meeting tokens for players
     // Note that judge is also a player
     players.forEach(async (playerId: string) => {
-      const playerRef = admin.firestore().collection("users").doc(playerId);
+      const player = await admin
+        .firestore()
+        .collection("users")
+        .doc(playerId)
+        .get();
+      const { displayName } = player.data()!;
 
-      let token = speakerToken;
+      let token = null;
+
       if (
         judges.some(
           (judge: { uid: string; name: string }) => judge.uid === playerId
         )
       ) {
+        const { token: judgeToken } = await createMeetingToken(
+          meetingName,
+          displayName,
+          true
+        );
         token = judgeToken;
+      } else {
+        const { token: speakerToken } = await createMeetingToken(
+          meetingName,
+          displayName,
+          false
+        );
+
+        token = speakerToken;
       }
 
-      await playerRef.update({
+      await player.ref.update({
         roomId: roomId,
         meetingToken: token,
         meetingName: meetingName,
@@ -253,6 +274,7 @@ rooms.post("/rooms/:roomId/startDeliberation", async (req, res) => {
           if (user?.uid) {
             const { token: speakerToken } = await createMeetingToken(
               speakerMeetingName,
+              user.name,
               false
             );
 
@@ -275,6 +297,7 @@ rooms.post("/rooms/:roomId/startDeliberation", async (req, res) => {
     judges.forEach(async (judge: { uid: string; name: string }) => {
       const { token: judgeToken } = await createMeetingToken(
         judgeMeetingName,
+        judge.name,
         true
       );
       const judgeRef = admin.firestore().collection("users").doc(judge.uid);
@@ -317,27 +340,40 @@ rooms.post("/rooms/:roomId/startAdjudication", async (req, res) => {
 
     const { name: meetingName } = await createMeeting();
 
-    const { token: judgeToken } = await createMeetingToken(meetingName, true);
-    const { token: speakerToken } = await createMeetingToken(
-      meetingName,
-      false
-    );
-
     // Set meeting tokens for players
     // Note that judge is also a player
     players.forEach(async (playerId: string) => {
-      const playerRef = admin.firestore().collection("users").doc(playerId);
+      const player = await admin
+        .firestore()
+        .collection("users")
+        .doc(playerId)
+        .get();
+      const { displayName } = player.data()!;
 
-      let token = speakerToken;
+      let token = null;
+
       if (
         judges.some(
           (judge: { uid: string; name: string }) => judge.uid === playerId
         )
       ) {
+        const { token: judgeToken } = await createMeetingToken(
+          meetingName,
+          displayName,
+          true
+        );
         token = judgeToken;
+      } else {
+        const { token: speakerToken } = await createMeetingToken(
+          meetingName,
+          displayName,
+          false
+        );
+
+        token = speakerToken;
       }
 
-      await playerRef.update({
+      await player.ref.update({
         roomId: roomId,
         meetingToken: token,
         meetingName: meetingName,

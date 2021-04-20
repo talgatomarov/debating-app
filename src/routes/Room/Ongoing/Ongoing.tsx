@@ -4,7 +4,7 @@ import { useStores } from "hooks";
 import { observer } from "mobx-react";
 import { roomStore } from "stores";
 import { Judge } from "interfaces/Judge";
-import { Button } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
 import app from "app";
 
 const Ongoing: React.FC = observer(() => {
@@ -12,8 +12,15 @@ const Ongoing: React.FC = observer(() => {
   const { userStore } = useStores();
 
   return (
-    <>
-      <div>Ongoing</div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        margin: "auto",
+        alignItems: "center",
+      }}
+    >
+      <Typography variant="h4">Ongoing</Typography>
       {/* TODO: Integrate preparation timer here */}
       {roomStore.judges?.some(
         (judge: Judge) => judge.uid === currentUser.uid
@@ -29,12 +36,14 @@ const Ongoing: React.FC = observer(() => {
         </Button>
       )}
       {userStore.meetingName && (
-        <DailyFrame
-          meetingName={userStore.meetingName}
-          meetingToken={userStore.meetingToken}
-        />
+        <div style={{ width: "75%" }}>
+          <DailyFrame
+            meetingName={userStore.meetingName}
+            meetingToken={userStore.meetingToken}
+          />
+        </div>
       )}
-    </>
+    </div>
   );
 });
 

@@ -1,4 +1,4 @@
-import { Button } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
 import app from "app";
 import DailyFrame from "components/DailyFrame";
 import { useStores } from "hooks";
@@ -10,8 +10,15 @@ const Deliberation: React.FC = () => {
   const { userStore, roomStore } = useStores();
 
   return (
-    <>
-      <div>Deliberation</div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        margin: "auto",
+        alignItems: "center",
+      }}
+    >
+      <Typography variant="h4">Deliberation</Typography>
       {roomStore.judges?.some(
         (judge: Judge) => judge.uid === currentUser.uid
       ) && (
@@ -26,12 +33,14 @@ const Deliberation: React.FC = () => {
         </Button>
       )}
       {userStore.meetingName && (
-        <DailyFrame
-          meetingName={userStore.meetingName}
-          meetingToken={userStore.meetingToken}
-        />
+        <div style={{ width: "75%" }}>
+          <DailyFrame
+            meetingName={userStore.meetingName}
+            meetingToken={userStore.meetingToken}
+          />
+        </div>
       )}
-    </>
+    </div>
   );
 };
 

@@ -4,6 +4,7 @@ import { Judge } from "./Judge";
 export enum Format {
   UNKNOWN = "Unknown",
   BPF = "British Parliamentary Format",
+  APF = "American Parliamentary Format",
 }
 
 export interface BPFPositions {
@@ -22,6 +23,17 @@ export interface BPFPositions {
   "Closing Opposition": {
     "Opposition Member": Player | null;
     "Opposition Whip": Player | null;
+  };
+}
+
+export interface APFPositions {
+  Government: {
+    "Prime Minister": Player | null;
+    Member: Player | null;
+  };
+  Opposition: {
+    Leader: Player | null;
+    Member: Player | null;
   };
 }
 

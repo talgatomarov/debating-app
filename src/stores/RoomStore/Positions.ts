@@ -1,9 +1,9 @@
-import { Format, BPFPositions } from "interfaces/Room";
+import { Format, BPFPositions, APFPositions } from "interfaces/Room";
 
 export const createPositions = (format: string): any => {
   switch (format) {
     case Format.BPF:
-      const positions: BPFPositions = {
+      const BPFPositions: BPFPositions = {
         "Opening Government": {
           "Prime Minister": null,
           "Deputy Prime Minister": null,
@@ -22,7 +22,20 @@ export const createPositions = (format: string): any => {
         },
       };
 
-      return positions;
+      return BPFPositions;
+    case Format.APF:
+      const APFPositions: APFPositions = {
+        Government: {
+          "Prime Minister": null,
+          Member: null,
+        },
+        Opposition: {
+          Leader: null,
+          Member: null,
+        },
+      };
+
+      return APFPositions;
     default:
       return null;
   }

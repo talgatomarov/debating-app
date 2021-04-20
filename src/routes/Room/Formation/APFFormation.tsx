@@ -6,25 +6,15 @@ import { observer } from "mobx-react";
 import { ChevronRight } from "@material-ui/icons";
 import { Judge } from "interfaces/Judge";
 
-const BPFFormation: React.FC = observer(() => {
+const APFFormation: React.FC = observer(() => {
   const currentUser = app.auth().currentUser!;
   const { roomStore } = useStores();
 
-  const teamOrder = [
-    "Opening Government",
-    "Opening Opposition",
-    "Closing Government",
-    "Closing Opposition",
-  ];
+  const teamOrder = ["Government", "Opposition"];
 
   const speakerOrder: { [key: string]: string[] } = {
-    "Opening Government": ["Prime Minister", "Deputy Prime Minister"],
-    "Opening Opposition": [
-      "Leader of Opposition",
-      "Deputy Leader of Opposition",
-    ],
-    "Closing Government": ["Government Member", "Government Whip"],
-    "Closing Opposition": ["Opposition Member", "Opposition Whip"],
+    Government: ["Prime Minister", "Member"],
+    Opposition: ["Leader", "Member"],
   };
 
   return (
@@ -58,7 +48,10 @@ const BPFFormation: React.FC = observer(() => {
                   {teamName}
                 </Typography>
                 {speakerOrder[teamName].map((speakerTitle: string) => {
-                  const user = roomStore.positions[teamName][speakerTitle];
+                  const user = roomStore?.positions?.[teamName][speakerTitle];
+                  console.log(user);
+                  console.log(roomStore.positions);
+
                   return (
                     <div key={teamName + speakerTitle}>
                       <Typography variant="body2" component="p">
@@ -132,4 +125,4 @@ const BPFFormation: React.FC = observer(() => {
   );
 });
 
-export default BPFFormation;
+export default APFFormation;

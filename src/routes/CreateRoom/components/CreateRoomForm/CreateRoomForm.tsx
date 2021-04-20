@@ -99,6 +99,7 @@ const CreateRoomForm: React.FC = () => {
             required
           >
             <MenuItem value={Format.BPF}>{Format.BPF}</MenuItem>
+            <MenuItem value={Format.APF}>{Format.APF}</MenuItem>
           </Select>
         </Grid>
         <Grid item xs={12}>

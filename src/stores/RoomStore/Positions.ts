@@ -10,7 +10,7 @@ export const createPositions = (format: string): any => {
         },
         "Opening Opposition": {
           "Leader of Opposition": null,
-          "Deputy Prime Minister": null,
+          "Deputy Leader of Opposition": null,
         },
         "Closing Government": {
           "Government Member": null,

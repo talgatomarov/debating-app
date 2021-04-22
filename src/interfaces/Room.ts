@@ -14,7 +14,7 @@ export interface BPFPositions {
   };
   "Opening Opposition": {
     "Leader of Opposition": Player | null;
-    "Deputy Prime Minister": Player | null;
+    "Deputy Leader of Opposition": Player | null;
   };
   "Closing Government": {
     "Government Member": Player | null;

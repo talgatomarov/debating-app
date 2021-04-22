@@ -20,6 +20,8 @@ const Preparation: React.FC = observer(() => {
       }}
     >
       <Typography variant="h4">Preparation</Typography>
+      <Typography variant="h6">Motion: {roomStore.motion}</Typography>
+      <Typography variant="h6">Infoslide: {roomStore.infoslide}</Typography>
       {/* TODO: Integrate preparation timer here */}
       {roomStore.judges?.some(
         (judge: Judge) => judge.uid === currentUser.uid

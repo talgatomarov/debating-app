@@ -2,14 +2,11 @@ import React from "react";
 import DailyFrame from "components/DailyFrame";
 import { useStores } from "hooks";
 import { observer } from "mobx-react";
-import { roomStore } from "stores";
 import { Judge } from "interfaces/Judge";
 import { Button, Typography } from "@material-ui/core";
-import app from "app";
 
 const Ongoing: React.FC = observer(() => {
-  const currentUser = app.auth().currentUser!;
-  const { userStore } = useStores();
+  const { userStore, roomStore } = useStores();
 
   return (
     <div
@@ -23,7 +20,7 @@ const Ongoing: React.FC = observer(() => {
       <Typography variant="h4">Ongoing</Typography>
       {/* TODO: Integrate preparation timer here */}
       {roomStore.judges?.some(
-        (judge: Judge) => judge.uid === currentUser.uid
+        (judge: Judge) => judge.uid === userStore.currentUser?.uid
       ) && (
         <Button
           variant="contained"

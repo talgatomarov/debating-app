@@ -14,30 +14,30 @@ jest
 
 describe("Ongoing", () => {
   test("Speaker view", () => {
-    render(<Ongoing />, { wrapper: MemoryRouter });
-
     userStore.currentUser = { uid: "testuid" } as firebase.User;
     userStore.meetingName = "testmeetingname";
     userStore.meetingToken = "testmeetingtoken";
+
+    render(<Ongoing />, { wrapper: MemoryRouter });
 
     expect(screen.getByTestId("daily-frame")).toBeInTheDocument();
     expect(screen.queryByText(/start judging/i)).not.toBeInTheDocument();
   });
 
   test("Judge view", () => {
-    render(<Ongoing />, { wrapper: MemoryRouter });
-
     userStore.currentUser = { uid: "testuid" } as firebase.User;
     userStore.meetingName = "testmeetingname";
     userStore.meetingToken = "testmeetingtoken";
 
-    expect(screen.getByTestId("daily-frame")).toBeInTheDocument();
     const judge: Judge = {
       uid: "testuid",
       name: "testname",
     };
     roomStore.judges = [judge];
 
+    render(<Ongoing />, { wrapper: MemoryRouter });
+
+    expect(screen.getByTestId("daily-frame")).toBeInTheDocument();
     expect(screen.getByTestId("daily-frame")).toBeInTheDocument();
     expect(screen.getByText(/start judging/i)).toBeInTheDocument();
 

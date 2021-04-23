@@ -12,17 +12,17 @@ jest.spyOn(roomStore, "startRound").mockImplementation(mockStartRound);
 
 describe("Preparation", () => {
   test("Speaker preparation", () => {
-    render(<Preparation />, { wrapper: MemoryRouter });
     userStore.currentUser = { uid: "testuid" } as firebase.User;
     userStore.meetingName = "testmeetingname";
     userStore.meetingToken = "testmeetingtoken";
+
+    render(<Preparation />, { wrapper: MemoryRouter });
 
     expect(screen.getByTestId("daily-frame")).toBeInTheDocument();
     expect(screen.queryByText(/start round/i)).not.toBeInTheDocument();
   });
 
   test("Judge preparation", () => {
-    render(<Preparation />, { wrapper: MemoryRouter });
     userStore.currentUser = { uid: "testuid" } as firebase.User;
     userStore.meetingName = "testmeetingname";
     userStore.meetingToken = "testmeetingtoken";
@@ -32,6 +32,8 @@ describe("Preparation", () => {
       name: "testname",
     };
     roomStore.judges = [judge];
+
+    render(<Preparation />, { wrapper: MemoryRouter });
 
     expect(screen.getByTestId("daily-frame")).toBeInTheDocument();
     expect(screen.getByText(/start round/i)).toBeInTheDocument();

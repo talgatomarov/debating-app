@@ -7,7 +7,6 @@ import { observer } from "mobx-react";
 import { Judge } from "interfaces/Judge";
 
 const Preparation: React.FC = observer(() => {
-  const currentUser = app.auth().currentUser!;
   const { roomStore, userStore } = useStores();
 
   return (
@@ -24,7 +23,7 @@ const Preparation: React.FC = observer(() => {
       <Typography variant="h6">Infoslide: {roomStore.infoslide}</Typography>
       {/* TODO: Integrate preparation timer here */}
       {roomStore.judges?.some(
-        (judge: Judge) => judge.uid === currentUser.uid
+        (judge: Judge) => judge.uid === userStore.currentUser?.uid
       ) && (
         <Button
           variant="contained"

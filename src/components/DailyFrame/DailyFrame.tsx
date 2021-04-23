@@ -32,12 +32,14 @@ const DailyFrame: React.FC<DailyFrameProps> = ({
   }, [meetingName, meetingToken]);
 
   return (
-    <iframe
-      title="test"
-      className={classes.dailyiframe}
-      ref={iframeRef}
-      allow="camera; microphone; fullscreen"
-    ></iframe>
+    <div data-testid="daily-frame">
+      <iframe
+        title="test"
+        className={classes.dailyiframe}
+        ref={iframeRef}
+        allow="camera; microphone; fullscreen"
+      ></iframe>
+    </div>
   );
 };
 

@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  fireEvent,
-  render,
-  screen,
-  waitForElement,
-} from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import Formation from "./Formation";
 import { MemoryRouter } from "react-router-dom";
 import userStore from "stores/UserStore";

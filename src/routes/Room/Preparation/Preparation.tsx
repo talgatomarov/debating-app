@@ -1,6 +1,5 @@
 import React from "react";
 import DailyFrame from "components/DailyFrame";
-import app from "app";
 import { Button, Typography } from "@material-ui/core";
 import { useStores } from "hooks";
 import { observer } from "mobx-react";

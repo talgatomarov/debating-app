@@ -1,12 +1,10 @@
 import { Button, Typography } from "@material-ui/core";
-import app from "app";
 import DailyFrame from "components/DailyFrame";
 import { useStores } from "hooks";
 import { Judge } from "interfaces/Judge";
 import React from "react";
 
 const Deliberation: React.FC = () => {
-  const currentUser = app.auth().currentUser!;
   const { userStore, roomStore } = useStores();
 
   return (
@@ -20,7 +18,7 @@ const Deliberation: React.FC = () => {
     >
       <Typography variant="h4">Deliberation</Typography>
       {roomStore.judges?.some(
-        (judge: Judge) => judge.uid === currentUser.uid
+        (judge: Judge) => judge.uid === userStore.currentUser?.uid
       ) && (
         <Button
           variant="contained"

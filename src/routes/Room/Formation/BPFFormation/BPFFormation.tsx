@@ -1,20 +1,28 @@
 import { Button, Card, CardContent, Typography } from "@material-ui/core";
 import React from "react";
-import app from "app";
 import { useStores } from "hooks";
 import { observer } from "mobx-react";
 import { ChevronRight } from "@material-ui/icons";
 import { Judge } from "interfaces/Judge";
 
-const APFFormation: React.FC = observer(() => {
-  const currentUser = app.auth().currentUser!;
-  const { roomStore } = useStores();
+const BPFFormation: React.FC = observer(() => {
+  const { userStore, roomStore } = useStores();
 
-  const teamOrder = ["Government", "Opposition"];
+  const teamOrder = [
+    "Opening Government",
+    "Opening Opposition",
+    "Closing Government",
+    "Closing Opposition",
+  ];
 
   const speakerOrder: { [key: string]: string[] } = {
-    Government: ["Prime Minister", "Member"],
-    Opposition: ["Leader", "Member"],
+    "Opening Government": ["Prime Minister", "Deputy Prime Minister"],
+    "Opening Opposition": [
+      "Leader of Opposition",
+      "Deputy Leader of Opposition",
+    ],
+    "Closing Government": ["Government Member", "Government Whip"],
+    "Closing Opposition": ["Opposition Member", "Opposition Whip"],
   };
 
   return (
@@ -48,10 +56,7 @@ const APFFormation: React.FC = observer(() => {
                   {teamName}
                 </Typography>
                 {speakerOrder[teamName].map((speakerTitle: string) => {
-                  const user = roomStore?.positions?.[teamName][speakerTitle];
-                  console.log(user);
-                  console.log(roomStore.positions);
-
+                  const user = roomStore.positions[teamName][speakerTitle];
                   return (
                     <div key={teamName + speakerTitle}>
                       <Typography variant="body2" component="p">
@@ -69,6 +74,7 @@ const APFFormation: React.FC = observer(() => {
                             color="primary"
                             size="small"
                             disabled={user !== null}
+                            data-testid={`select ${speakerTitle}`}
                             onClick={() =>
                               roomStore.selectPosition(teamName, speakerTitle)
                             }
@@ -107,7 +113,7 @@ const APFFormation: React.FC = observer(() => {
         Adjudicate
       </Button>
       <br />
-      {roomStore.owner === currentUser.uid && (
+      {roomStore.owner === userStore.currentUser?.uid && (
         <Button
           variant="contained"
           color="primary"
@@ -125,4 +131,4 @@ const APFFormation: React.FC = observer(() => {
   );
 });
 
-export default APFFormation;
+export default BPFFormation;

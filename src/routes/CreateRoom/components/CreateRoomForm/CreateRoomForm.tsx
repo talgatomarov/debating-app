@@ -81,8 +81,8 @@ const CreateRoomForm: React.FC = () => {
             fullWidth
             required
           >
-            <MenuItem value="public">Public</MenuItem>
-            <MenuItem value="private">Private</MenuItem>
+            <MenuItem value="public">public</MenuItem>
+            <MenuItem value="private">private</MenuItem>
           </Select>
         </Grid>
         <Grid item xs={12}>

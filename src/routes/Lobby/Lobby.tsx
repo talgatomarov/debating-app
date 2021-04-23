@@ -13,6 +13,7 @@ import RoomTable from "./components/RoomTable";
 
 const LobbyRootPage: React.FC = observer(() => {
   const { userStore } = useStores();
+
   const [rooms, loading, error] = useCollectionData<Room>(
     app
       .firestore()

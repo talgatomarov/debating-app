@@ -10,7 +10,7 @@ import { Judge } from "interfaces/Judge";
 const mockEndRound = jest.fn();
 jest.spyOn(roomStore, "endRound").mockImplementation(mockEndRound);
 
-describe("Deliberation", () => {
+describe("Adjudication", () => {
   test("Speaker view", () => {
     userStore.currentUser = { uid: "testuid" } as firebase.User;
     userStore.meetingName = "testmeetingname";

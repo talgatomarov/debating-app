@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import Preparation from "./Preparation";
 import { MemoryRouter } from "react-router-dom";
 import userStore from "stores/UserStore";
@@ -35,5 +35,8 @@ describe("Preparation", () => {
 
     expect(screen.getByTestId("daily-frame")).toBeInTheDocument();
     expect(screen.getByText(/start round/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByText(/start round/i));
+
+    expect(mockStartRound).toHaveBeenCalled();
   });
 });

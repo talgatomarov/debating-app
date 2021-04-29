@@ -34,19 +34,19 @@ const LobbyLayout: React.FC = ({ children }) => {
   return (
     <div className={classes.root}>
       <LobbyAppBar onMenuClick={handleDrawerToggle} />
-      <LobbyDrawer open={mobileOpen} onClose={handleDrawerToggle} />
       <Box
         display="flex"
-        flexDirection="column"
+        flexDirection="row"
         flex="auto"
         minHeight="100vh"
         justifyContent="space-between"
       >
+        <LobbyDrawer open={mobileOpen} onClose={handleDrawerToggle} />
         <main className={classes.content}>
           <Toolbar />
           {children}
+          <Footer />
         </main>
-        <Footer />
       </Box>
     </div>
   );

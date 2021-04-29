@@ -1,8 +1,10 @@
 import React from "react";
 import GoogleAuthButton from "./components/GoogleAuthButton";
-import FacebookAuthButton from "./components/FacebookAuthButton";
+// import FacebookAuthButton from "./components/FacebookAuthButton";
 import { Grid } from "@material-ui/core";
-import GithubAuthButton from "./components/GithubAuthButton";
+// import GithubAuthButton from "./components/GithubAuthButton";
+
+// TODO: Fix fb and gh
 
 const OAuth: React.FC = () => {
   return (
@@ -10,12 +12,12 @@ const OAuth: React.FC = () => {
       <Grid item xs={12}>
         <GoogleAuthButton />
       </Grid>
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         <FacebookAuthButton />
       </Grid>
       <Grid item xs={12}>
         <GithubAuthButton />
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 };

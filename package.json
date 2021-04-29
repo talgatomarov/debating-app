@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@daily-co/daily-js": "^0.9.998",
     "@fortawesome/fontawesome-svg-core": "^1.2.31",
     "@fortawesome/free-brands-svg-icons": "^5.15.0",
     "@fortawesome/free-solid-svg-icons": "^5.15.0",
@@ -18,8 +19,11 @@
     "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.5",
-    "firebase": "^7.22.0",
+    "axios": "^0.21.1",
+    "firebase": "^8.2.9",
+    "firebase-admin": "^9.6.0",
     "fontsource-roboto": "^3.0.3",
+    "http-proxy-middleware": "^1.0.6",
     "mobx": "^5.15.7",
     "mobx-react": "^6.3.0",
     "react": "^16.13.1",
@@ -47,7 +51,8 @@
       "plugin:@typescript-eslint/recommended"
     ],
     "rules": {
-      "@typescript-eslint/no-non-null-assertion": "off"
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/no-explicit-any": "off"
     },
     "settings": {
       "import/resolver": {
@@ -86,7 +91,9 @@
     "@types/material-ui": "^0.21.8",
     "@typescript-eslint/eslint-plugin": "4.0.1",
     "@typescript-eslint/parser": "4.0.1",
+    "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-import": "2.22.0",
+    "eslint-plugin-prettier": "^3.3.1",
     "husky": "^4.3.0",
     "jest-when": "^2.7.2",
     "lint-staged": "^10.4.0",

@@ -1,4 +1,4 @@
 export type Judge = {
-  readonly id: string | null;
+  readonly uid: string | null;
   readonly name: string | null;
 };

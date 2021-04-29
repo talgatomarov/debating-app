@@ -1,9 +1,12 @@
-# Compiled JavaScript files
-**/*.js
+## Compiled JavaScript files
 **/*.js.map
+lib/
 
-# TypeScript v1 declaration files
+# Typescript v1 declaration files
 typings/
 
-# Node.js dependency directory
 node_modules/
+
+firestore-debug.log
+ui-debug.log
+.runtimeconfig.json

@@ -1,3 +1,4 @@
-import { storesContext } from "./storesContext";
+import { StoresContext, StoresProvider, Stores } from "./stores";
 
-export { storesContext };
+export { StoresContext, StoresProvider };
+export type { Stores };

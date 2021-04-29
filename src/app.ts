@@ -1,6 +1,7 @@
-import * as firebase from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/functions";
 
 // It is not a security issue to expose this config
 const firebaseConfig = {
@@ -15,5 +16,12 @@ const firebaseConfig = {
 };
 
 const app = firebase.initializeApp(firebaseConfig);
+
+// TODO: Maybe it would better to setup it via environmental variables?
+// eslint-disable-next-line no-restricted-globals
+if (location.hostname === "localhost") {
+  app.firestore().useEmulator("localhost", 8080);
+  app.auth().useEmulator("http://localhost:9099/");
+}
 
 export default app;

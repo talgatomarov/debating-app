@@ -14,12 +14,13 @@ import {
 } from "@material-ui/core";
 import MeetingRoomIcon from "@material-ui/icons/MeetingRoom";
 import AddIcon from "@material-ui/icons/Add";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
+import { useStores } from "hooks";
 
 const useStyles = makeStyles(({ mixins, breakpoints }: Theme) =>
   createStyles({
     drawer: {
-      [breakpoints.up("md")]: {
+      [breakpoints.up("sm")]: {
         width: "240px",
         flexShrink: 0,
       },
@@ -49,6 +50,8 @@ export interface LobbyDrawerProps {
 
 const LobbyDrawer: React.FC<LobbyDrawerProps> = ({ window, open, onClose }) => {
   const classes = useStyles();
+  const history = useHistory();
+  const { userStore, roomStore } = useStores();
 
   /* istanbul ignore next */
   const container =
@@ -58,18 +61,39 @@ const LobbyDrawer: React.FC<LobbyDrawerProps> = ({ window, open, onClose }) => {
     <div className={classes.toolbar}>
       <div className={classes.drawerContainer}>
         <List>
-          <ListItem button component={RouterLink} to="/lobby">
-            <ListItemIcon>
-              <MeetingRoomIcon />
-            </ListItemIcon>
-            <ListItemText primary="Lobby" />
-          </ListItem>
-          <ListItem button component={RouterLink} to="/lobby/create-room">
-            <ListItemIcon>
-              <AddIcon />
-            </ListItemIcon>
-            <ListItemText primary="Create room" />
-          </ListItem>
+          {!userStore.loading && !userStore.roomId && (
+            <>
+              <ListItem button component={RouterLink} to="/lobby">
+                <ListItemIcon>
+                  <MeetingRoomIcon />
+                </ListItemIcon>
+                <ListItemText primary="Lobby" />
+              </ListItem>
+              <ListItem button component={RouterLink} to="/create-room">
+                <ListItemIcon>
+                  <AddIcon />
+                </ListItemIcon>
+                <ListItemText primary="Create room" />
+              </ListItem>
+            </>
+          )}
+          {userStore.roomId && (
+            <>
+              {/* TODO: Handle exit */}
+              <ListItem
+                button
+                onClick={async () => {
+                  await roomStore.exit();
+                  history.push("/lobby");
+                }}
+              >
+                <ListItemIcon>
+                  <MeetingRoomIcon />
+                </ListItemIcon>
+                <ListItemText primary="Exit" />
+              </ListItem>
+            </>
+          )}
         </List>
       </div>
     </div>

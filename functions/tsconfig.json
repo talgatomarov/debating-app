@@ -1,15 +1,23 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "noImplicitReturns": true,
+    "noImplicitReturns": false,
     "noUnusedLocals": true,
     "outDir": "lib",
     "sourceMap": true,
     "strict": true,
-    "target": "es2017"
+    "target": "es2018",
+    "lib": ["es2018"],
+    "baseUrl": "src",
+    "skipLibCheck": true,
   },
   "compileOnSave": true,
   "include": [
     "src"
+  ],
+  "exclude": [
+    "**/*.test.ts",
+    "./src/setupTests.ts",
+    "./src/scripts"
   ]
 }

@@ -246,13 +246,13 @@ rooms.post("/rooms/:roomId/startRound", async (req, res) => {
       });
     });
 
-    // Delete meetings from the previous stage
-    await deleteMeetings(activeMeetings);
-
     await room.ref.update({
       stage: "ongoing",
       activeMeetings: [meetingName],
     });
+
+    // Delete meetings from the previous stage
+    await deleteMeetings(activeMeetings);
 
     return res.status(200).send();
   } catch (error) {
@@ -309,13 +309,13 @@ rooms.post("/rooms/:roomId/startDeliberation", async (req, res) => {
       });
     });
 
-    // Delete meetings from the previous stage
-    await deleteMeetings(activeMeetings);
-
     await room.ref.update({
       stage: "deliberation",
       activeMeetings: [judgeMeetingName, speakerMeetingName],
     });
+
+    // Delete meetings from the previous stage
+    await deleteMeetings(activeMeetings);
 
     return res.status(200).send();
   } catch (error) {
@@ -380,12 +380,12 @@ rooms.post("/rooms/:roomId/startAdjudication", async (req, res) => {
       });
     });
 
-    await deleteMeetings(activeMeetings);
-
     await room.ref.update({
       stage: "adjudication",
       activeMeetings: [meetingName],
     });
+
+    await deleteMeetings(activeMeetings);
 
     return res.status(200).send();
   } catch (error) {
@@ -410,8 +410,8 @@ rooms.post("/rooms/:roomId/endRound", async (req, res) => {
       });
     });
 
-    await deleteMeetings(activeMeetings);
     await room.ref.delete();
+    await deleteMeetings(activeMeetings);
 
     return res.status(200).send();
   } catch (error) {
@@ -459,8 +459,8 @@ rooms.post("/rooms/exit", async (req, res) => {
 
         // If room is empty destroy the room
         if (players.length === 0) {
-          await deleteMeetings(activeMeetings);
           await room.ref.delete();
+          await deleteMeetings(activeMeetings);
         } else {
           await room.ref.update({ players, judges, positions, activeMeetings });
         }

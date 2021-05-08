@@ -1,0 +1,7 @@
+{
+  "daily": {
+    "domain": "https://debating-app.daily.co",
+    "test": "test",
+    "key": "insertsecretkeyhere"
+  }
+}

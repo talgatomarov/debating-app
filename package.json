@@ -21,7 +21,7 @@
     "@types/react-router-dom": "^5.1.5",
     "axios": "^0.21.1",
     "firebase": "^8.2.9",
-    "firebase-admin": "^9.6.0",
+    "firebase-admin": "^11.4.1",
     "fontsource-roboto": "^3.0.3",
     "http-proxy-middleware": "^1.0.6",
     "mobx": "^5.15.7",
